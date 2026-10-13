@@ -19,7 +19,7 @@ import Link from "next/link";
 import {
   matches,
   fanMessages,
-} from "../data/site";
+} from "./data/site";
 
 
 // ======================================================

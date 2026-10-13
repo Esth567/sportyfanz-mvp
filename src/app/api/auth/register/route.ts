@@ -1,27 +1,35 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import {
-  hashPassword,
-  createSession,
-} from "@/lib/auth";
+import { hashPassword, createSession } from "@/lib/auth";
+import { db } from "@/lib/prisma";
 
-export async function POST(
-  request: Request
-) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const name = String(body.name || "").trim();
-    const email = String(body.email || "")
-      .trim()
-      .toLowerCase();
+    const email =
+      typeof body.email === "string"
+        ? body.email.trim().toLowerCase()
+        : "";
 
-    const password = String(body.password || "");
+    const password =
+      typeof body.password === "string"
+        ? body.password
+        : "";
 
-    if (!name || !email || !password) {
+    const username =
+      typeof body.username === "string"
+        ? body.username.trim()
+        : "";
+
+    const name =
+      typeof body.name === "string"
+        ? body.name.trim()
+        : "";
+
+    if (!email || !password) {
       return NextResponse.json(
         {
-          error: "All fields are required.",
+          error: "Email and password are required.",
         },
         { status: 400 }
       );
@@ -30,73 +38,92 @@ export async function POST(
     if (password.length < 8) {
       return NextResponse.json(
         {
-          error:
-            "Password must be at least 8 characters.",
+          error: "Password must be at least 8 characters.",
         },
         { status: 400 }
       );
     }
 
-    const existing = db
-      .prepare(
-        "SELECT id FROM users WHERE email = ?"
-      )
-      .get(email) as
-      | { id: number }
-      | undefined;
+    const existingEmail = await db.orm.public.User.first({
+      email,
+    });
 
-    if (existing) {
+    if (existingEmail) {
       return NextResponse.json(
         {
-          error:
-            "An account with this email already exists.",
+          error: "An account with this email already exists.",
         },
         { status: 409 }
       );
     }
 
-    const passwordHash =
-      await hashPassword(password);
+    if (username) {
+      const existingUsername =
+        await db.orm.public.User.first({
+          username,
+        });
 
-    const result = db
-      .prepare(`
-        INSERT INTO users
-        (name, email, password_hash, fan_points)
-        VALUES (?, ?, ?, ?)
-      `)
-      .run(
-        name,
-        email,
-        passwordHash,
-        100
-      );
+      if (existingUsername) {
+        return NextResponse.json(
+          {
+            error: "That username is already taken.",
+          },
+          { status: 409 }
+        );
+      }
+    }
 
-    const userId = Number(
-      result.lastInsertRowid
-    );
+    const passwordHash = await hashPassword(password);
 
-    db.prepare(`
-      INSERT INTO fan_point_events
-      (user_id, points, reason)
-      VALUES (?, ?, ?)
-    `).run(
-      userId,
-      100,
-      "Welcome bonus"
-    );
+    const result = await db.transaction(async (tx) => {
+      const user =
+        await tx.orm.public.User.create({
+          email,
+          username: username || null,
+          name: name || null,
+          passwordHash,
+        });
 
-    await createSession(userId);
+      const profile =
+        await tx.orm.public.FanProfile.create({
+          userId: user.id,
+          displayName: name || username || null,
+          fanLevel: "NEW_FAN",
+          totalPoints: 0,
+          currentPoints: 0,
+          matchesWatched: 0,
+          challengesCompleted: 0,
+          fanRoomsJoined: 0,
+        });
 
-    return NextResponse.json({
-      success: true,
+      return {
+        user,
+        profile,
+      };
     });
 
-  } catch (error) {
-    console.error(error);
+    await createSession(result.user.id);
 
     return NextResponse.json(
       {
-        error: "Unable to create account.",
+        success: true,
+        user: {
+          id: result.user.id,
+          email: result.user.email,
+          username: result.user.username,
+          name: result.user.name,
+          fanLevel: result.profile.fanLevel,
+          points: result.profile.currentPoints,
+        },
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Registration error:", error);
+
+    return NextResponse.json(
+      {
+        error: "Unable to create your account.",
       },
       { status: 500 }
     );

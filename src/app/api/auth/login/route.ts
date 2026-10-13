@@ -1,23 +1,23 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
 import {
-  verifyPassword,
   createSession,
+  verifyPassword,
 } from "@/lib/auth";
+import { db } from "@/lib/prisma";
 
-export async function POST(
-  request: Request
-) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const email = String(body.email || "")
-      .trim()
-      .toLowerCase();
+    const email =
+      typeof body.email === "string"
+        ? body.email.trim().toLowerCase()
+        : "";
 
-    const password = String(
-      body.password || ""
-    );
+    const password =
+      typeof body.password === "string"
+        ? body.password
+        : "";
 
     if (!email || !password) {
       return NextResponse.json(
@@ -28,18 +28,10 @@ export async function POST(
       );
     }
 
-    const user = db
-      .prepare(`
-        SELECT id, password_hash
-        FROM users
-        WHERE email = ?
-      `)
-      .get(email) as
-      | {
-          id: number;
-          password_hash: string;
-        }
-      | undefined;
+    const user =
+      await db.orm.public.User.first({
+        email,
+      });
 
     if (!user) {
       return NextResponse.json(
@@ -50,12 +42,22 @@ export async function POST(
       );
     }
 
-    const valid = await verifyPassword(
-      password,
-      user.password_hash
-    );
+    if (user.status !== "ACTIVE") {
+      return NextResponse.json(
+        {
+          error: "This account is not currently active.",
+        },
+        { status: 403 }
+      );
+    }
 
-    if (!valid) {
+    const passwordValid =
+      await verifyPassword(
+        password,
+        user.passwordHash
+      );
+
+    if (!passwordValid) {
       return NextResponse.json(
         {
           error: "Invalid email or password.",
@@ -64,16 +66,36 @@ export async function POST(
       );
     }
 
+    await db.orm.public.User
+     .where({ id: user.id })
+     .update({
+     lastLoginAt: new Date().toISOString(),
+    });
+
     await createSession(user.id);
+
+    const profile =
+      await db.orm.public.FanProfile.first({
+        userId: user.id,
+      });
 
     return NextResponse.json({
       success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        name: user.name,
+        fanLevel: profile?.fanLevel ?? "NEW_FAN",
+        points: profile?.currentPoints ?? 0,
+      },
     });
+  } catch (error) {
+    console.error("Login error:", error);
 
-  } catch {
     return NextResponse.json(
       {
-        error: "Unable to sign in.",
+        error: "Unable to sign you in.",
       },
       { status: 500 }
     );
