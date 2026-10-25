@@ -29,6 +29,7 @@ type FootballMatch = {
 type FootballFeed = {
   liveMatches: FootballMatch[];
   upcomingMatches: FootballMatch[];
+  matches: FootballMatch[];
 };
 
 function getLagosDate(offsetDays = 0) {
@@ -81,7 +82,7 @@ export default function AllMatchesPage() {
         }
 
         if (active) {
-          setMatches(data.upcomingMatches ?? []);
+          setMatches(data.matches ?? []);
         }
       } catch (err) {
         console.error("Unable to load all matches:", err);
@@ -155,7 +156,6 @@ export default function AllMatchesPage() {
       >
         <div className="section-title">
           <h2>Upcoming Fixtures</h2>
-          <span>{matches.length} matches</span>
         </div>
 
         <div
@@ -399,6 +399,8 @@ export default function AllMatchesPage() {
                             ? "FT"
                             : match.status === "POSTPONED"
                               ? "Postponed"
+                              : match.status === "CANCELLED"
+                               ? "Cancelled"
                               : "Upcoming"}
                       </small>
                     </div>
