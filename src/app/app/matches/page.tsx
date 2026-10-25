@@ -185,54 +185,54 @@ export default function AllMatchesPage() {
           </button>
 
           <div style={{ position: "relative", marginLeft: "auto" }}>
-  <button
-    type="button"
-    className="secondary-button"
-    aria-label="Choose match date"
-    title="Choose date"
-    aria-expanded={showDatePicker}
-    onClick={() => setShowDatePicker((visible) => !visible)}
-    style={{
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "8px",
-      minWidth: 38,
-    }}
-  >
-    <CalendarDays size={17} />
-  </button>
+            <button
+              type="button"
+              className="secondary-button"
+              aria-label="Choose match date"
+              title="Choose date"
+              aria-expanded={showDatePicker}
+              onClick={() => setShowDatePicker((visible) => !visible)}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "8px",
+                minWidth: 38,
+              }}
+             >
+             <CalendarDays size={17} />
+            </button>
 
-  {showDatePicker && (
-    <div
-      style={{
-        position: "absolute",
-        top: "calc(100% + 8px)",
-        right: 0,
-        zIndex: 10,
-        padding: 12,
-        background: "#fff",
-        border: "1px solid #e5e5e5",
-        borderRadius: 10,
-        boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-      }}
-    >
-      <input
-        type="date"
-        value={selectedDate}
-        aria-label="Choose match date"
-        onChange={(event) => {
-          if (event.target.value) {
+           {showDatePicker && (
+          <div
+           style={{
+             position: "absolute",
+             top: "calc(100% + 8px)",
+             right: 0,
+             zIndex: 10,
+             padding: 12,
+             background: "#fff",
+             border: "1px solid #e5e5e5",
+             borderRadius: 10,
+             boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+           }}
+         >
+         <input
+           type="date"
+           value={selectedDate}
+           aria-label="Choose match date"
+           onChange={(event) => {
+           if (event.target.value) {
             setSelectedDate(event.target.value);
             setMatchDay("custom");
             setShowDatePicker(false);
-          }
-         }}
-        />
-       </div>
+           }
+          }}
+         />
+        </div>
          )}
+        </div>
        </div>
-
         <div className="upcoming-list">
           {loading ? (
             <p>Loading football fixtures...</p>
@@ -274,7 +274,17 @@ export default function AllMatchesPage() {
                   : kickoffTime;
 
               return (
-                <div className="upcoming-card" key={match.id}>
+               <Link
+                 href={`/app/matches/${match.fixtureId}`}
+                 className="upcoming-card"
+                 key={match.id}
+                 style={{
+                   display: "block",
+                   color: "inherit",
+                   textDecoration: "none",
+                   cursor: "pointer",
+                 }}
+                 >
                   <div
                     style={{
                       width: "100%",
@@ -400,7 +410,7 @@ export default function AllMatchesPage() {
                       </small>
                     </div>
                   </div>
-                </div>
+                </Link>
               );
             })
           )}
