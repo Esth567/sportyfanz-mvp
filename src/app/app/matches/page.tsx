@@ -125,7 +125,6 @@ export default function AllMatchesPage() {
         <div>
           <span>MATCH CENTRE</span>
           <h1>All Matches</h1>
-          <p>Browse football fixtures by date.</p>
         </div>
 
         <Link
@@ -155,7 +154,7 @@ export default function AllMatchesPage() {
         }}
       >
         <div className="section-title">
-          <h2>Upcoming Fixtures</h2>
+          <h2>Fixtures</h2>
         </div>
 
         <div
@@ -185,58 +184,54 @@ export default function AllMatchesPage() {
             Tomorrow
           </button>
 
-          <div style={{ position: "relative" }}>
-            <button
-              type="button"
-              className="secondary-button"
-              aria-label="Choose match date"
-              aria-expanded={showDatePicker}
-              onClick={() => setShowDatePicker((visible) => !visible)}
-            >
-              <CalendarDays size={17} />
-              Choose date
-            </button>
+          <div style={{ position: "relative", marginLeft: "auto" }}>
+  <button
+    type="button"
+    className="secondary-button"
+    aria-label="Choose match date"
+    title="Choose date"
+    aria-expanded={showDatePicker}
+    onClick={() => setShowDatePicker((visible) => !visible)}
+    style={{
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "8px",
+      minWidth: 38,
+    }}
+  >
+    <CalendarDays size={17} />
+  </button>
 
-            {showDatePicker && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "calc(100% + 8px)",
-                  left: 0,
-                  zIndex: 10,
-                  padding: 12,
-                  background: "#fff",
-                  border: "1px solid #e5e5e5",
-                  borderRadius: 10,
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-                }}
-              >
-                <input
-                  type="date"
-                  value={selectedDate}
-                  aria-label="Choose match date"
-                  onChange={(event) => {
-                    if (event.target.value) {
-                      setSelectedDate(event.target.value);
-                      setMatchDay("custom");
-                      setShowDatePicker(false);
-                    }
-                  }}
-                />
-              </div>
-            )}
-          </div>
-
-          <span style={{ color: "#666", fontSize: 13 }}>
-            {new Date(`${selectedDate}T12:00:00`).toLocaleDateString("en-NG", {
-              timeZone: "Africa/Lagos",
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
-        </div>
+  {showDatePicker && (
+    <div
+      style={{
+        position: "absolute",
+        top: "calc(100% + 8px)",
+        right: 0,
+        zIndex: 10,
+        padding: 12,
+        background: "#fff",
+        border: "1px solid #e5e5e5",
+        borderRadius: 10,
+        boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+      }}
+    >
+      <input
+        type="date"
+        value={selectedDate}
+        aria-label="Choose match date"
+        onChange={(event) => {
+          if (event.target.value) {
+            setSelectedDate(event.target.value);
+            setMatchDay("custom");
+            setShowDatePicker(false);
+          }
+         }}
+        />
+       </div>
+         )}
+       </div>
 
         <div className="upcoming-list">
           {loading ? (
