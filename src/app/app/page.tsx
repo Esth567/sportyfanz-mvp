@@ -79,16 +79,15 @@ export default function HomePage() {
   const [fanPoints, setFanPoints] = useState(0);
   const [upcomingMatches, setUpcomingMatches] = useState<FootballMatch[]>([]);
   const [matchesLoading, setMatchesLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState(() => getLagosDate());
   const [matchesError, setMatchesError] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [matchDay, setMatchDay] = useState<"today" | "tomorrow" | "custom">("today");
   const [fanSports, setFanSports] = useState<FanSport[]>([]);
-  const [selectedSportSlug, setSelectedSportSlug] = useState("football");
   const [sportsLoading, setSportsLoading] = useState(true);
   const [sportsError, setSportsError] = useState("");
+  const [selectedDate, setSelectedDate] = useState(getLagosDate);
+  const [selectedSportSlug, setSelectedSportSlug] = useState("football");
 
-  
   
   useEffect(() => {
     let active = true;  
@@ -209,7 +208,7 @@ useEffect(() => {
         ? `?date=${encodeURIComponent(selectedDate)}`
         : "";
 
-      const response = await fetch(
+       const response = await fetch(
         `/api/matches/${encodeURIComponent(selectedSportSlug)}${query}`,
         { cache: "no-store" }
       );
@@ -227,13 +226,9 @@ useEffect(() => {
         return;
       }
 
-      setUpcomingMatches(
-        (data.matches ?? []).filter(
-          (match: FootballMatch) =>
-            match.status === "SCHEDULED"
-        )
-      );
-    } catch {
+      setUpcomingMatches(data.matches ?? []);
+
+     } catch {
       if (!active) return;
 
       setMatchesError(
@@ -545,7 +540,7 @@ useEffect(() => {
             </h2>
 
             <Link
-              href={`/app/matches?date=${encodeURIComponent(selectedDate)}`}
+              href={`/app/matches?sport=${encodeURIComponent(selectedSportSlug)}&date=${encodeURIComponent(selectedDate)}`}
               className="secondary-button"
               style={{
                 display: "inline-flex",
@@ -819,21 +814,30 @@ useEffect(() => {
                               ? "Full-time"
                               : displayedKickoff}
                         </small>
+                   
+                      <small
+                       style={{
+                        fontWeight: 700,
+                        color: isLive
+                        ? "#d93025"
+                        : isFinished
+                        ? "#188038"
+                        : "inherit",
+                       }}
+                      >
+                       {isLive
+                         ? "LIVE"
+                         : isFinished
+                         ? "FT"
+                         : match.status === "POSTPONED"
+                         ? "Postponed"
+                         : match.status === "CANCELLED"
+                         ? "Cancelled"
+                         : match.status === "SCHEDULED"
+                         ? "Upcoming"
+                         : match.status}
+                       </small>
 
-                        <small
-                          style={{
-                            fontWeight: 700,
-                            color: isLive ? "#d93025" : "inherit",
-                          }}
-                        >
-                          {isLive
-                            ? "LIVE"
-                            : isFinished
-                              ? "FT"
-                              : match.status === "POSTPONED"
-                                ? "Postponed"
-                                : "Upcoming"}
-                        </small>
                       </div>
                     </div>
                   </div>

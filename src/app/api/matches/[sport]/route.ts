@@ -95,45 +95,21 @@ function mapFixture(fixture: ProviderFixture) {
     return null;
   }
 
-  
   const providerStatus = (fixture.status?.short ?? "").toUpperCase();
-  const providerLongStatus = (fixture.status?.long ?? "").toUpperCase();
 
   let status = "SCHEDULED";
 
-  if (
-    [
-      "LIVE", "1H", "2H", "Q1", "Q2", "Q3", "Q4",
-      "Q5", "IN", "P", "OT", "BT", "INT", "3RD", "4TH",
-    ].includes(providerStatus)
-  ) {
+  if (["LIVE", "1H", "2H", "Q1", "Q2", "Q3", "Q4", "IN", "P"].includes(providerStatus)) {
     status = "LIVE";
-  } else if (["HT", "HALF", "HALF_TIME"].includes(providerStatus)) {
+  } else if (["HT", "BT"].includes(providerStatus)) {
     status = "HALF_TIME";
-  } else if (
-    [
-      "FT", "AOT", "AP", "AET", "PEN", "FINAL",
-      "FINISHED", "ENDED", "COMPLETED",
-    ].includes(providerStatus) ||
-    [
-      "FINISHED", "MATCH FINISHED", "GAME FINISHED",
-      "FINAL", "COMPLETED", "ENDED",
-    ].includes(providerLongStatus)
-  ) {
+  } else if (["FT", "AOT", "AP", "AET", "PEN"].includes(providerStatus)) {
     status = "FINISHED";
-  } else if (
-    ["PST", "POSTP", "SUSP", "DELAYED"].includes(providerStatus) ||
-    providerLongStatus.includes("POSTPONED") ||
-    providerLongStatus.includes("SUSPENDED")
-  ) {
+  } else if (["PST", "POSTP", "SUSP"].includes(providerStatus)) {
     status = "POSTPONED";
-  } else if (
-    ["CANC", "CANCELLED", "CANCELED", "ABD", "AWD", "WO"].includes(providerStatus) ||
-    providerLongStatus.includes("CANCEL")
-  ) {
+  } else if (["CANC", "ABD", "AWD", "WO"].includes(providerStatus)) {
     status = "CANCELLED";
   }
-
 
   const venue =
     typeof fixture.venue === "string"
