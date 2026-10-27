@@ -300,7 +300,7 @@ const finished = [
       <div className="page-header">
         <div>
           <span>MATCH CENTRE</span>
-          <h1>{fixture.league?.name ?? `${sport} Match`}</h1>
+          <h3>{fixture.league?.name ?? `${sport} Match`}</h3>
           <p>{fixture.league?.country ?? ""}</p>
         </div>
         <Link
@@ -371,24 +371,20 @@ const finished = [
 
       {tab === "Overview" && (
         <section style={panelStyle}>
-          <h2>Match Overview</h2>
-          <p><strong>Competition:</strong> {fixture.league?.name ?? "—"}</p>
-          <p><strong>Country:</strong> {fixture.league?.country ?? "—"}</p>
-          <p><strong>Venue:</strong> {fixture.fixture?.venue?.name ?? "Not available"}</p>
-          <p><strong>Status:</strong> {fixture.fixture?.status?.long ?? status}</p>
-          <p><strong>Kickoff:</strong> {kickoff}</p>
-          <p style={{ color: "#666", fontSize: 13 }}>
-            Match information is supplied by{" "}
-            {isFootball ? "API-Football" : "API-Sports"}.
-          </p>
+          <h4>Match Overview</h4>
+          <p style={{fontSize: 14}}><strong>Competition:</strong> {fixture.league?.name ?? "—"}</p>
+          <p style={{fontSize: 14}}><strong>Country:</strong> {fixture.league?.country ?? "—"}</p>
+          <p style={{fontSize: 14}}><strong>Venue:</strong> {fixture.fixture?.venue?.name ?? "Not available"}</p>
+          <p style={{fontSize: 14}}><strong>Status:</strong> {fixture.fixture?.status?.long ?? status}</p>
+          <p style={{fontSize: 14}}><strong>Kickoff:</strong> {kickoff}</p>
         </section>
        )}
 
       {tab === "Events" && (
         <section style={panelStyle}>
-          <h2>Match Events</h2>
+          <h4>Match Events</h4>
           {!data.events?.length ? (
-            <p>Match events are not available yet.</p>
+            <p style={{fontSize: 14}}>Match events not available at the moment.</p>
           ) : (
             <div style={{ display: "grid", gap: 12 }}>
               {data.events.map((event, index) => (
@@ -406,12 +402,12 @@ const finished = [
 
       {tab === "Stats" && (
         <section style={panelStyle}>
-          <h2>Match Statistics</h2>
+          <h4>Statistics</h4>
           {!data.statistics?.length ? (
             <p>
               {data.dataAvailability?.statistics === false
                 ? "We couldn't retrieve statistics from the provider. Please try again later."
-                : "Statistics have not been published for this match yet."}
+                : "Statistics not published for this match yet."}
             </p>
            ) : (
             <div style={{ display: "grid", gap: 20 }}>
@@ -437,12 +433,12 @@ const finished = [
 
       {tab === "Lineups" && (
         <section style={panelStyle}>
-          <h2>Team Lineups</h2>
+          <h4>Team Lineups</h4>
           {!data.lineups?.length ? (
             <p>
               {data.dataAvailability?.lineups === false
               ? "We couldn't retrieve lineups from the provider. Please try again later."
-              : "Team lineups have not been published for this match yet."}
+              : "Team lineups not published for this match yet."}
             </p>
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
