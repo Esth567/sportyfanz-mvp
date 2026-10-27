@@ -1,157 +1,154 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Eye, MessageCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 
-const featuredStories = [
-  {
-    category: "SPORTYFANZ NOW",
-    title: "Real Madrid edge closer to LaLiga title after thrilling comeback win",
-    summary:
-      "Vinícius Jr. scores late as Real Madrid turn the game around in a 3–2 victory over Barcelona at the Bernabéu.",
-    image:
-      "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=1400&q=85",
-  },
-  {
-    category: "TRANSFER NEWS",
-    title: "Mbappé on fire as Real Madrid cruise to another win",
-    summary:
-      "A standout performance keeps Madrid moving as the season reaches a decisive stage.",
-    image:
-      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1400&q=85",
-  },
-  {
-    category: "MATCH REPORT",
-    title: "Guardiola hints at summer rebuild for Man City",
-    summary:
-      "The manager reflects on the season and the changes that could shape the club's next campaign.",
-    image:
-      "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1400&q=85",
-  },
-  {
-    category: "SPORTS UPDATE",
-    title: "Rashford open to Barcelona move in the summer",
-    summary:
-      "Fresh transfer speculation puts the forward's future back in the spotlight.",
-    image:
-      "https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=1400&q=85",
-  },
-  {
-    category: "FOOTBALL",
-    title: "Osimhen's future takes new twist amid Saudi interest",
-    summary:
-      "Clubs are monitoring the striker as discussions about his next move continue.",
-    image:
-      "https://images.unsplash.com/photo-1518604666860-9ed391f76460?auto=format&fit=crop&w=1400&q=85",
-  },
-];
+type NewsStory = {
+  id: string;
+  title: string;
+  summary: string;
+  category: string;
+  source: string;
+  publishedAt: string | null;
+  link: string;
+  image: string | null;
+};
 
-const trendingStories = [
-  {
-    title: "Mbappé on fire as Real Madrid cruise to another win",
-    category: "Football",
-    time: "2h ago",
-    views: "3.4K",
-    comments: 142,
-    image:
-      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=240&q=75",
-  },
-  {
-    title: "Guardiola hints at summer rebuild for Man City",
-    category: "Premier League",
-    time: "4h ago",
-    views: "2.1K",
-    comments: 96,
-    image:
-      "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=240&q=75",
-  },
-  {
-    title: "Rashford open to Barcelona move in the summer",
-    category: "Transfers",
-    time: "5h ago",
-    views: "1.8K",
-    comments: 78,
-    image:
-      "https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=240&q=75",
-  },
-  {
-    title: "Osimhen's future takes new twist amid Saudi interest",
-    category: "Transfers",
-    time: "6h ago",
-    views: "1.5K",
-    comments: 64,
-    image:
-      "https://images.unsplash.com/photo-1518604666860-9ed391f76460?auto=format&fit=crop&w=240&q=75",
-  },
-  {
-    title: "Champions League race heats up after dramatic weekend",
-    category: "European Football",
-    time: "7h ago",
-    views: "1.4K",
-    comments: 53,
-    image:
-      "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=240&q=75",
-  },
-  {
-    title: "Young stars making their mark across Europe",
-    category: "Football",
-    time: "8h ago",
-    views: "1.2K",
-    comments: 48,
-    image:
-      "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=240&q=75",
-  },
-  {
-    title: "The biggest talking points from the weekend fixtures",
-    category: "Match Analysis",
-    time: "9h ago",
-    views: "980",
-    comments: 37,
-    image:
-      "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=240&q=75",
-  },
-  {
-    title: "Managers face key decisions ahead of the next round",
-    category: "Football",
-    time: "10h ago",
-    views: "870",
-    comments: 31,
-    image:
-      "https://images.unsplash.com/photo-1459865264687-595d652de67e?auto=format&fit=crop&w=240&q=75",
-  },
-  {
-    title: "Supporters react to a dramatic late winner",
-    category: "Fan Reactions",
-    time: "11h ago",
-    views: "760",
-    comments: 26,
-    image:
-      "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=240&q=75",
-  },
-  {
-    title: "What to watch for in this week's biggest matchups",
-    category: "Preview",
-    time: "12h ago",
-    views: "650",
-    comments: 19,
-    image:
-      "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=240&q=75",
-  },
-];
+function categoryFor(story: NewsStory) {
+  const text = `${story.title} ${story.link}`.toLowerCase();
+
+  if (/rugby/.test(text)) return "Rugby";
+  if (/cricket/.test(text)) return "Cricket";
+  if (/formula.?1|f1|grand prix|motorsport/.test(text)) return "Formula 1";
+  if (/tennis|wimbledon|atp|wta/.test(text)) return "Tennis";
+  if (/basketball|nba/.test(text)) return "Basketball";
+  if (/transfer|signing|contract/.test(text)) return "Transfers";
+  if (/football|premier league|champions league|soccer/.test(text)) {
+    return "Football";
+  }
+
+  return story.category === "Sports" ||
+    story.category === "News Story" ||
+    story.category === "Article/Blog"
+    ? "Sports"
+    : story.category;
+}
+
+function timeAgo(date: string | null) {
+  if (!date) return "Recently";
+
+  const elapsed = Math.max(0, Date.now() - new Date(date).getTime());
+  if (!Number.isFinite(elapsed)) return "Recently";
+
+  const minutes = Math.floor(elapsed / 60000);
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes}m ago`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+
+  return `${Math.floor(hours / 24)}d ago`;
+}
+
+function articleHref(story: NewsStory) {
+  return `/app/news/article?url=${encodeURIComponent(story.link)}`;
+}
 
 export default function NewsPage() {
+  const [stories, setStories] = useState<NewsStory[]>([]);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const featured = featuredStories[activeSlide];
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadNews() {
+      try {
+        const response = await fetch("/api/news", { cache: "no-store" });
+        if (!response.ok) throw new Error("News feed unavailable");
+
+        const data = await response.json();
+        const seen = new Set<string>();
+
+        const uniqueStories: NewsStory[] = (data.stories || []).filter(
+          (story: NewsStory) => {
+            if (!story.link || !story.title) return false;
+
+            const key = story.link.split("?")[0].replace(/\/$/, "");
+            if (seen.has(key)) return false;
+
+            seen.add(key);
+            return true;
+          }
+        );
+
+        if (!cancelled) {
+          setStories(uniqueStories);
+          setError(uniqueStories.length ? "" : "No stories are available right now.");
+        }
+      } catch {
+        if (!cancelled) {
+          setError("Sports news is temporarily unavailable. Please try again shortly.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadNews();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const featuredStories = stories.filter((story) => story.image);
+  const featured = featuredStories.length
+    ? featuredStories[activeSlide % featuredStories.length]
+    : stories[activeSlide % Math.max(stories.length, 1)];
+
+  const trendingStories = stories.filter((story) => story.id !== featured?.id);
 
   function moveSlide(direction: number) {
-    setActiveSlide(
-      (current) =>
-        (current + direction + featuredStories.length) %
-        featuredStories.length
+    if (!featuredStories.length) return;
+
+    setActiveSlide((current) =>
+      (current + direction + featuredStories.length) % featuredStories.length
+    );
+  }
+
+  if (loading) {
+    return (
+      <main className="news-page">
+        <div className="news-heading">
+          <span className="news-eyebrow">THE LATEST FROM THE WORLD OF SPORT</span>
+          <h1>Sports News</h1>
+          <p>Breaking stories, match updates and conversations fans care about.</p>
+        </div>
+        <p role="status">Loading the latest sports news…</p>
+      </main>
+    );
+  }
+
+  if (!stories.length) {
+    return (
+      <main className="news-page">
+        <div className="news-heading">
+          <span className="news-eyebrow">THE LATEST FROM THE WORLD OF SPORT</span>
+          <h1>Sports News</h1>
+          <p>{error || "No stories are available right now."}</p>
+          <button
+            type="button"
+            className="news-read-button"
+            onClick={() => window.location.reload()}
+          >
+            Try again →
+          </button>
+        </div>
+      </main>
     );
   }
 
@@ -163,102 +160,118 @@ export default function NewsPage() {
         <p>Breaking stories, match updates and conversations fans care about.</p>
       </div>
 
-      <section className="news-hero" aria-label="Featured sports story">
-        <Image
-          src={featured.image}
-          alt=""
-          fill
-          priority
-          unoptimized
-          sizes="(max-width: 900px) 100vw, 1200px"
-          className="news-hero-image"
-        />
-        <div className="news-hero-shade" />
+      {featured && (
+        <section className="news-hero" aria-label="Featured sports story">
+          {featured.image && (
+            <Image
+              src={featured.image}
+              alt=""
+              fill
+              priority
+              unoptimized
+              sizes="(max-width: 900px) 100vw, 1200px"
+              className="news-hero-image"
+            />
+          )}
+          <div className="news-hero-shade" />
 
-        <div className="news-hero-content">
-          <span className="news-hero-brand">
-            <span className="news-brand-mark">S</span>
-            {featured.category}
-          </span>
+          <div className="news-hero-content">
+            <span className="news-hero-brand">
+              <span className="news-brand-mark">S</span>
+              {categoryFor(featured).toUpperCase()} · {featured.source}
+            </span>
 
-          <h2>{featured.title}</h2>
-          <p>{featured.summary}</p>
+            <h2>{featured.title}</h2>
+            <p>{featured.summary || "Read the latest update from the publisher."}</p>
 
-          <Link href="/app/news" className="news-read-button">
-            Read Full Story <span>→</span>
-          </Link>
-        </div>
-
-        <div className="news-hero-controls">
-          <div className="news-dots">
-            {featuredStories.map((story, index) => (
-              <button
-                key={story.title}
-                type="button"
-                aria-label={`Show featured story ${index + 1}`}
-                aria-current={activeSlide === index}
-                className={activeSlide === index ? "active" : ""}
-                onClick={() => setActiveSlide(index)}
-              />
-            ))}
+            <Link href={articleHref(featured)} className="news-read-button">
+              Read Full Story <span>→</span>
+            </Link>
+            <small>{timeAgo(featured.publishedAt)}</small>
           </div>
 
-          <span className="news-slide-count">
-            {activeSlide + 1}/{featuredStories.length}
-          </span>
+          {featuredStories.length > 1 && (
+            <div className="news-hero-controls">
+              <div className="news-dots">
+                {featuredStories.map((story, index) => (
+                  <button
+                    key={story.id}
+                    type="button"
+                    aria-label={`Show featured story ${index + 1}`}
+                    aria-current={activeSlide === index}
+                    className={activeSlide === index ? "active" : ""}
+                    onClick={() => setActiveSlide(index)}
+                  />
+                ))}
+              </div>
 
-          <button
-            type="button"
-            aria-label="Previous featured story"
-            onClick={() => moveSlide(-1)}
-          >
-            <ChevronLeft size={16} />
-          </button>
+              <span className="news-slide-count">
+                {(activeSlide % featuredStories.length) + 1}/
+                {featuredStories.length}
+              </span>
 
-          <button
-            type="button"
-            aria-label="Next featured story"
-            onClick={() => moveSlide(1)}
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
-      </section>
+              <button
+                type="button"
+                aria-label="Previous featured story"
+                onClick={() => moveSlide(-1)}
+              >
+                <ChevronLeft size={16} />
+              </button>
+
+              <button
+                type="button"
+                aria-label="Next featured story"
+                onClick={() => moveSlide(1)}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
+        </section>
+      )}
 
       <section className="trending-stories">
         <div className="trending-heading">
           <h2>
             <span className="trending-icon">◈</span>
-            Trending Stories
+            Latest Stories
           </h2>
-
-          <Link href="/app/news?view=all">
-            View All <ChevronRight size={14} />
-          </Link>
+          <span>{stories.length} stories</span>
         </div>
+
+        {error && <p role="status">{error}</p>}
 
         <div className="trending-list">
           {trendingStories.map((story, index) => (
-            <article className="trending-story" key={story.title}>
-              <Image
-                src={story.image}
-                alt=""
-                width={64}
-                height={54}
-                unoptimized
-                className="trending-thumbnail"
-              />
+            <Link
+              className="trending-story"
+              key={story.id}
+              href={articleHref(story)}
+            >
+              {story.image ? (
+                <Image
+                  src={story.image}
+                  alt=""
+                  width={64}
+                  height={54}
+                  unoptimized
+                  className="trending-thumbnail"
+                />
+              ) : (
+                <div className="trending-thumbnail" aria-hidden="true" />
+              )}
 
               <div className="trending-story-content">
-                <span className="trending-category">{story.category}</span>
+                <span className="trending-category">
+                  {categoryFor(story)} · {story.source}
+                </span>
                 <h3>{story.title}</h3>
 
                 <div className="trending-meta">
-                  <span>{story.views} views</span>
-                  <span>· {story.time}</span>
+                  <span>{timeAgo(story.publishedAt)}</span>
                   <span className="trending-comments">
                     <MessageCircle size={12} />
-                    {story.comments}
+                    News
                   </span>
                 </div>
               </div>
@@ -266,7 +279,7 @@ export default function NewsPage() {
               <span className="trending-row-number">
                 {String(index + 1).padStart(2, "0")}
               </span>
-            </article>
+            </Link>
           ))}
         </div>
       </section>

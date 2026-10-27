@@ -4529,6 +4529,49 @@ button {
   font-size: 10px;
 }
 
+
+/* Green angular shield around hero carousel controls */
+.news-hero-controls {
+  right: 0;
+  bottom: 0;
+  left: auto;
+  min-height: 40px;
+  padding: 0 10px 0 16px;
+  gap: 10px;
+  border-top: 2px solid #35d37d;
+  border-left: 2px solid #35d37d;
+  border-top-left-radius: 12px;
+  background: rgba(3, 25, 35, 0.88);
+  box-shadow: -4px -4px 14px rgba(53, 211, 125, 0.08);
+}
+
+.news-hero-controls::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  right: 0;
+  width: 18px;
+  height: 2px;
+  background: #35d37d;
+}
+
+.news-hero-controls > button {
+  position: relative;
+  z-index: 1;
+  border-color: rgba(53, 211, 125, 0.4);
+  background: rgba(4, 31, 50, 0.95);
+}
+
+.news-slide-count {
+  position: relative;
+  z-index: 1;
+  min-width: 28px;
+  text-align: center;
+  color: #ffffff;
+  font-size: 10px;
+}
+
+
 @media (max-width: 640px) {
   .news-page {
     padding-top: 0;
