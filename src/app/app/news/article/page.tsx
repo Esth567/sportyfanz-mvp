@@ -132,12 +132,6 @@ function ArticleContent() {
       return;
     }
 
-    // The feed may already contain a generated summary.
-    if (story.articleSummary?.trim()) {
-      setSummaryLoading(false);
-      return;
-    }
-
     let cancelled = false;
 
     const currentLink = story.link;
