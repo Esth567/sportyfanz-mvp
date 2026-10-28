@@ -320,12 +320,17 @@ function ArticleContent() {
 
           <div className="news-article-summary">
             {articleText
-              .split(/\n{2,}/)
+              .split(/\n\s*\n/)
+              .map((paragraph) => paragraph.trim())
               .filter(Boolean)
               .map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
-
+             <p
+              key={index}
+              className="mb-4 leading-7"
+             >
+               {paragraph}
+             </p>
+             ))}
             {summaryLoading && (
               <p
                 style={{
