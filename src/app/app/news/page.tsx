@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, MessageCircle, Eye } from "lucide-react";
 
 type NewsStory = {
   id: string;
@@ -15,6 +15,7 @@ type NewsStory = {
   publishedAt: string | null;
   link: string;
   image: string | null;
+  views?: number;
   feedSummary: string;
   articleSummary: string;
 };
@@ -370,7 +371,12 @@ export default function NewsPage() {
 
                   <div className="trending-meta">
                     <span>{timeAgo(story.publishedAt)}</span>
-                    <span>{story.source}</span>
+                    {typeof story.views === "number" && story.views > 0 && (
+                       <span className="trending-views">
+                         <Eye size={13} />
+                         {story.views.toLocaleString()}
+                       </span>
+                     )}
                   </div>
                 </div>
               </Link>
@@ -378,11 +384,10 @@ export default function NewsPage() {
               <button
                 type="button"
                 className="trending-comments"
-                aria-label={`Comment on ${story.title}`}
+                aria-label={`View comments for ${story.title}`}
                 onClick={() => setCommentStory(story)}
               >
                 <MessageCircle size={15} />
-                <span>Comment</span>
               </button>
             </div>
           ))}

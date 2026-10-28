@@ -23,9 +23,12 @@ function cleanText(value: string): string {
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
     .replace(
-      /<a\b[^>]*>([\s\S]*?)<\/a>/gi,
-      (_match, content: string) => content
-    )
+       /<a\b[^>]*>[\s\S]*?<\/a>/gi,
+      (match) =>
+      /read the complete article/i.test(match)
+      ? " "
+      : match.replace(/<[^>]*>/g, "")
+     )
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<\/(?:p|div|section|h[1-6]|li|blockquote)\s*>/gi, "\n\n")
     .replace(/<[^>]*>/g, " ")
@@ -33,8 +36,9 @@ function cleanText(value: string): string {
     .replace(/&amp;/gi, "&")
     .replace(/&quot;/gi, '"')
     .replace(/&#39;|&apos;/gi, "'")
-    .replace(/\[Read the complete article\]\([^)]*\)/gi, "")
-    .replace(/Read the complete article\s*:?\s*https?:\/\/\S+/gi, "")
+    .replace(/\[.*?Read the complete article.*?\]\([^)]*\)/gi, " ")
+    .replace(/Read the complete article\s*:?\s*https?:\/\/\S+/gi, " ")
+    .replace(/Read the complete article/gi, " ")
     .replace(/[ \t]+/g, " ")
     .replace(/ *\n */g, "\n")
     .replace(/\n{3,}/g, "\n\n")
@@ -42,9 +46,39 @@ function cleanText(value: string): string {
 }
 
 function limitWords(text: string, maxWords: number): string {
-  const words = cleanText(text).split(/\s+/).filter(Boolean);
-  if (words.length <= maxWords) return words.join(" ");
-  return `${words.slice(0, maxWords).join(" ").replace(/[.,;:!?]+$/, "")}.`;
+  const cleaned = cleanText(text);
+  const words = cleaned.split(/\s+/).filter(Boolean);
+
+  if (words.length <= maxWords) return cleaned;
+
+  let remaining = maxWords;
+  const paragraphs = cleaned
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+
+  const result: string[] = [];
+
+  for (const paragraph of paragraphs) {
+    if (remaining <= 0) break;
+
+    const kept = paragraph
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, remaining);
+
+    if (kept.length) {
+      result.push(kept.join(" "));
+      remaining -= kept.length;
+    }
+  }
+
+  if (result.length) {
+    result[result.length - 1] =
+      result[result.length - 1].replace(/[.,;:!?]+$/, "") + ".";
+  }
+
+  return result.join("\n\n");
 }
 
 function fallbackSummary(
@@ -52,14 +86,7 @@ function fallbackSummary(
   sourceText: string,
   maxWords: number
 ): string {
-  const text = cleanText(
-    sourceText
-      .replace(/<[^>]*>/g, " ")
-      .replace(/&nbsp;/gi, " ")
-      .replace(/&amp;/gi, "&")
-      .replace(/&quot;/gi, '"')
-      .replace(/&#39;|&apos;/gi, "'")
-  );
+  const text = cleanText(sourceText);
 
   if (!text || text.toLowerCase() === title.trim().toLowerCase()) {
     return "";
@@ -212,7 +239,7 @@ export async function summarizeSportsStory(
     };
   }
 
-  const prompt = `
+const prompt = `
 You are the sports news editor for SportyFanz.
 
 Create an original, detailed summary from the supplied publisher material.
@@ -235,6 +262,11 @@ Rules:
 - If the supplied text is only a teaser, do not pretend it is a full article.
 - If the source is too short to support 80 words, return a shorter accurate summary.
 - Use clear English and no filler.
+- Write articleSummary as 2–4 short paragraphs separated by blank lines.
+- Never end a paragraph with an incomplete sentence.
+- If the source material ends mid-sentence or contains an unfinished teaser, omit that incomplete fragment.
+- Do not guess or invent the missing words.
+- Do not include publisher links or phrases such as "Read the complete article".
 
 Publisher: ${source}
 Headline: ${title}
