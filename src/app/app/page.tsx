@@ -63,6 +63,20 @@ type HomeHeroSlide = {
   href: string;
 };
 
+type HomeNewsStory = {
+  id: string;
+  title: string;
+  seoHeadline?: string;
+  feedSummary: string;
+  category: string;
+  link: string;
+  image: string | null;
+};
+
+type HomeNewsResponse = {
+  stories: HomeNewsStory[];
+};
+
 function getLagosDate(offsetDays = 0) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Africa/Lagos",
@@ -100,20 +114,26 @@ export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState(getLagosDate);
   const [selectedSportSlug, setSelectedSportSlug] = useState("football");
   const [activeHeroSlide, setActiveHeroSlide] = useState(0);
+  const [featuredNews, setFeaturedNews] =
+  useState<HomeNewsStory | null>(null);
 
   const homeHeroSlides: HomeHeroSlide[] = [
-  {
+   {
     id: "news",
     type: "NEWS",
-    eyebrow: "SPORTS NEWS",
-    title: "Every Story. Every Sport.",
-    description:
+    eyebrow: featuredNews?.category || "SPORTS NEWS",
+    title: featuredNews
+      ? featuredNews.seoHeadline?.trim() || featuredNews.title
+      : "Latest Sports Stories",
+    description: featuredNews?.feedSummary ||
       "Catch the latest sports headlines, match updates and stories that matter to fans.",
-    image:
+    image: featuredNews?.image ||
       "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=1400&q=85",
     actionLabel: "Explore Sports News",
-    href: "/app/news",
-  },
+    href: featuredNews
+     ? `/app/news/article?url=${encodeURIComponent(featuredNews.link)}`
+     : "/app/news",
+   },
   {
     id: "advertisement",
     type: "ADVERTISEMENT",
@@ -321,6 +341,39 @@ useEffect(() => {
    };
   }, [selectedDate, selectedSportSlug]);
 
+  useEffect(() => {
+  let active = true;
+
+  async function loadFeaturedNews() {
+    try {
+      const response = await fetch("/api/news", {
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to load featured news.");
+      }
+
+      const data: HomeNewsResponse = await response.json();
+
+      const featured = (data.stories ?? []).find(
+        (story) => story.image && story.link && story.title
+      );
+
+      if (active) {
+        setFeaturedNews(featured ?? null);
+      }
+    } catch (error) {
+      console.error("Unable to load home featured news:", error);
+    }
+  }
+
+  void loadFeaturedNews();
+
+  return () => {
+    active = false;
+  };
+}, []);
 
   return (
     <div className="page">
