@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'322afd9980557ef07d9d4adacc2b477224e2af1dc434e26b8cf207d98db9ca55'>;
+  StorageHashBase<'30bbaa65b0f8060286a8d617600fd074efeaa4ade6e0deb6aeda5bd4cd747205'>;
 export type ExecutionHash =
   ExecutionHashBase<'81e0b4cf2257ff83766064910f280ca8d53db6fc6a911e15ea4e51ead92be13a'>;
 export type ProfileHash =
@@ -533,6 +533,14 @@ export type FieldOutputTypes = {
       readonly status: 'OPEN' | 'WON' | 'LOST' | 'CANCELLED';
       readonly userId: CodecTypes['pg/int4@1']['output'];
     };
+    readonly ProgressionAward: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly description: CodecTypes['pg/text@1']['output'] | null;
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly points: CodecTypes['pg/int4@1']['output'];
+      readonly taskKey: CodecTypes['pg/text@1']['output'];
+      readonly userId: CodecTypes['pg/int4@1']['output'];
+    };
     readonly Reward: {
       readonly category: CodecTypes['pg/text@1']['output'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -928,6 +936,14 @@ export type FieldInputTypes = {
       readonly pointsAwarded: CodecTypes['pg/int4@1']['input'];
       readonly resolvedAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
       readonly status: 'OPEN' | 'WON' | 'LOST' | 'CANCELLED';
+      readonly userId: CodecTypes['pg/int4@1']['input'];
+    };
+    readonly ProgressionAward: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly description: CodecTypes['pg/text@1']['input'] | null;
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly points: CodecTypes['pg/int4@1']['input'];
+      readonly taskKey: CodecTypes['pg/text@1']['input'];
       readonly userId: CodecTypes['pg/int4@1']['input'];
     };
     readonly Reward: {
@@ -1327,6 +1343,14 @@ export type StorageColumnTypes = {
       readonly status: 'OPEN' | 'WON' | 'LOST' | 'CANCELLED';
       readonly userId: CodecTypes['pg/int4@1']['output'];
     };
+    readonly progression_awards: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly description: CodecTypes['pg/text@1']['output'] | null;
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly points: CodecTypes['pg/int4@1']['output'];
+      readonly taskKey: CodecTypes['pg/text@1']['output'];
+      readonly userId: CodecTypes['pg/int4@1']['output'];
+    };
     readonly reward_redemptions: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly fulfilledAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
@@ -1722,6 +1746,14 @@ export type StorageColumnInputTypes = {
       readonly pointsAwarded: CodecTypes['pg/int4@1']['input'];
       readonly resolvedAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
       readonly status: 'OPEN' | 'WON' | 'LOST' | 'CANCELLED';
+      readonly userId: CodecTypes['pg/int4@1']['input'];
+    };
+    readonly progression_awards: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly description: CodecTypes['pg/text@1']['input'] | null;
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly points: CodecTypes['pg/int4@1']['input'];
+      readonly taskKey: CodecTypes['pg/text@1']['input'];
       readonly userId: CodecTypes['pg/int4@1']['input'];
     };
     readonly reward_redemptions: {
@@ -2188,6 +2220,16 @@ export namespace Models {
     user: public_User;
     readonly [RelationKeys]?: 'match' | 'user';
   };
+  export type public_ProgressionAward = {
+    createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    description: CodecTypes['pg/text@1']['output'] | null;
+    id: CodecTypes['pg/int4@1']['output'];
+    points: CodecTypes['pg/int4@1']['output'];
+    taskKey: CodecTypes['pg/text@1']['output'];
+    userId: CodecTypes['pg/int4@1']['output'];
+    user: public_User;
+    readonly [RelationKeys]?: 'user';
+  };
   export type public_Reward = {
     category: CodecTypes['pg/text@1']['output'] | null;
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -2311,6 +2353,7 @@ export namespace Models {
     pollVotes: public_PollVote[];
     predictions: public_Prediction[];
     profile: public_FanProfile | null;
+    progressionAwards: public_ProgressionAward[];
     reactions: public_FanReaction[];
     rewardRedemptions: public_RewardRedemption[];
     triviaAttempts: public_TriviaAttempt[];
@@ -2331,6 +2374,7 @@ export namespace Models {
       | 'pollVotes'
       | 'predictions'
       | 'profile'
+      | 'progressionAwards'
       | 'reactions'
       | 'rewardRedemptions'
       | 'triviaAttempts';
@@ -2396,6 +2440,7 @@ export declare const models: {
     PollOption: Models.public_PollOption;
     PollVote: Models.public_PollVote;
     Prediction: Models.public_Prediction;
+    ProgressionAward: Models.public_ProgressionAward;
     Reward: Models.public_Reward;
     RewardRedemption: Models.public_RewardRedemption;
     Sport: Models.public_Sport;
@@ -4712,6 +4757,75 @@ type ContractBase = Omit<
                 },
               ];
             };
+            readonly progression_awards: {
+              columns: {
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly description: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly id: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                };
+                readonly points: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                };
+                readonly taskKey: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly userId: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['userId', 'taskKey'] }];
+              indexes: readonly [
+                {
+                  readonly name: 'progression_awards_userId_createdAt_idx_f726f04a';
+                  readonly prefix: 'progression_awards_userId_createdAt_idx';
+                  readonly columns: readonly ['userId', 'createdAt'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'progression_awards_userId_idx_a489d58a';
+                  readonly prefix: 'progression_awards_userId_idx';
+                  readonly columns: readonly ['userId'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'progression_awards';
+                    readonly columns: readonly ['userId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'users';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
             readonly reward_redemptions: {
               columns: {
                 readonly createdAt: {
@@ -5880,6 +5994,10 @@ type ContractBase = Omit<
     readonly predictions: {
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'Prediction';
+    };
+    readonly progression_awards: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'ProgressionAward';
     };
     readonly reward_redemptions: {
       readonly namespace: 'public' & NamespaceId;
@@ -7895,6 +8013,60 @@ type ContractBase = Omit<
               };
             };
           };
+          readonly ProgressionAward: {
+            readonly fields: {
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+              readonly description: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly points: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly taskKey: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly userId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+            };
+            readonly relations: {
+              readonly user: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['userId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'progression_awards';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly description: { readonly column: 'description' };
+                readonly id: { readonly column: 'id' };
+                readonly points: { readonly column: 'points' };
+                readonly taskKey: { readonly column: 'taskKey' };
+                readonly userId: { readonly column: 'userId' };
+              };
+            };
+          };
           readonly Reward: {
             readonly fields: {
               readonly category: {
@@ -8705,6 +8877,17 @@ type ContractBase = Omit<
                 };
                 readonly cardinality: '1:1';
                 readonly nullable: true;
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['userId'];
+                };
+              };
+              readonly progressionAwards: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'ProgressionAward';
+                };
+                readonly cardinality: '1:N';
                 readonly on: {
                   readonly localFields: readonly ['id'];
                   readonly targetFields: readonly ['userId'];
