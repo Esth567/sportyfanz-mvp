@@ -1318,6 +1318,13 @@
                   "kind": "scalar"
                 }
               },
+              "progressionPoints": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "timezone": {
                 "nullable": true,
                 "type": {
@@ -1405,6 +1412,9 @@
                 },
                 "matchesWatched": {
                   "column": "matchesWatched"
+                },
+                "progressionPoints": {
+                  "column": "progressionPoints"
                 },
                 "timezone": {
                   "column": "timezone"
@@ -6211,6 +6221,15 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
+                "progressionPoints": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
                 "timezone": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
@@ -9946,7 +9965,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "7947813d4472085a1c933b1413df8d6d1c445e94476229145b8621b4948a7dd6"
+    "storageHash": "322afd9980557ef07d9d4adacc2b477224e2af1dc434e26b8cf207d98db9ca55"
   },
   "execution": {
     "executionHash": "81e0b4cf2257ff83766064910f280ca8d53db6fc6a911e15ea4e51ead92be13a",

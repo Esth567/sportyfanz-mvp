@@ -248,6 +248,7 @@ model FanProfile {
 
   totalPoints         Int                        @default(0)
   currentPoints       Int                        @default(0)
+  progressionPoints   Int                        @default(0)
 
   matchesWatched      Int                        @default(0)
   challengesCompleted Int                        @default(0)

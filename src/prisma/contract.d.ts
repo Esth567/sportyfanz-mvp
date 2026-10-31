@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'7947813d4472085a1c933b1413df8d6d1c445e94476229145b8621b4948a7dd6'>;
+  StorageHashBase<'322afd9980557ef07d9d4adacc2b477224e2af1dc434e26b8cf207d98db9ca55'>;
 export type ExecutionHash =
   ExecutionHashBase<'81e0b4cf2257ff83766064910f280ca8d53db6fc6a911e15ea4e51ead92be13a'>;
 export type ProfileHash =
@@ -319,6 +319,7 @@ export type FieldOutputTypes = {
       readonly fanRoomsJoined: CodecTypes['pg/int4@1']['output'];
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly matchesWatched: CodecTypes['pg/int4@1']['output'];
+      readonly progressionPoints: CodecTypes['pg/int4@1']['output'];
       readonly timezone: CodecTypes['pg/text@1']['output'] | null;
       readonly totalPoints: CodecTypes['pg/int4@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -715,6 +716,7 @@ export type FieldInputTypes = {
       readonly fanRoomsJoined: CodecTypes['pg/int4@1']['input'];
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly matchesWatched: CodecTypes['pg/int4@1']['input'];
+      readonly progressionPoints: CodecTypes['pg/int4@1']['input'];
       readonly timezone: CodecTypes['pg/text@1']['input'] | null;
       readonly totalPoints: CodecTypes['pg/int4@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -1111,6 +1113,7 @@ export type StorageColumnTypes = {
       readonly fanRoomsJoined: CodecTypes['pg/int4@1']['output'];
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly matchesWatched: CodecTypes['pg/int4@1']['output'];
+      readonly progressionPoints: CodecTypes['pg/int4@1']['output'];
       readonly timezone: CodecTypes['pg/text@1']['output'] | null;
       readonly totalPoints: CodecTypes['pg/int4@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -1507,6 +1510,7 @@ export type StorageColumnInputTypes = {
       readonly fanRoomsJoined: CodecTypes['pg/int4@1']['input'];
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly matchesWatched: CodecTypes['pg/int4@1']['input'];
+      readonly progressionPoints: CodecTypes['pg/int4@1']['input'];
       readonly timezone: CodecTypes['pg/text@1']['input'] | null;
       readonly totalPoints: CodecTypes['pg/int4@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -1910,6 +1914,7 @@ export namespace Models {
     fanRoomsJoined: CodecTypes['pg/int4@1']['output'];
     id: CodecTypes['pg/int4@1']['output'];
     matchesWatched: CodecTypes['pg/int4@1']['output'];
+    progressionPoints: CodecTypes['pg/int4@1']['output'];
     timezone: CodecTypes['pg/text@1']['output'] | null;
     totalPoints: CodecTypes['pg/int4@1']['output'];
     updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -2914,6 +2919,15 @@ type ContractBase = Omit<
                   };
                 };
                 readonly matchesWatched: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/int4@1', 0>;
+                  };
+                };
+                readonly progressionPoints: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
                   readonly nullable: false;
@@ -6317,6 +6331,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
+              readonly progressionPoints: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
               readonly timezone: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -6365,6 +6383,7 @@ type ContractBase = Omit<
                 readonly fanRoomsJoined: { readonly column: 'fanRoomsJoined' };
                 readonly id: { readonly column: 'id' };
                 readonly matchesWatched: { readonly column: 'matchesWatched' };
+                readonly progressionPoints: { readonly column: 'progressionPoints' };
                 readonly timezone: { readonly column: 'timezone' };
                 readonly totalPoints: { readonly column: 'totalPoints' };
                 readonly updatedAt: { readonly column: 'updatedAt' };
