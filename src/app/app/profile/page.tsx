@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,6 +8,10 @@ import {
   Target,
   MessageCircle,
   Activity,
+  Camera,
+  LogOut,
+  Crown,
+  Star,
 } from "lucide-react";
 
 type FanProfile = {
@@ -14,16 +19,12 @@ type FanProfile = {
   name: string | null;
   username: string | null;
   email: string;
-
   fanLevel: string;
-
   totalPoints: number;
   currentPoints: number;
-
   matchesWatched: number;
   challengesCompleted: number;
   fanRoomsJoined: number;
-
   avatarUrl: string | null;
 };
 
@@ -37,92 +38,31 @@ const AVATARS = [
 ];
 
 export default function Profile() {
+  const router = useRouter();
+
   const [fan, setFan] = useState<FanProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState("");
   const [savingAvatar, setSavingAvatar] = useState(false);
   const [avatarMessage, setAvatarMessage] = useState("");
-
-  async function handleSaveAvatar() {
-  if (!selectedAvatar || savingAvatar) return;
-
-  setSavingAvatar(true);
-  setAvatarMessage("");
-
-  try {
-    const response = await fetch("/api/profile", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        avatarUrl: selectedAvatar,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Unable to save avatar.");
-    }
-
-    setFan((current) =>
-      current
-        ? { ...current, avatarUrl: data.avatarUrl }
-        : current
-    );
-
-    setAvatarMessage("Avatar updated successfully.");
-  } catch (error) {
-    setAvatarMessage(
-      error instanceof Error
-        ? error.message
-        : "Unable to save avatar."
-    );
-  } finally {
-    setSavingAvatar(false);
-  }
-}
-
- async function handleLogout() {
-  if (loggingOut) return;
-
-  setLoggingOut(true);
-
-  try {
-    const response = await fetch("/api/auth/logout", {
-      method: "POST",
-    });
-
-    if (!response.ok) {
-      throw new Error("Logout failed.");
-    }
-
-    router.replace("/login");
-    router.refresh();
-  } catch (error) {
-    console.error("Unable to log out:", error);
-    setLoggingOut(false);
-  }
-}
 
   useEffect(() => {
     let active = true;
 
     async function loadProfile() {
       try {
-        const response = await fetch(
-          "/api/profile",
-          {
-            cache: "no-store",
-          }
-        );
+        const response = await fetch("/api/profile", {
+          cache: "no-store",
+        });
+
+        if (response.status === 401) {
+          router.replace("/login");
+          return;
+        }
 
         if (!response.ok) {
-          setLoading(false);
-          return;
+          throw new Error("Unable to load profile.");
         }
 
         const data = await response.json();
@@ -131,57 +71,23 @@ export default function Profile() {
           setFan(data.user);
         }
       } catch (error) {
-        console.error(
-          "Unable to load profile:",
-          error
-        );
+        console.error("Profile loading error:", error);
       } finally {
-        if (active) {
-          setLoading(false);
-        }
+        if (active) setLoading(false);
       }
     }
 
-    loadProfile();
+    void loadProfile();
 
     return () => {
       active = false;
     };
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="page">
-        <div className="page-header">
-          <div>
-            <span>YOUR PROFILE</span>
-            <h1>My Profile</h1>
-            <p>Loading your profile...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!fan) {
-    return (
-      <div className="page">
-        <div className="page-header">
-          <div>
-            <span>YOUR PROFILE</span>
-            <h1>My Profile</h1>
-            <p>
-              We couldn't load your profile.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  }, [router]);
 
   const displayName =
-    fan.username ||
-    fan.email.split("@")[0];
+    fan?.username ||
+    fan?.email?.split("@")[0] ||
+    "SportyFanz Fan";
 
   const initials = displayName
     .split(/\s+/)
@@ -191,285 +97,363 @@ export default function Profile() {
     .join("")
     .toUpperCase();
 
-  const fanLevel =
-    fan.fanLevel
-      .replaceAll("_", " ")
-      .toLowerCase()
-      .replace(/\b\w/g, (letter) =>
-        letter.toUpperCase()
+  const fanLevel = (fan?.fanLevel || "NEW_FAN")
+    .replaceAll("_", " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+
+  const previewAvatar =
+    selectedAvatar || fan?.avatarUrl || null;
+
+  async function handleLogout() {
+    if (loggingOut) return;
+
+    setLoggingOut(true);
+
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("Logout failed.");
+      }
+
+      router.replace("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout error:", error);
+      setLoggingOut(false);
+    }
+  }
+
+  async function handleSaveAvatar() {
+    if (
+      !selectedAvatar ||
+      selectedAvatar === fan?.avatarUrl ||
+      savingAvatar
+    ) {
+      return;
+    }
+
+    setSavingAvatar(true);
+    setAvatarMessage("");
+
+    try {
+      const response = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          avatarUrl: selectedAvatar,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Unable to save avatar."
+        );
+      }
+
+      setFan((current) =>
+        current
+          ? { ...current, avatarUrl: data.avatarUrl }
+          : current
       );
 
-  /*
-   * Until we introduce a dedicated level-progress
-   * system, show points as the user's current progress.
-   */
-  const progress =
-    fan.totalPoints > 0
-      ? Math.min(
-          100,
-          Math.round(
-            (fan.currentPoints /
-              Math.max(fan.totalPoints, 1)) *
-              100
-          )
-        )
-      : 0;
+      setSelectedAvatar("");
 
-     return (
-      <div className="page">
+      window.dispatchEvent(
+        new Event("sportyfanz:profile-updated")
+      );
 
-       {/* PROFILE HEADER */}
-      <div className="card">
+      setAvatarMessage("Your avatar has been updated.");
+    } catch (error) {
+      setAvatarMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to save avatar."
+      );
+    } finally {
+      setSavingAvatar(false);
+    }
+  }
 
-        <div className="profile-head">
+  if (loading) {
+    return (
+      <div className="sf-profile-page">
+        <div className="sf-profile-loading">
+          Loading your fan profile...
+        </div>
+      </div>
+    );
+  }
 
-         <div className="big-avatar">
-       {fan.avatarUrl ? (
-        <img
-          src={fan.avatarUrl}
-          alt="Your fan avatar"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            borderRadius: "50%",
-           }}
-          />
-          ) : (
-           initials
-           )}
-         </div>      
-          <div className="profile-meta">
+  if (!fan) {
+    return (
+      <div className="sf-profile-page">
+        <div className="sf-profile-empty">
+          <h2>Profile unavailable</h2>
+          <p>We couldn't load your fan profile.</p>
+          <button onClick={() => router.refresh()}>
+            Try again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-            <h1>
-              {displayName}
-            </h1>
+  return (
+    <div className="sf-profile-page">
+
+      {/* PAGE HEADING */}
+      <div className="sf-profile-heading">
+        <div>
+          <span className="sf-profile-eyebrow">
+            YOUR SPORTYFANZ ACCOUNT
+          </span>
+          <h1>My Profile</h1>
+          <p>Your fan identity, points and activity.</p>
+        </div>
+      </div>
+
+      {/* PROFILE BANNER */}
+      <section className="sf-profile-hero">
+
+        <div className="sf-profile-hero-content">
+
+          <div className="sf-profile-main-avatar">
+            {previewAvatar ? (
+              <img src={previewAvatar} alt="Fan avatar" />
+            ) : (
+              <span>{initials || "S"}</span>
+            )}
+          </div>
+
+          <div className="sf-profile-hero-details">
+
+            <span className="sf-profile-member-label">
+              <Crown size={14} />
+              SPORTYFANZ MEMBER
+            </span>
+
+            <h2>{displayName}</h2>
 
             <p>
-              Fan Level: {fanLevel}
+              <Star size={15} />
+              {fanLevel}
             </p>
 
-            <p style={{ marginTop: 8 }}>
-              {fan.totalPoints.toLocaleString()} fan
-              points · {fan.matchesWatched} matches
-              watched
-            </p>
+            <div className="sf-profile-hero-stats">
+              <span>
+                <strong>
+                  {fan.totalPoints.toLocaleString()}
+                </strong>
+                Total fan points
+              </span>
 
-            <button
-              type="button"
-              onClick={handleLogout}
-              disabled={loggingOut}
-              style={{ marginTop: 12 }}
-            >
-             {loggingOut ? "Logging out..." : "Log out"}
-            </button>
+              <span>
+                <strong>
+                  {fan.matchesWatched.toLocaleString()}
+                </strong>
+                Matches watched
+              </span>
+            </div>
 
           </div>
 
+          <button
+            type="button"
+            className="sf-profile-logout"
+            onClick={handleLogout}
+            disabled={loggingOut}
+          >
+            <LogOut size={16} />
+            {loggingOut ? "Logging out..." : "Log out"}
+          </button>
+
+        </div>
+      </section>
+
+      {/* AVATAR SELECTION */}
+      <section className="sf-profile-panel">
+
+        <div className="sf-profile-panel-heading">
+          <div className="sf-profile-heading-icon">
+            <Camera size={19} />
+          </div>
+
+          <div>
+            <h2>Choose your avatar</h2>
+            <p>Choose a SportyFanz avatar to represent you.</p>
+          </div>
         </div>
 
-        <div style={{ marginTop: 20 }}>
-  <h3 style={{ marginBottom: 12 }}>
-    Choose Your Fan Avatar
-  </h3>
+        <div className="sf-avatar-options">
 
-  <div
-    style={{
-      display: "flex",
-      gap: 12,
-      flexWrap: "wrap",
-      alignItems: "center",
-    }}
-  >
-    {AVATARS.map((avatar) => (
-      <button
-        key={avatar}
-        type="button"
-        onClick={() => {
-          setSelectedAvatar(avatar);
-          setAvatarMessage("");
-        }}
-        aria-label={`Select ${avatar.split("/").pop()}`}
-        aria-pressed={selectedAvatar === avatar}
-        style={{
-          padding: 3,
-          borderRadius: "50%",
-          border:
-            selectedAvatar === avatar
-              ? "3px solid #f5b82e"
-              : "3px solid transparent",
-          background: "transparent",
-          cursor: "pointer",
-        }}
-      >
-        <img
-          src={avatar}
-          alt=""
-          style={{
-            width: 58,
-            height: 58,
-            borderRadius: "50%",
-            display: "block",
-          }}
-        />
-       </button>
-      ))}
-     </div>
+          {AVATARS.map((avatar) => {
+            const isSelected =
+              (selectedAvatar || fan.avatarUrl) === avatar;
 
-      <button
-       type="button"
-       onClick={handleSaveAvatar}
-       disabled={!selectedAvatar || savingAvatar}
-       style={{ marginTop: 14 }}
-      >
-        {savingAvatar ? "Saving..." : "Save Avatar"}
-      </button>
+            return (
+              <button
+                key={avatar}
+                type="button"
+                className={`sf-avatar-option ${
+                  isSelected ? "selected" : ""
+                }`}
+                onClick={() => {
+                  setSelectedAvatar(avatar);
+                  setAvatarMessage("");
+                }}
+                aria-label={`Select ${avatar.split("/").pop()}`}
+                aria-pressed={isSelected}
+              >
+                <img src={avatar} alt="" />
 
-       {avatarMessage && (
-        <p style={{ marginTop: 8 }} role="status">
-         {avatarMessage}
-         </p>
+                {isSelected && (
+                  <span className="sf-avatar-check">
+                    ✓
+                  </span>
+                )}
+              </button>
+            );
+          })}
+
+        </div>
+
+        <div className="sf-avatar-save-row">
+
+          <span className="sf-avatar-help">
+            {selectedAvatar
+              ? "Your new avatar is ready to save."
+              : "Your current avatar is selected."}
+          </span>
+
+          <button
+            type="button"
+            className="sf-avatar-save"
+            onClick={handleSaveAvatar}
+            disabled={
+              !selectedAvatar ||
+              selectedAvatar === fan.avatarUrl ||
+              savingAvatar
+            }
+          >
+            {savingAvatar ? "Saving..." : "Save Avatar"}
+          </button>
+
+        </div>
+
+        {avatarMessage && (
+          <p className="sf-avatar-message" role="status">
+            {avatarMessage}
+          </p>
         )}
-       </div>
-        <div style={{ marginTop: 18 }}>
 
-          <div className="stat-label">
+      </section>
 
-            <span>
-              Current Points
-            </span>
+      {/* POINTS SUMMARY */}
+      <section className="sf-profile-stats-grid">
 
-            <b>
-              {fan.currentPoints.toLocaleString()}
-            </b>
+        <div className="sf-profile-stat-card">
+          <div className="sf-stat-icon gold">
+            <Trophy size={21} />
+          </div>
+          <span>Total Fan Points</span>
+          <strong>
+            {fan.totalPoints.toLocaleString()}
+          </strong>
+          <small>Your accumulated fan points</small>
+        </div>
 
-            <span>
-              Fan Level: {fanLevel}
-            </span>
+        <div className="sf-profile-stat-card">
+          <div className="sf-stat-icon green">
+            <Star size={21} />
+          </div>
+          <span>Current Points</span>
+          <strong>
+            {fan.currentPoints.toLocaleString()}
+          </strong>
+          <small>Your available points balance</small>
+        </div>
 
+        <div className="sf-profile-stat-card">
+          <div className="sf-stat-icon blue">
+            <Activity size={21} />
+          </div>
+          <span>Matches Watched</span>
+          <strong>
+            {fan.matchesWatched.toLocaleString()}
+          </strong>
+          <small>Your match activity</small>
+        </div>
+
+      </section>
+
+      {/* FAN KINGDOM */}
+      <section className="sf-profile-panel sf-kingdom-panel">
+
+        <div className="sf-profile-panel-heading">
+          <div className="sf-profile-heading-icon kingdom">
+            <Crown size={19} />
           </div>
 
-          <div className="progress">
-            <i
-              style={{
-                width: `${progress}%`,
-              }}
-            />
+          <div>
+            <h2>My Fan Kingdom</h2>
+            <p>Your journey as a SportyFanz supporter.</p>
+          </div>
+        </div>
+
+        <div className="sf-kingdom-level">
+          <div>
+            <span>YOUR CURRENT RANK</span>
+            <h3>{fanLevel}</h3>
+          </div>
+
+          <div className="sf-kingdom-badge">
+            <Crown size={25} />
+          </div>
+        </div>
+
+        <div className="sf-kingdom-activity">
+
+          <div className="sf-kingdom-activity-item">
+            <Target size={19} />
+            <div>
+              <strong>
+                {fan.challengesCompleted.toLocaleString()}
+              </strong>
+              <span>Challenges completed</span>
+            </div>
+          </div>
+
+          <div className="sf-kingdom-activity-item">
+            <Activity size={19} />
+            <div>
+              <strong>
+                {fan.matchesWatched.toLocaleString()}
+              </strong>
+              <span>Matches watched</span>
+            </div>
+          </div>
+
+          <div className="sf-kingdom-activity-item">
+            <MessageCircle size={19} />
+            <div>
+              <strong>
+                {fan.fanRoomsJoined.toLocaleString()}
+              </strong>
+              <span>Fan Rooms joined</span>
+            </div>
           </div>
 
         </div>
 
-      </div>
-
-      {/* PROFILE DATA */}
-      <div
-        className="two-col"
-        style={{ marginTop: 14 }}
-      >
-
-        {/* FAN STATS */}
-        <section className="card">
-
-          <div className="section-title">
-            <h2>My Fan Stats</h2>
-          </div>
-
-          <div className="list">
-
-            <div className="list-item">
-              <b>Fan Points</b>
-
-              <span>
-                {fan.totalPoints.toLocaleString()}
-              </span>
-            </div>
-
-            <div className="list-item">
-              <b>Matches Watched</b>
-
-              <span>
-                {fan.matchesWatched}
-              </span>
-            </div>
-
-            <div className="list-item">
-              <b>Challenges Completed</b>
-
-              <span>
-                {fan.challengesCompleted}
-              </span>
-            </div>
-
-            <div className="list-item">
-              <b>Fan Rooms Joined</b>
-
-              <span>
-                {fan.fanRoomsJoined}
-              </span>
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* FAN KINGDOM */}
-        <section className="card">
-
-          <div className="section-title">
-            <h2>My Fan Kingdom</h2>
-          </div>
-
-          <div className="list">
-
-            <div className="list-item">
-              <b>
-                <Trophy size={15} />
-                Fan Level
-              </b>
-
-              <span>
-                {fanLevel}
-              </span>
-            </div>
-
-            <div className="list-item">
-              <b>
-                <Target size={15} />
-                Challenges
-              </b>
-
-              <span>
-                {fan.challengesCompleted}
-              </span>
-            </div>
-
-            <div className="list-item">
-              <b>
-                <Activity size={15} />
-                Matches
-              </b>
-
-              <span>
-                {fan.matchesWatched}
-              </span>
-            </div>
-
-            <div className="list-item">
-              <b>
-                <MessageCircle size={15} />
-                Fan Rooms
-              </b>
-
-              <span>
-                {fan.fanRoomsJoined}
-              </span>
-            </div>
-
-          </div>
-
-        </section>
-
-      </div>
+      </section>
 
     </div>
   );
