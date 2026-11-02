@@ -49,8 +49,13 @@ export default function LoginPage() {
         return;
       }
 
-      window.location.href = "/app";
-    } catch {
+      const isNewFanJourney =
+       new URLSearchParams(window.location.search).get("welcome") === "1";
+
+       window.location.href = isNewFanJourney
+        ? "/app?welcome=1"
+        : "/app";
+      } catch {
       setError("We couldn't connect to SportyFanz. Please try again.");
     } finally {
       setLoading(false);

@@ -20,6 +20,88 @@ type SocialTask = {
   completed: boolean;
 };
 
+function SocialBrandIcon({ platform }: { platform: string }) {
+  switch (platform) {
+    case "facebook":
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M13.5 21v-8h2.7l.4-3.1h-3.1V8c0-.9.3-1.5 1.6-1.5h1.7V3.7c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.2v2.1H7.6V13h2.7v8z"
+          />
+        </svg>
+      );
+
+    case "x":
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.6 22H2.5l7.3-8.4L1.8 2h6.5l4.5 6.8zM17.8 19.8h1.7L7.2 4.1H5.4z"
+          />
+        </svg>
+      );
+
+    case "instagram":
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect
+            x="3"
+            y="3"
+            width="18"
+            height="18"
+            rx="5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+          <circle
+            cx="12"
+            cy="12"
+            r="4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+          <circle cx="17.5" cy="6.8" r="1.2" fill="currentColor" />
+        </svg>
+      );
+
+    case "tiktok":
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="#25F4EE"
+            d="M12.5 2h3.4c.2 2.2 1.5 4.1 3.7 4.8v3.5a9 9 0 0 1-3.7-1.2v6.5a6.4 6.4 0 1 1-6.4-6.4c.4 0 .8 0 1.2.1v3.5a3 3 0 1 0 1.8 2.8z"
+          />
+          <path
+            fill="#FE2C55"
+            d="M10.7 9.2v3.6a3 3 0 1 0 1.8 2.8V2h3.4c.2 2.2 1.5 4.1 3.7 4.8v3.5a9 9 0 0 1-3.7-1.2v6.5a6.4 6.4 0 1 1-6.4-6.4c.4 0 .8 0 1.2.1z"
+            opacity=".85"
+          />
+          <path
+            fill="#fff"
+            d="M12.5 2h2.1c.2 2.2 1.5 4.1 3.7 4.8v2.2a8.7 8.7 0 0 1-3.7-1.5v7.1a6.4 6.4 0 1 1-6.4-6.4c.4 0 .8 0 1.2.1v2.3a4.1 4.1 0 0 0-1.2-.2 4.1 4.1 0 1 0 4.1 4.1z"
+          />
+        </svg>
+      );
+
+    case "youtube":
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="#FF0033"
+            d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8Z"
+          />
+          <path fill="#fff" d="m9.6 15.6 6.2-3.6-6.2-3.6z" />
+        </svg>
+      );
+
+    default:
+      return null;
+  }
+}
+
 export default function SocialFollowEarn() {
   const [tasks, setTasks] = useState<SocialTask[]>([]);
   const [progressionPoints, setProgressionPoints] = useState(0);
@@ -177,15 +259,7 @@ export default function SocialFollowEarn() {
             <div className="social-task-card" key={task.id}>
               <div className="social-task-top">
                 <div className={`social-platform-icon social-${task.id}`}>
-                  {task.name === "Facebook"
-                    ? "f"
-                    : task.name === "Instagram"
-                      ? "◎"
-                      : task.name === "TikTok"
-                        ? "♪"
-                        : task.name === "YouTube"
-                          ? "▶"
-                          : "𝕏"}
+                  <SocialBrandIcon platform={task.id} />
                 </div>
 
                 <div className="social-task-identity">
@@ -252,16 +326,6 @@ export default function SocialFollowEarn() {
       {error && tasks.length > 0 && (
         <p className="social-earn-error">{error}</p>
       )}
-
-      <div className="social-earn-notice">
-        <ShieldCheck size={16} />
-        <span>
-          Points are awarded once per platform per account.
-          By claiming, you confirm that you have followed or
-          subscribed to the account. Claims are not independently
-          verified by the social platforms.
-        </span>
-      </div>
     </section>
   );
 }

@@ -3207,25 +3207,28 @@ button {
 ========================================================= */
 
 .onboarding-page {
-  min-height: calc(100vh - 56px);
-
+  min-height: 100vh;
+  min-height: 100svh;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-
   overflow: hidden;
-
   border-radius: 15px;
-
   background: #062e47;
+  box-sizing: border-box;
+}
+
+.onboarding-left,
+.onboarding-right {
+  min-width: 0;
+  min-height: 100%;
 }
 
 .onboarding-left {
   display: flex;
   flex-direction: column;
   justify-content: center;
-
   padding: 55px;
-
   color: white;
 }
 
@@ -3233,9 +3236,7 @@ button {
   display: flex;
   align-items: center;
   gap: 9px;
-
   color: var(--sf-gold);
-
   font-size: 22px;
 }
 
@@ -3245,15 +3246,12 @@ button {
 
 .onboarding-small {
   margin-top: 5px;
-
   color: #8eaab8;
-
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .onboarding-left h1 {
   margin: 55px 0 17px;
-
   font-size: 43px;
   line-height: 0.98;
   letter-spacing: -1.7px;
@@ -3310,7 +3308,7 @@ button {
 
   color: #91aebc;
 
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .onboarding-features svg {
@@ -8045,30 +8043,47 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   height: 36px;
   flex-shrink: 0;
   border-radius: 9px;
+  overflow: hidden;
   background: #f1f4f6;
   color: var(--sf-navy);
-  font-size: 19px;
-  font-weight: 800;
+}
+
+.social-platform-icon svg {
+  display: block;
+  width: 23px;
+  height: 23px;
 }
 
 .social-facebook {
-  color: #1877f2;
+  background: #1877f2;
+  color: #fff;
 }
 
 .social-x {
-  color: #111;
+  background: #111;
+  color: #fff;
 }
 
 .social-instagram {
-  color: #c13584;
+  background: linear-gradient(
+    45deg,
+    #feda75 0%,
+    #fa7e1e 25%,
+    #d62976 55%,
+    #962fbf 75%,
+    #4f5bd5 100%
+  );
+  color: #fff;
 }
 
 .social-tiktok {
-  color: #111;
+  background: #111;
+  color: #fff;
 }
 
 .social-youtube {
-  color: #e62117;
+  background: #fff;
+  color: #ff0033;
 }
 
 .social-task-identity {
@@ -8216,5 +8231,646 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 
   .social-earn-heading {
     align-items: flex-start;
+  }
+}
+
+
+/* =========================================================
+   CHOOSE SPORTS — FAN REGISTRATION
+========================================================= */
+
+.choose-sports-page {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(
+      circle at 12% 10%,
+      rgba(53, 211, 125, 0.09),
+      transparent 30%
+    ),
+    #f3f7f9;
+}
+
+.choose-sports-card {
+  width: 100%;
+  max-width: 850px;
+  padding: 42px 46px;
+  box-sizing: border-box;
+
+  background: #ffffff;
+  border: 1px solid #e5edf1;
+  border-radius: 20px;
+
+  box-shadow: 0 18px 55px rgba(5, 40, 62, 0.08);
+}
+
+.choose-sports-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: #062e47;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.choose-sports-brand strong {
+  color: #159b60;
+}
+
+.choose-sports-brand-mark {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: #f5b82e;
+  background: #062e47;
+}
+
+.choose-sports-heading {
+  margin-top: 38px;
+}
+
+.choose-sports-eyebrow {
+  color: #159b60;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.choose-sports-heading h1 {
+  margin: 10px 0;
+  color: #062e47;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -1.3px;
+}
+
+.choose-sports-heading p {
+  max-width: 540px;
+  margin: 0;
+  color: #718592;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.choose-sports-selection-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 32px 0 14px;
+  color: #718592;
+  font-size: 12px;
+}
+
+.choose-sports-selection-info strong {
+  color: #159b60;
+  font-weight: 800;
+}
+
+.choose-sports-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.choose-sport-option {
+  position: relative;
+  min-height: 112px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 9px;
+  padding: 17px;
+  border: 1px solid #e2eaf0;
+  border-radius: 13px;
+  background: #fbfcfd;
+  color: #062e47;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease,
+    transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.choose-sport-option:hover {
+  border-color: #159b60;
+  background: #f5fbf7;
+  transform: translateY(-2px);
+}
+
+.choose-sport-option.selected {
+  border: 2px solid #159b60;
+  padding: 16px;
+  background: #effaf3;
+  box-shadow: 0 5px 16px rgba(21, 155, 96, 0.08);
+}
+
+.choose-sport-icon {
+  font-size: 27px;
+  line-height: 1;
+}
+
+.choose-sport-name {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.choose-sport-check {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 21px;
+  height: 21px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #dce6e9;
+  border-radius: 50%;
+  color: white;
+  background: white;
+}
+
+.choose-sport-option.selected .choose-sport-check {
+  border-color: #159b60;
+  background: #159b60;
+}
+
+.choose-sports-error {
+  margin-bottom: 15px;
+  padding: 11px 14px;
+  border: 1px solid #f2caca;
+  border-radius: 9px;
+  color: #b42318;
+  background: #fff5f5;
+  font-size: 12px;
+}
+
+.choose-sports-empty {
+  padding: 30px;
+  border: 1px dashed #d6e1e7;
+  border-radius: 12px;
+  color: #718592;
+  text-align: center;
+}
+
+.choose-sports-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px solid #edf1f3;
+}
+
+.choose-sports-footer p {
+  margin: 0;
+  color: #8797a1;
+  font-size: 11px;
+}
+
+.choose-sports-continue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 145px;
+  padding: 13px 20px;
+  border: 0;
+  border-radius: 9px;
+  color: #062e47;
+  background: #f5b82e;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.choose-sports-continue:hover:not(:disabled) {
+  background: #ffca4c;
+  transform: translateY(-1px);
+}
+
+.choose-sports-continue:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.choose-sports-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: #062e47;
+}
+
+.choose-sports-loading p {
+  font-size: 13px;
+}
+
+.sports-loader {
+  animation: sports-spin 1s linear infinite;
+}
+
+@keyframes sports-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 650px) {
+  .choose-sports-page {
+    padding: 20px 14px;
+  }
+
+  .choose-sports-card {
+    padding: 28px 20px;
+  }
+
+  .choose-sports-heading h1 {
+    font-size: 29px;
+  }
+
+  .choose-sports-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .choose-sports-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .choose-sports-continue {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   DEDICATED TOP FANS LEADERBOARD
+========================================================= */
+
+.leaderboard-page {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 0 40px;
+}
+
+.leaderboard-heading {
+  margin-bottom: 22px;
+}
+
+.leaderboard-heading > span {
+  color: var(--sf-green-dark);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.leaderboard-heading h1 {
+  margin: 6px 0;
+  color: var(--sf-navy);
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.leaderboard-heading p {
+  margin: 0;
+  color: var(--sf-muted);
+  font-size: 13px;
+}
+
+.leaderboard-main-panel {
+  margin-top: 0;
+  max-width: 760px;
+}
+
+.leaderboard-main-panel .top-fans-list {
+  padding: 8px 20px 16px;
+}
+
+.leaderboard-main-panel .top-fan-row {
+  gap: 14px;
+  padding: 17px 0;
+}
+
+.leaderboard-main-panel .top-fan-avatar {
+  width: 44px;
+  height: 44px;
+}
+
+.leaderboard-main-panel .top-fan-details strong {
+  font-size: 13px;
+}
+
+.leaderboard-main-panel .top-fan-details span {
+  font-size: 10px;
+}
+
+.leaderboard-main-panel .top-fan-points {
+  font-size: 14px;
+}
+
+/* =========================================================
+   SPORTYFANZ — FIRST LOGIN WELCOME EXPERIENCE
+========================================================= */
+
+.sf-welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(4, 10, 22, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: sf-welcome-fade-in 0.35s ease both;
+}
+
+.sf-welcome-modal {
+  position: relative;
+  width: min(100%, 680px);
+  max-height: calc(100vh - 44px);
+  overflow-y: auto;
+  padding: 30px 48px 32px;
+  border: 1px solid rgba(245, 184, 46, 0.38);
+  border-radius: 24px;
+  background:
+    radial-gradient(
+      ellipse at 50% 25%,
+      rgba(245, 184, 46, 0.12),
+      transparent 48%
+    ),
+    linear-gradient(145deg, #17243a, #0b1425 75%);
+  box-shadow:
+    0 30px 100px rgba(0, 0, 0, 0.55),
+    0 0 50px rgba(245, 184, 46, 0.08);
+  color: #fff;
+  text-align: center;
+  animation: sf-welcome-modal-in 0.55s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.sf-welcome-close {
+  position: absolute;
+  top: 15px;
+  right: 19px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 23px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.sf-welcome-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.sf-welcome-brand {
+  color: #fff;
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.sf-welcome-brand span {
+  color: #f5b82e;
+}
+
+.sf-welcome-crown-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 190px;
+  height: 155px;
+  margin: 8px auto 0;
+  perspective: 700px;
+}
+
+.sf-welcome-crown-glow {
+  position: absolute;
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  background: rgba(245, 184, 46, 0.18);
+  filter: blur(30px);
+  animation: sf-welcome-glow 2.8s ease-in-out infinite;
+}
+
+.sf-welcome-crown {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  color: #f5b82e;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 0 13px rgba(245, 184, 46, 0.48));
+  animation: sf-welcome-crown-rotate 6s ease-in-out infinite;
+}
+
+.sf-welcome-spark {
+  position: absolute;
+  color: #f5b82e;
+  font-size: 20px;
+  animation: sf-welcome-sparkle 2.4s ease-in-out infinite;
+}
+
+.sf-spark-one {
+  top: 23px;
+  left: 19px;
+}
+
+.sf-spark-two {
+  top: 40px;
+  right: 15px;
+  animation-delay: 0.5s;
+}
+
+.sf-spark-three {
+  bottom: 22px;
+  left: 35px;
+  animation-delay: 1s;
+}
+
+.sf-spark-four {
+  right: 32px;
+  bottom: 17px;
+  animation-delay: 1.5s;
+}
+
+.sf-welcome-eyebrow {
+  display: block;
+  margin-top: 4px;
+  color: #f5b82e;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+.sf-welcome-modal h2 {
+  margin: 12px 0 5px;
+  color: #fff;
+  font-size: clamp(23px, 4vw, 31px);
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.sf-welcome-modal h3 {
+  margin: 0;
+  color: #f5b82e;
+  font-size: clamp(12px, 2vw, 15px);
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  line-height: 1.6;
+}
+
+.sf-welcome-modal > p {
+  max-width: 510px;
+  margin: 18px auto 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.sf-welcome-divider {
+  width: 54px;
+  height: 2px;
+  margin: 21px auto 15px;
+  border-radius: 5px;
+  background: #f5b82e;
+}
+
+.sf-welcome-signature {
+  display: block;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.8px;
+}
+
+.sf-welcome-enter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  min-width: 220px;
+  margin-top: 25px;
+  padding: 14px 23px;
+  border: 0;
+  border-radius: 8px;
+  background: #f5b82e;
+  color: #111b2b;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 7px 24px rgba(245, 184, 46, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sf-welcome-enter:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(245, 184, 46, 0.35);
+}
+
+.sf-welcome-modal > small {
+  display: block;
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+@keyframes sf-welcome-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sf-welcome-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sf-welcome-crown-rotate {
+  0% {
+    transform: perspective(700px) rotateY(0deg) translateY(0);
+  }
+  50% {
+    transform: perspective(700px) rotateY(180deg) translateY(-7px);
+  }
+  100% {
+    transform: perspective(700px) rotateY(360deg) translateY(0);
+  }
+}
+
+@keyframes sf-welcome-glow {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes sf-welcome-sparkle {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@media (max-width: 600px) {
+  .sf-welcome-overlay {
+    padding: 12px;
+  }
+
+  .sf-welcome-modal {
+    padding: 28px 21px 25px;
+    border-radius: 18px;
+  }
+
+  .sf-welcome-crown-stage {
+    height: 130px;
+  }
+
+  .sf-welcome-modal > p {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-welcome-overlay,
+  .sf-welcome-modal,
+  .sf-welcome-crown,
+  .sf-welcome-crown-glow,
+  .sf-welcome-spark {
+    animation: none;
   }
 }

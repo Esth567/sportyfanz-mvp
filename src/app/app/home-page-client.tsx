@@ -114,6 +114,7 @@ export default function HomePage({initialNews,}: HomePageProps) {
   const [checkInMessage, setCheckInMessage] = useState("");
   const [progressionPoints, setProgressionPoints] = useState(0);
   const [fanLevel, setFanLevel] = useState("NEW_FAN");
+  const [showWelcome, setShowWelcome] = useState(false);
 
   const homeHeroSlides: HomeHeroSlide[] = [
    {
@@ -180,6 +181,26 @@ function moveHomeHero(direction: number) {
       homeHeroSlides.length
   );
 }
+
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get("welcome") === "1") {
+    setShowWelcome(true);
+
+    // Remove the flag so refreshing the page won't reopen the welcome.
+    params.delete("welcome");
+
+    const remainingQuery = params.toString();
+
+    const nextUrl =
+      `${window.location.pathname}` +
+      `${remainingQuery ? `?${remainingQuery}` : ""}` +
+      `${window.location.hash}`;
+
+    window.history.replaceState({}, "", nextUrl);
+  }
+}, []);
   
   useEffect(() => {
     let active = true;  
@@ -451,6 +472,80 @@ useEffect(() => {
   return (
     <div className="page">
 
+       {showWelcome && (
+        <div
+          className="sf-welcome-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="sf-welcome-title"
+        >
+          <section className="sf-welcome-modal">
+
+            <button
+              type="button"
+              className="sf-welcome-close"
+              onClick={() => setShowWelcome(false)}
+              aria-label="Close welcome message"
+            >
+              ×
+            </button>
+
+            <div className="sf-welcome-brand">
+              SPORTY<span>FANZ</span>
+            </div>
+
+            <div className="sf-welcome-crown-stage">
+              <div className="sf-welcome-crown-glow" />
+
+              <div className="sf-welcome-crown">
+                <Crown size={104} strokeWidth={1.25} />
+              </div>
+
+              <span className="sf-welcome-spark sf-spark-one">✦</span>
+              <span className="sf-welcome-spark sf-spark-two">✧</span>
+              <span className="sf-welcome-spark sf-spark-three">✦</span>
+              <span className="sf-welcome-spark sf-spark-four">✧</span>
+            </div>
+
+            <span className="sf-welcome-eyebrow">
+              YOUR KINGDOM AWAITS
+            </span>
+
+            <h2 id="sf-welcome-title">
+              WELCOME TO YOUR PALACE.
+            </h2>
+
+            <h3>
+              YOUR KINGDOM. YOUR RULES. YOUR WORLD.
+            </h3>
+
+            <p>
+              You are the ruler here. In this kingdom, you decide
+              what matters. Share your opinions, celebrate your
+              teams, take part in exciting activities and let
+              your passion for sport speak.
+            </p>
+
+            <div className="sf-welcome-divider" />
+
+            <strong className="sf-welcome-signature">
+              YOUR PASSION. YOUR PEOPLE. YOUR KINGDOM.
+            </strong>
+
+            <button
+              type="button"
+              className="sf-welcome-enter"
+              onClick={() => setShowWelcome(false)}
+            >
+              ENTER MY KINGDOM
+              <ArrowRight size={18} />
+            </button>
+
+            <small>SPORTYFANZ — THE FAN IS KING</small>
+
+          </section>
+        </div>
+      )}
       {/* PAGE HEADER */}
       <div className="page-header">
         <div>
