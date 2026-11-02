@@ -12,6 +12,7 @@ import {
   Target,
 } from "lucide-react";
 import type { HomeNewsStory } from "@/lib/news-feed";
+import Image from "next/image";
 
 type FootballMatch = {
   id: number;
@@ -88,9 +89,13 @@ function getLagosDate(offsetDays = 0) {
 
 type HomePageProps = {
   initialNews: HomeNewsStory[];
+  initialWelcome: boolean;
 };
 
-export default function HomePage({initialNews,}: HomePageProps) {
+export default function HomePage({
+  initialNews,
+  initialWelcome,
+}: HomePageProps) {
   const [fanName, setFanName] = useState("SportyFanz Fan");
   const [fanInitials, setFanInitials] = useState("S");
   const [fanPoints, setFanPoints] = useState(0);
@@ -114,7 +119,7 @@ export default function HomePage({initialNews,}: HomePageProps) {
   const [checkInMessage, setCheckInMessage] = useState("");
   const [progressionPoints, setProgressionPoints] = useState(0);
   const [fanLevel, setFanLevel] = useState("NEW_FAN");
-  const [showWelcome, setShowWelcome] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(initialWelcome);
 
   const homeHeroSlides: HomeHeroSlide[] = [
    {
@@ -182,25 +187,6 @@ function moveHomeHero(direction: number) {
   );
 }
 
-useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-
-  if (params.get("welcome") === "1") {
-    setShowWelcome(true);
-
-    // Remove the flag so refreshing the page won't reopen the welcome.
-    params.delete("welcome");
-
-    const remainingQuery = params.toString();
-
-    const nextUrl =
-      `${window.location.pathname}` +
-      `${remainingQuery ? `?${remainingQuery}` : ""}` +
-      `${window.location.hash}`;
-
-    window.history.replaceState({}, "", nextUrl);
-  }
-}, []);
   
   useEffect(() => {
     let active = true;  
@@ -490,22 +476,24 @@ useEffect(() => {
               ×
             </button>
 
-            <div className="sf-welcome-brand">
-              SPORTY<span>FANZ</span>
-            </div>
 
-            <div className="sf-welcome-crown-stage">
-              <div className="sf-welcome-crown-glow" />
+                 <div className="sf-welcome-crown-stage">
+  <div className="sf-welcome-crown-glow" />
 
-              <div className="sf-welcome-crown">
-                <Crown size={104} strokeWidth={1.25} />
-              </div>
+  <Image
+    src="/crown.webp"
+    alt="Golden SportyFanz crown"
+    width={180}
+    height={160}
+    priority
+    className="sf-welcome-crown-image"
+  />
 
-              <span className="sf-welcome-spark sf-spark-one">✦</span>
-              <span className="sf-welcome-spark sf-spark-two">✧</span>
-              <span className="sf-welcome-spark sf-spark-three">✦</span>
-              <span className="sf-welcome-spark sf-spark-four">✧</span>
-            </div>
+  <span className="sf-welcome-spark sf-spark-one">✦</span>
+  <span className="sf-welcome-spark sf-spark-two">✧</span>
+  <span className="sf-welcome-spark sf-spark-three">✦</span>
+  <span className="sf-welcome-spark sf-spark-four">✧</span>
+</div>
 
             <span className="sf-welcome-eyebrow">
               YOUR KINGDOM AWAITS

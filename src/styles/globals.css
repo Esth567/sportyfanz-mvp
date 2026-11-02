@@ -5,8 +5,8 @@
   --sf-navy-2: #073957;
   --sf-deep: #041f32;
 
-  --sf-green: #35d37d;
-  --sf-green-dark: #1ca95d;
+  --sf-green: #7ccf72;
+  --sf-green-dark: #7ccf72;
   --sf-green-light: #dff9eb;
 
   --sf-blue: #3c94d9;
@@ -61,7 +61,7 @@ button {
   background:
     radial-gradient(
       circle at 80% 0%,
-      rgba(53, 211, 125, 0.04),
+      rgba(124, 207, 114, 0.04),
       transparent 25%
     ),
     var(--sf-bg);
@@ -122,7 +122,7 @@ button {
     linear-gradient(
       145deg,
       rgba(255, 205, 65, 0.2),
-      rgba(53, 211, 125, 0.15)
+      rgba(124, 207, 114, 0.15)
     );
 }
 
@@ -189,14 +189,14 @@ button {
   background: linear-gradient(
     90deg,
     var(--sf-green),
-    #42d98a
+    #7ccf72
   );
 
   color: #05283e;
 
   font-weight: 800;
 
-  box-shadow: 0 7px 18px rgba(53, 211, 125, 0.18);
+  box-shadow: 0 7px 18px rgba(124, 207, 114, 0.18);
 }
 
 .sf-nav-item svg {
@@ -616,7 +616,7 @@ button {
   font-size: 11px;
   font-weight: 900;
 
-  box-shadow: 0 6px 15px rgba(53, 211, 125, 0.18);
+  box-shadow: 0 6px 15px rgba(124, 207, 114, 0.18);
 
   transition: transform 0.2s ease;
 }
@@ -751,7 +751,7 @@ button {
 }
 
 .home-hero-mark {
-  color: #35d37d;
+  color: #7ccf72;
   font-size: 23px;
   font-weight: 900;
   font-style: italic;
@@ -764,8 +764,8 @@ button {
   margin-top: 18px;
   padding: 11px 18px;
   border-radius: 8px;
-  background: #35d37d;
-  color: #062b20;
+  background: #7ccf72;
+  color: #7ccf72;
   font-size: 11px;
   font-weight: 900;
   text-decoration: none;
@@ -802,7 +802,7 @@ button {
 
 .home-hero-dots button.active {
   width: 20px;
-  background: #35d37d;
+  background: #7ccf72;
 }
 
 .home-hero-count {
@@ -816,7 +816,7 @@ button {
   width: 30px;
   height: 30px;
   place-items: center;
-  border: 1px solid rgba(53, 211, 125, 0.4);
+  border: 1px solid rgba(124, 207, 114, 0.4);
   border-radius: 8px;
   background: rgba(4, 31, 50, 0.95);
   color: #fff;
@@ -1109,7 +1109,7 @@ button {
   place-items: center;
   flex-shrink: 0;
   border-radius: 8px;
-  background: rgba(53, 211, 125, 0.14);
+  background: rgba(124, 207, 114, 0.14);
   color: var(--sf-green);
 }
 
@@ -1121,7 +1121,7 @@ button {
 }
 
 .challenge-card span {
-  color: #7fc19d;
+  color: #7ccf72;
   font-size: 8px;
   font-weight: 800;
 }
@@ -1288,7 +1288,7 @@ button {
   background:
     linear-gradient(
       135deg,
-      rgba(53, 211, 125, 0.15),
+      rgba(124, 207, 114, 0.15),
       transparent
     ),
     url("https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=600&q=80")
@@ -1380,7 +1380,7 @@ button {
 }
 
 .live-news-card-content > span {
-  color: var(--sf-green, #35a96b);
+  color: var(--sf-green, #7ccf72);
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.5px;
@@ -1454,7 +1454,7 @@ button {
   background:
     radial-gradient(
       circle at 50% 30%,
-      rgba(53, 211, 125, 0.15),
+      rgba(124, 207, 114, 0.15),
       transparent 25%
     ),
     linear-gradient(
@@ -1744,7 +1744,7 @@ button {
 
   border-radius: 9px;
 
-  background: rgba(53, 211, 125, 0.14);
+  background: rgba(124, 207, 114, 0.14);
 
   color: var(--sf-green);
 }
@@ -2952,7 +2952,7 @@ button {
   background:
     radial-gradient(
       circle at 80% 20%,
-      rgba(53, 211, 125, 0.18),
+      rgba(124, 207, 114, 0.18),
       transparent 30%
     ),
     linear-gradient(
@@ -3348,7 +3348,7 @@ button {
   background:
     radial-gradient(
       circle at 70% 20%,
-      rgba(53, 211, 125, 0.22),
+      rgba(124, 207, 114, 0.22),
       transparent 25%
     ),
     linear-gradient(
@@ -3417,7 +3417,7 @@ button {
   background:
     radial-gradient(
       circle at 10% 10%,
-      rgba(42, 206, 132, 0.08),
+      rgba(124, 207, 114, 0.08),
       transparent 30%
     ),
     radial-gradient(
@@ -3577,7 +3577,7 @@ button {
   border: 1px solid #d9f0e3;
   border-radius: 12px;
   background: #f0faf4;
-  color: #087c49;
+  color: #7ccf72;
 }
 
 .sf-dropdown-points > span {
@@ -3587,7 +3587,7 @@ button {
 }
 
 .sf-dropdown-points strong {
-  color: #087c49;
+  color: #7ccf72;
   font-size: 13px;
   font-weight: 800;
 }
@@ -3619,7 +3619,7 @@ button {
 
 .sf-dropdown-item:hover {
   background: #f0f7f3;
-  color: #087c49;
+  color: #7ccf72;
 }
 
 .sf-dropdown-item:disabled {
@@ -3653,7 +3653,7 @@ button {
   background:
     radial-gradient(
       circle at 20% 20%,
-      rgba(61, 220, 151, 0.18),
+      rgba(124, 207, 114, 0.18),
       transparent 30%
     ),
     linear-gradient(
@@ -3673,7 +3673,7 @@ button {
   border-radius: 50%;
   right: -150px;
   top: -120px;
-  background: rgba(47, 219, 143, 0.12);
+  background: rgba(124, 207, 114, 0.12);
 }
 
 .brandPanel::after {
@@ -3708,11 +3708,11 @@ button {
   justify-content: center;
   background: linear-gradient(
     135deg,
-    #35dc91,
-    #20c77d
+    #7ccf72,
+    #7ccf72
   );
   color: #062c4d;
-  box-shadow: 0 10px 30px rgba(53, 220, 145, 0.2);
+  box-shadow: 0 10px 30px rgba(124, 207, 114, 0.2);
 }
 
 .logoText {
@@ -3742,7 +3742,7 @@ button {
 }
 
 .brandTitle span {
-  color: #3cdd95;
+  color: #7ccf72;
 }
 
 .brandDescription {
@@ -3776,7 +3776,7 @@ button {
   justify-content: center;
   border-radius: 9px;
   background: rgba(255, 255, 255, 0.08);
-  color: #3cdd95;
+  color: #7ccf72;
 }
 
 /* --------------------------------
@@ -3802,7 +3802,7 @@ button {
 .formEyebrow {
   display: block;
   margin-bottom: 10px;
-  color: #20bd76;
+  color: #7ccf72;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 1.3px;
@@ -3886,9 +3886,9 @@ button {
 }
 
 .input:focus {
-  border-color: #2bd58c;
+  border-color: #7ccf72;
   background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(43, 213, 140, 0.1);
+  box-shadow: 0 0 0 4px rgba(124, 207, 114, 0.1);
 }
 
 .passwordInput {
@@ -3938,11 +3938,11 @@ button {
 .checkbox {
   width: 15px;
   height: 15px;
-  accent-color: #20c77d;
+  accent-color: #7ccf72;
 }
 
 .link {
-  color: #149d63;
+  color: #7ccf72;
   font-size: 12px;
   font-weight: 700;
   text-decoration: none;
@@ -3964,14 +3964,14 @@ button {
   border-radius: 11px;
   background: linear-gradient(
     135deg,
-    #35dc91,
-    #20c77d
+    #7ccf72,
+    #7ccf72
   );
   color: #062c4d;
   font-size: 14px;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 10px 25px rgba(32, 199, 125, 0.18);
+  box-shadow: 0 10px 25px rgba(124, 207, 114, 0.18);
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
@@ -3979,7 +3979,7 @@ button {
 
 .submitButton:hover {
   transform: translateY(-1px);
-  box-shadow: 0 14px 30px rgba(32, 199, 125, 0.24);
+  box-shadow: 0 14px 30px rgba(124, 207, 114, 0.24);
 }
 
 .submitButton:active {
@@ -4020,7 +4020,7 @@ button {
   background:
     radial-gradient(
       circle at top left,
-      rgba(21, 194, 111, 0.12),
+      rgba(124, 207, 114, 0.12),
       transparent 35%
     ),
     #eef3f7;
@@ -4058,7 +4058,7 @@ button {
   right: -140px;
   bottom: -130px;
   border-radius: 50%;
-  background: rgba(62, 220, 132, 0.12);
+  background: rgba(124, 207, 114, 0.12);
 }
 
 .auth-logo {
@@ -4075,7 +4075,7 @@ button {
   align-items: center;
   justify-content: center;
   border-radius: 14px;
-  background: #38d982;
+  background: #7ccf72;
   color: #062c4d;
 }
 
@@ -4143,7 +4143,7 @@ button {
 .auth-form-header span {
   display: block;
   margin-bottom: 8px;
-  color: #19a965;
+  color: #7ccf72;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -4197,8 +4197,8 @@ button {
 }
 
 .auth-field input:focus {
-  border-color: #35cf7d;
-  box-shadow: 0 0 0 3px rgba(53, 207, 125, 0.12);
+  border-color: #7ccf72;
+  box-shadow: 0 0 0 3px rgba(124, 207, 114, 0.12);
 }
 
 .auth-submit {
@@ -4207,7 +4207,7 @@ button {
   margin-top: 8px;
   border: 0;
   border-radius: 10px;
-  background: #2fd47b;
+  background: #7ccf72;
   color: #062c4d;
   font: inherit;
   font-weight: 750;
@@ -4218,7 +4218,7 @@ button {
 }
 
 .auth-submit:hover {
-  background: #24c870;
+  background: #7ccf72;
   transform: translateY(-1px);
 }
 
@@ -4230,7 +4230,7 @@ button {
 }
 
 .auth-form-footer a {
-  color: #078e52;
+  color: #7ccf72;
   font-weight: 700;
   text-decoration: none;
 }
@@ -4251,7 +4251,7 @@ button {
   padding: 11px 13px;
   border-radius: 9px;
   background: #edfff5;
-  color: #147a48;
+  color: #7ccf72;
   font-size: 13px;
 }
 
@@ -4286,7 +4286,7 @@ button {
 }
 
 .formFooter a {
-  color: #159f64;
+  color: #7ccf72;
   font-weight: 800;
   text-decoration: none;
 }
@@ -4318,7 +4318,7 @@ button {
   margin-top: 34px;
   padding: 25px 28px 18px;
   background: #ffffff;
-  border-top: 3px solid #32cf7b;
+  border-top: 3px solid #7ccf72;
   color: #64748b;
   box-sizing: border-box;
 }
@@ -4386,7 +4386,7 @@ button {
 }
 
 .sf-footer-links a:hover {
-  color: #159f64;
+  color: #7ccf72;
 }
 
 .sf-footer-bottom {
@@ -4410,7 +4410,7 @@ button {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #32cf7b;
+  background: #7ccf72;
 }
 
 .top-fans-panel {
@@ -4545,7 +4545,7 @@ button {
 }
 
 .news-eyebrow {
-  color: #35d37d;
+  color: #7ccf72;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.5px;
@@ -4607,7 +4607,7 @@ button {
 }
 
 .news-brand-mark {
-  color: #35d37d;
+  color: #7ccf72;
   font-size: 23px;
   font-weight: 900;
   font-style: italic;
@@ -4636,8 +4636,8 @@ button {
   margin-top: 18px;
   padding: 11px 18px;
   border-radius: 8px;
-  background: #35d37d;
-  color: #062b20;
+  background: #7ccf72;
+  color: #7ccf72;
   font-size: 11px;
   font-weight: 900;
   text-decoration: none;
@@ -4672,7 +4672,7 @@ button {
 }
 
 .news-dots button.active {
-  background: #35d37d;
+  background: #7ccf72;
 }
 
 .news-slide-count {
@@ -4718,14 +4718,14 @@ button {
 }
 
 .trending-icon {
-  color: #35d37d;
+  color: #7ccf72;
 }
 
 .trending-heading > a {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  color: #35d37d;
+  color: #7ccf72;
   font-size: 11px;
   font-weight: 800;
   text-decoration: none;
@@ -4759,7 +4759,7 @@ button {
 }
 
 .trending-category {
-  color: #35d37d;
+  color: #7ccf72;
   font-size: 9px;
   font-weight: 800;
   text-transform: uppercase;
@@ -4804,11 +4804,11 @@ button {
   min-height: 40px;
   padding: 0 10px 0 16px;
   gap: 10px;
-  border-top: 2px solid #35d37d;
-  border-left: 2px solid #35d37d;
+  border-top: 2px solid #7ccf72;
+  border-left: 2px solid #7ccf72;
   border-top-left-radius: 12px;
   background: rgba(3, 25, 35, 0.88);
-  box-shadow: -4px -4px 14px rgba(53, 211, 125, 0.08);
+  box-shadow: -4px -4px 14px rgba(124, 207, 114, 0.08);
 }
 
 .news-hero-controls::before {
@@ -4818,13 +4818,13 @@ button {
   right: 0;
   width: 18px;
   height: 2px;
-  background: #35d37d;
+  background: #7ccf72;
 }
 
 .news-hero-controls > button {
   position: relative;
   z-index: 1;
-  border-color: rgba(53, 211, 125, 0.4);
+  border-color: rgba(124, 207, 114, 0.4);
   background: rgba(4, 31, 50, 0.95);
 }
 
@@ -5086,7 +5086,7 @@ button {
   background:
     radial-gradient(
       circle at 90% 10%,
-      rgba(53, 211, 125, 0.18),
+      rgba(124, 207, 114, 0.18),
       transparent 35%
     ),
     linear-gradient(120deg, #041f32, #0a263a 65%, #073957);
@@ -5241,7 +5241,7 @@ button {
 
 .sf-profile-heading-icon.kingdom {
   background: #e1f8eb;
-  color: #159b53;
+  color: #7ccf72;
 }
 
 .sf-profile-panel-heading h2 {
@@ -5305,7 +5305,7 @@ button {
   place-items: center;
   border: 2px solid white;
   border-radius: 50%;
-  background: #159b53;
+  background: #7ccf72;
   color: white;
   font-size: 11px;
   font-weight: 900;
@@ -5348,7 +5348,7 @@ button {
 
 .sf-avatar-message {
   margin: 12px 0 0;
-  color: #159b53;
+  color: #7ccf72;
   font-size: 11px;
   font-weight: 700;
 }
@@ -5386,7 +5386,7 @@ button {
 
 .sf-stat-icon.green {
   background: #e0f8e9;
-  color: #159b53;
+  color: #7ccf72;
 }
 
 .sf-stat-icon.blue {
@@ -5431,7 +5431,7 @@ button {
 }
 
 .sf-kingdom-level > div:first-child > span {
-  color: #62816e;
+  color: #7ccf72;
   font-size: 9px;
   font-weight: 900;
   letter-spacing: 1px;
@@ -5439,7 +5439,7 @@ button {
 
 .sf-kingdom-level h3 {
   margin: 6px 0 0;
-  color: #0c5731;
+  color: #7ccf72;
   font-size: 20px;
   font-weight: 900;
 }
@@ -5696,7 +5696,7 @@ button {
 }
 
 .kyc-status-approved .kyc-status-icon {
-  color: #1ca95d;
+  color: #7ccf72;
 }
 
 .kyc-status-rejected .kyc-status-icon {
@@ -5811,7 +5811,7 @@ button {
 }
 
 .kyc-success {
-  color: #16874b;
+  color: #7ccf72;
 }
 
 .kyc-empty-state {
@@ -5848,7 +5848,7 @@ button {
 }
 
 .kyc-history-approved {
-  color: #16874b;
+  color: #7ccf72;
 }
 
 .kyc-history-pending {
@@ -6330,7 +6330,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
     #041f32 100%
   );
   color: #d5e2e9;
-  border-top: 3px solid #35d37d;
+  border-top: 3px solid #7ccf72;
 }
 
 .sf-footer-brand {
@@ -6359,7 +6359,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 
 .sf-footer-links a:hover,
 .sf-footer-social a:hover {
-  color: #35d37d;
+  color: #7ccf72;
 }
 
 .sf-footer-social {
@@ -6755,7 +6755,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 
 .home-stat-bar {
   margin-left: auto;
-  background: #35d37d;
+  background: #7ccf72;
 }
 
 .away-stat-bar {
@@ -6828,7 +6828,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .match-lineup-player b {
-  color: #0a7850;
+  color: #7ccf72;
 }
 
 .match-lineup-player small {
@@ -6902,7 +6902,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   padding: 4px 6px;
   border-radius: 5px;
   background: #e6f8ef;
-  color: #13814d;
+  color: #7ccf72;
 }
 
 .fixture-list-panel {
@@ -6945,7 +6945,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .fixture-select-card.selected {
-  box-shadow: inset 3px 0 #35d37d;
+  box-shadow: inset 3px 0 #7ccf72;
 }
 
 .fixture-select-top {
@@ -6989,7 +6989,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 .fixture-view-link {
   display: inline-block;
   margin-top: 8px;
-  color: #08724d;
+  color: #7ccf72;
   font-size: 9px;
   font-weight: 800;
 }
@@ -7089,7 +7089,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .league-table-heading > span {
-  color: #08724d;
+  color: #7ccf72;
   font-size: 8px;
   font-weight: 900;
   letter-spacing: .8px;
@@ -7117,7 +7117,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .home-team-key {
-  background: #35d37d;
+  background: #7ccf72;
 }
 
 .away-team-key {
@@ -7165,7 +7165,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .league-row-home td:first-child {
-  box-shadow: inset 3px 0 #35d37d;
+  box-shadow: inset 3px 0 #7ccf72;
 }
 
 .league-row-away td:first-child {
@@ -7201,7 +7201,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 
 .league-team-tag.home {
   background: #d1f1df;
-  color: #08724d;
+  color: #7ccf72;
 }
 
 .league-team-tag.away {
@@ -7231,7 +7231,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .league-table-heading > span {
-  color: #08724d;
+  color: #7ccf72;
   font-size: 8px;
   font-weight: 900;
   letter-spacing: .8px;
@@ -7259,7 +7259,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .home-team-key {
-  background: #35d37d;
+  background: #7ccf72;
 }
 
 .away-team-key {
@@ -7307,7 +7307,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .league-row-home td:first-child {
-  box-shadow: inset 3px 0 #35d37d;
+  box-shadow: inset 3px 0 #7ccf72;
 }
 
 .league-row-away td:first-child {
@@ -7343,7 +7343,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 
 .league-team-tag.home {
   background: #d1f1df;
-  color: #08724d;
+  color: #7ccf72;
 }
 
 .league-team-tag.away {
@@ -7418,7 +7418,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .league-home-key {
-  background: #35b875;
+  background: #7ccf72;
 }
 
 .league-away-key {
@@ -7468,7 +7468,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .league-row-home td:first-child {
-  border-left: 4px solid #35b875;
+  border-left: 4px solid #7ccf72;
 }
 
 .league-row-away td:first-child {
@@ -7496,8 +7496,8 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-left: auto;
   padding: 3px 5px;
   border-radius: 4px;
-  background: #d1fae5;
-  color: #087443;
+  background: #7ccf72;
+  color: #7ccf72;
   font-size: 8px;
   font-weight: 900;
 }
@@ -7632,7 +7632,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .match-fan-room-empty > svg {
-  color: #1ca95d;
+  color: #7ccf72;
 }
 
 .match-fan-room-empty strong {
@@ -7650,7 +7650,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 
 .match-fan-room-empty a {
   margin-top: 5px;
-  color: #16884b;
+  color: #7ccf72;
   font-size: 12px;
   font-weight: 800;
   text-decoration: none;
@@ -7709,7 +7709,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   margin: 0;
   padding: 9px 22px;
   background: #f0faf4;
-  color: #16884b;
+  color: #7ccf72;
   font-size: 12px;
 }
 
@@ -7744,7 +7744,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: center;
   justify-content: center;
   background: #e6f5ec;
-  color: #16884b;
+  color: #7ccf72;
   font-size: 13px;
   font-weight: 800;
 }
@@ -7792,7 +7792,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .match-fan-room-no-messages svg {
-  color: #1ca95d;
+  color: #7ccf72;
 }
 
 .match-fan-room-no-messages strong {
@@ -7827,8 +7827,8 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .match-fan-room-composer input:focus {
-  border-color: #1ca95d;
-  box-shadow: 0 0 0 2px rgba(28, 169, 93, 0.1);
+  border-color: #7ccf72;
+  box-shadow: 0 0 0 2px rgba(124, 207, 114, 0.1);
 }
 
 .match-fan-room-composer button {
@@ -7841,7 +7841,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   padding: 0 13px;
   border: 0;
   border-radius: 7px;
-  background: #1ca95d;
+  background: #7ccf72;
   color: #ffffff;
   font-size: 12px;
   font-weight: 800;
@@ -7864,7 +7864,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 
 .match-fan-room-join-prompt svg {
   flex-shrink: 0;
-  color: #1ca95d;
+  color: #7ccf72;
 }
 
 .match-fan-room-join-prompt p {
@@ -8165,7 +8165,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: #218653;
+  color: #7ccf72;
   font-size: 10px;
   font-weight: 800;
 }
@@ -8200,7 +8200,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .social-earn-success {
-  color: #218653;
+  color: #7ccf72;
 }
 
 .social-earn-error {
@@ -8251,7 +8251,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   background:
     radial-gradient(
       circle at 12% 10%,
-      rgba(53, 211, 125, 0.09),
+      rgba(124, 207, 114, 0.09),
       transparent 30%
     ),
     #f3f7f9;
@@ -8280,7 +8280,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .choose-sports-brand strong {
-  color: #159b60;
+  color: #7ccf72;
 }
 
 .choose-sports-brand-mark {
@@ -8298,7 +8298,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .choose-sports-eyebrow {
-  color: #159b60;
+  color: #7ccf72;
   font-size: 10px;
   font-weight: 900;
   letter-spacing: 1.5px;
@@ -8330,7 +8330,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .choose-sports-selection-info strong {
-  color: #159b60;
+  color: #7ccf72;
   font-weight: 800;
 }
 
@@ -8360,16 +8360,16 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .choose-sport-option:hover {
-  border-color: #159b60;
+  border-color: #7ccf72;
   background: #f5fbf7;
   transform: translateY(-2px);
 }
 
 .choose-sport-option.selected {
-  border: 2px solid #159b60;
+  border: 2px solid #7ccf72;
   padding: 16px;
   background: #effaf3;
-  box-shadow: 0 5px 16px rgba(21, 155, 96, 0.08);
+  box-shadow: 0 5px 16px rgba(124, 207, 114, 0.08);
 }
 
 .choose-sport-icon {
@@ -8397,8 +8397,8 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .choose-sport-option.selected .choose-sport-check {
-  border-color: #159b60;
-  background: #159b60;
+  border-color: #7ccf72;
+  background: #7ccf72;
 }
 
 .choose-sports-error {
@@ -8714,7 +8714,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 .sf-welcome-eyebrow {
   display: block;
   margin-top: 4px;
-  color: #f5b82e;
+  color: #7ccf72;
   font-size: 10px;
   font-weight: 900;
   letter-spacing: 3px;
@@ -8731,7 +8731,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 
 .sf-welcome-modal h3 {
   margin: 0;
-  color: #f5b82e;
+  color: #7ccf72;
   font-size: clamp(12px, 2vw, 15px);
   font-weight: 900;
   letter-spacing: 1.2px;
@@ -8751,7 +8751,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   height: 2px;
   margin: 21px auto 15px;
   border-radius: 5px;
-  background: #f5b82e;
+  background: #7ccf72;
 }
 
 .sf-welcome-signature {
@@ -8772,7 +8772,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   padding: 14px 23px;
   border: 0;
   border-radius: 8px;
-  background: #f5b82e;
+  background: #7ccf72;
   color: #111b2b;
   font-size: 12px;
   font-weight: 900;
@@ -8873,4 +8873,61 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   .sf-welcome-spark {
     animation: none;
   }
+}
+
+/* =========================================================
+   SPORTYFANZ GOLDEN CROWN ANIMATION
+========================================================= */
+
+.sf-welcome-crown-image {
+  position: relative;
+  z-index: 2;
+  width: 160px;
+  height: 145px;
+  object-fit: contain;
+  transform-style: preserve-3d;
+  filter:
+    drop-shadow(0 0 12px rgba(245, 184, 46, 0.65))
+    drop-shadow(0 0 28px rgba(245, 184, 46, 0.3));
+  animation: sf-golden-crown-motion 5s ease-in-out infinite;
+}
+
+@keyframes sf-golden-crown-motion {
+  0% {
+    transform: perspective(700px) rotateY(-18deg) rotateZ(-3deg) translateY(0);
+  }
+
+  25% {
+    transform: perspective(700px) rotateY(0deg) rotateZ(0deg) translateY(-9px);
+  }
+
+  50% {
+    transform: perspective(700px) rotateY(18deg) rotateZ(3deg) translateY(0);
+  }
+
+  75% {
+    transform: perspective(700px) rotateY(0deg) rotateZ(0deg) translateY(-9px);
+  }
+
+  100% {
+    transform: perspective(700px) rotateY(-18deg) rotateZ(-3deg) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-welcome-crown-image {
+    animation: none;
+  }
+}
+
+/* Keep full news story summary left-aligned */
+.news-article-summary {
+  width: 100%;
+  text-align: left !important;
+}
+
+.news-article-summary p {
+  text-align: left !important;
+  margin-left: 0;
+  margin-right: 0;
 }
