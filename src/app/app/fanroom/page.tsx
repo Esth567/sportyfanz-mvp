@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -96,7 +98,7 @@ export default function FanHubPage() {
      try {
        setError("");
 
-      const response = await fetch("/api/fanrooms", {
+      const response = await apiFetch("/api/fanrooms", {
         cache: "no-store",
       });
       const data = await response.json();
@@ -132,7 +134,7 @@ export default function FanHubPage() {
     setTopFansLoading(true);
     setTopFansError("");
 
-    const response = await fetch("/api/fanrooms/top-fans", {
+    const response = await apiFetch("/api/fanrooms/top-fans", {
       cache: "no-store",
     });
     const result = await response.json();
@@ -160,7 +162,7 @@ const loadPolls = useCallback(async () => {
     setPollsLoading(true);
     setPollError("");
 
-    const response = await fetch("/api/polls", {
+    const response = await apiFetch("/api/polls", {
       cache: "no-store",
     });
     const result = await response.json();
@@ -193,7 +195,7 @@ const handlePollVote = async (pollId: number, optionId: number) => {
   setPollMessage("");
 
   try {
-    const response = await fetch("/api/polls/vote", {
+    const response = await apiFetch("/api/polls/vote", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -241,7 +243,7 @@ const handlePollVote = async (pollId: number, optionId: number) => {
     setNotice("");
 
     try {
-      const response = await fetch("/api/fanrooms/messages", {
+      const response = await apiFetch("/api/fanrooms/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -284,7 +286,7 @@ const handlePollVote = async (pollId: number, optionId: number) => {
     const action = selectedRoom.isJoined ? "leave" : "join";
 
     try {
-      const response = await fetch("/api/fanrooms/membership", {
+      const response = await apiFetch("/api/fanrooms/membership", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

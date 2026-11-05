@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useEffect, useState } from "react";
 import KycVerification from "./kyc-verification";
 import SocialFollowEarn from "./social-follow-earn";
@@ -46,7 +48,7 @@ export default function MyKingdomPage() {
 
     async function loadProfile() {
       try {
-        const response = await fetch(
+        const response = await apiFetch(
           "/api/profile",
           {
             cache: "no-store",
@@ -77,7 +79,7 @@ export default function MyKingdomPage() {
 
     async function loadMySports() {
      try {
-       const response = await fetch("/api/sports", {
+       const response = await apiFetch("/api/sports", {
          cache: "no-store",
        });
 

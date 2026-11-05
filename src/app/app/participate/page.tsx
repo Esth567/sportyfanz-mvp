@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import {
   CheckCircle2,
   Loader2,
@@ -281,7 +283,7 @@ const [triviaAnswers, setTriviaAnswers] =
       setLoading(true);
       setError("");
 
-      const response = await fetch("/api/challenges", {
+      const response = await apiFetch("/api/challenges", {
         cache: "no-store",
       });
 
@@ -316,7 +318,7 @@ const [triviaAnswers, setTriviaAnswers] =
       setPredictionsLoading(true);
       setError("");
 
-      const response = await fetch("/api/predictions", {
+      const response = await apiFetch("/api/predictions", {
         cache: "no-store",
       });
 
@@ -380,7 +382,7 @@ async function loadPolls() {
     setPollsLoading(true);
     setError("");
 
-    const response = await fetch("/api/polls", {
+    const response = await apiFetch("/api/polls", {
       cache: "no-store",
     });
 
@@ -415,7 +417,7 @@ async function loadTrivia() {
     setTriviaLoading(true);
     setError("");
 
-    const response = await fetch("/api/trivia", {
+    const response = await apiFetch("/api/trivia", {
       cache: "no-store",
     });
 
@@ -453,7 +455,7 @@ useEffect(() => {
 
   async function fetchPolls() {
     try {
-      const responsePromise = fetch("/api/polls", {
+      const responsePromise = apiFetch("/api/polls", {
         cache: "no-store",
       });
 
@@ -523,7 +525,7 @@ useEffect(() => {
     }
 
     try {
-      const response = await fetch("/api/trivia", {
+      const response = await apiFetch("/api/trivia", {
         cache: "no-store",
       });
 
@@ -583,7 +585,7 @@ useEffect(() => {
     setError("");
     setMessage("");
 
-    const response = await fetch("/api/polls/vote", {
+    const response = await apiFetch("/api/polls/vote", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -642,7 +644,7 @@ async function handleTriviaAnswer(questionId: number) {
     setError("");
     setMessage("");
 
-    const response = await fetch("/api/trivia/answer", {
+    const response = await apiFetch("/api/trivia/answer", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -705,7 +707,7 @@ async function handleTriviaAnswer(questionId: number) {
 
   async function fetchChallenges() {
     try {
-      const responsePromise = fetch("/api/challenges", {
+      const responsePromise = apiFetch("/api/challenges", {
         cache: "no-store",
       });
 
@@ -763,7 +765,7 @@ async function handleTriviaAnswer(questionId: number) {
 
   async function fetchPredictions() {
     try {
-      const responsePromise = fetch("/api/predictions", {
+      const responsePromise = apiFetch("/api/predictions", {
         cache: "no-store",
       });
 
@@ -844,7 +846,7 @@ async function handleTriviaAnswer(questionId: number) {
       setError("");
       setMessage("");
 
-      const response = await fetch(
+      const response = await apiFetch(
         "/api/challenges/participate",
         {
           method: "POST",
@@ -923,7 +925,7 @@ async function handleTriviaAnswer(questionId: number) {
       setError("");
       setMessage("");
 
-      const response = await fetch(
+      const response = await apiFetch(
         "/api/predictions",
         {
           method: "POST",

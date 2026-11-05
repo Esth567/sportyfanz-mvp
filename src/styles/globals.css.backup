@@ -1417,22 +1417,6 @@ button {
   height: 100%;
 }
 
-@media (max-width: 520px) {
-  .live-news-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .live-news-card {
-    flex-direction: row;
-    align-items: stretch;
-  }
-
-  .live-news-card > img {
-    width: 112px;
-    min-width: 112px;
-    height: 100px;
-  }
-}
 
 /* =========================================================
    LIVE MATCH CENTRE
@@ -4255,24 +4239,6 @@ button {
   font-size: 13px;
 }
 
-@media (max-width: 800px) {
-  .auth-page {
-    grid-template-columns: 1fr;
-    max-width: 520px;
-  }
-
-  .auth-brand-panel {
-    padding: 35px;
-  }
-
-  .auth-brand-panel h1 {
-    font-size: 32px;
-  }
-
-  .auth-form-panel {
-    padding: 35px 25px;
-  }
-}
 
 /* --------------------------------
    FOOTER
@@ -4837,53 +4803,6 @@ button {
   font-size: 10px;
 }
 
-
-@media (max-width: 640px) {
-  .news-page {
-    padding-top: 0;
-  }
-
-  .news-heading h1 {
-    font-size: 24px;
-  }
-
-  .news-hero {
-    min-height: 330px;
-  }
-
-  .news-hero-content {
-    width: 88%;
-    padding: 20px 16px 66px;
-  }
-
-  .news-hero-content h2 {
-    font-size: 24px;
-  }
-
-  .news-hero-shade {
-    background: linear-gradient(
-      90deg,
-      rgba(3, 17, 29, 0.96),
-      rgba(3, 17, 29, 0.67)
-    );
-  }
-
-  .trending-story {
-    gap: 9px;
-    padding: 10px;
-  }
-
-  .trending-thumbnail {
-    width: 58px;
-    height: 52px;
-  }
-
-  .trending-story-content h3 {
-    font-size: 11px;
-  }
-}
-
-
 .trending-story {
   display: flex;
   align-items: center;
@@ -4996,47 +4915,6 @@ button {
   gap: 5px;
   color: #666;
   font-size: 12px;
-}
-
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 1250px) {
-  :root {
-    --sidebar-width: 205px;
-  }
-
-  .sf-content {
-    padding: 22px;
-  }
-
-  .home-grid {
-    grid-template-columns:
-      minmax(0, 1.8fr)
-      minmax(220px, 1fr);
-
-    grid-template-areas:
-      "hero hero"
-      "live live"
-      "challenge trending"
-      "upcoming upcoming"
-      "promo promo";
-  }
-
-  .home-right-column {
-    grid-area: challenge;
-  }
-
-  .trending-rooms {
-    grid-area: trending;
-  }
-
-  .score-area {
-    gap: 40px;
-  }
 }
 
 
@@ -6021,303 +5899,6 @@ button {
   line-height: 1.6;
 }
 
-
-@media (max-width: 1100px) {
-.trending-grid {
-grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-}
-
-@media (max-width: 950px) {
-  .sf-sidebar {
-    width: 68px;
-  }
-
-  .sf-sidebar .sf-logo > div:last-child,
-  .sf-nav-item span,
-  .sf-sidebar-section,
-  .sf-user-info,
-  .sf-user-mini > svg {
-    display: none;
-  }
-
-  .sf-logo {
-    justify-content: center;
-    padding: 0;
-  }
-
-  .sf-sidebar .sf-logo-mark {
-    width: 40px;
-  }
-
-  .sf-nav-item {
-    justify-content: center;
-    padding: 11px;
-  }
-
-  .sf-user-mini {
-    justify-content: center;
-  }
-
-  .sf-main {
-    width: calc(100% - 68px);
-    margin-left: 68px;
-  }
-
-  .match-centre-layout,
-  .fan-room-layout,
-  .participate-grid,
-  .discover-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .live-side {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .reward-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .rewards-balance {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .rewards-ad-carousel {
-    max-width: none;
-  }
-}
-
-@media (max-width: 900px) {
-  .authContainer {
-    grid-template-columns: 1fr;
-    max-width: 560px;
-  }
-
-  .brandPanel {
-    min-height: auto;
-    padding: 34px;
-  }
-
-  .logo {
-    margin-bottom: 40px;
-  }
-
-  .brandTitle {
-    font-size: 34px;
-  }
-
-  .brandFeatures {
-    margin-top: 35px;
-  }
-
-  .formPanel {
-    padding: 40px 34px;
-  }
-}
-
-@media (max-width: 760px) {
-  .sf-profile-hero {
-    padding: 22px;
-  }
-
-  .sf-profile-hero-content {
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .sf-profile-main-avatar {
-    width: 82px;
-    height: 82px;
-  }
-
-  .sf-profile-hero-details h2 {
-    font-size: 21px;
-  }
-
-  .sf-profile-logout {
-    margin-left: auto;
-  }
-
-  .sf-profile-stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .sf-kingdom-activity {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 700px) {
-  .kyc-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .kyc-field-full {
-    grid-column: auto;
-  }
-}
-
-@media (max-width: 640px) {
-  .sf-site-footer {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 22px 18px;
-  }
-
-  .sf-footer-links {
-    gap: 14px;
-  }
-
-  .hero-card {
-  min-height: 330px;
-}
-
-.hero-content {
-  width: 88%;
-  padding: 20px 16px 70px;
-}
-
-.hero-overlay {
-  background: linear-gradient(
-    90deg,
-    rgba(3, 17, 29, 0.96),
-    rgba(3, 17, 29, 0.67)
-  );
-}
-}
-
-@media (max-width: 600px) {
-  .authPage {
-    padding: 20px 14px;
-  }
-
-  .authContainer {
-    border-radius: 18px;
-  }
-
-  .brandPanel {
-    padding: 28px 24px;
-  }
-
-  .formPanel {
-    padding: 32px 24px;
-  }
-
-  .brandTitle {
-    font-size: 30px;
-  }
-
-  .formTitle {
-    font-size: 27px;
-  }
-
-  .sf-profile-trigger {
-    gap: 7px;
-    padding: 5px;
-  }
-
-  .sf-profile-avatar {
-    width: 36px;
-    height: 36px;
-  }
-
-  .sf-profile-identity {
-    max-width: 105px;
-  }
-
-  .sf-profile-menu {
-    right: -4px;
-    width: 290px;
-  }
-
-  .sf-footer {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 18px 16px;
-  }
-
-  .sf-footer-links {
-    gap: 14px;
-  }
-
-  .sf-profile-identity {
-    display: none;
-  }
-
-  .sf-profile-trigger {
-    gap: 6px;
-    padding: 5px;
-  }
-
-  .trending-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-.sport-discover-card {
-  min-height: 180px;
-  padding: 14px 9px;
-}
-
- .kyc-reminder {
-    align-items: stretch;
-    flex-direction: column;
-    margin: 14px 12px 0;
-    padding: 15px;
-  }
-
-  .kyc-reminder-link {
-    width: 100%;
-  }
-
-  .kyc-prompt {
-    padding: 26px 20px;
-  }
-
-  .kyc-prompt h2 {
-    font-size: 20px;
-  }
-
-}
-
-@media (max-width: 480px) {
-  .sf-profile-panel {
-    padding: 17px;
-  }
-
-  .sf-profile-hero-stats {
-    gap: 16px;
-  }
-
-  .sf-avatar-options {
-    gap: 10px;
-  }
-
-  .sf-avatar-option {
-    width: 57px;
-    height: 57px;
-  }
-
-  .sf-avatar-save-row {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .sf-avatar-save {
-    width: 100%;
-  }
-}
-
-
-
-
-
 /* =====================================
    SPORTYFANZ FOOTER — SIDEBAR BRANDING
 ===================================== */
@@ -6400,12 +5981,6 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   height: 64px;
   object-fit: contain;
   object-position: left center;
-}
-
-@media (max-width: 700px) {
-  .sf-footer-social {
-    width: 100%;
-  }
 }
 
 /* =========================================================
@@ -7003,70 +6578,6 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   background: transparent;
 }
 
-@media (max-width: 900px) {
-  .match-centre-layout {
-    align-items: start;
-  }
-
-  .live-side {
-    display: block;
-    align-self: start;
-    height: fit-content;
-  }
-
-  .join-room-banner {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 640px) {
-  .match-scoreboard {
-    grid-template-columns: minmax(0, 1fr) minmax(95px, auto) minmax(0, 1fr);
-    gap: 7px;
-    padding: 20px 10px;
-  }
-
-  .match-score-team strong {
-    font-size: 10px;
-  }
-
-  .match-score-team img,
-  .match-team-placeholder {
-    width: 37px;
-    height: 37px;
-  }
-
-  .match-score-centre > strong {
-    font-size: 22px;
-  }
-
-  .match-detail-heading,
-  .match-tab-content {
-    padding: 15px;
-  }
-
-  .match-tabs {
-    padding: 0 8px;
-  }
-
-  .match-tabs button {
-    padding: 13px 10px 11px;
-    font-size: 10px;
-  }
-
-  .match-overview-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .match-lineups-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .match-centre-layout .live-side {
-    display: block;
-  }
-}
-
 /* Match Centre league standings */
 .league-table-heading {
   display: flex;
@@ -7507,46 +7018,6 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   color: #916000;
 }
 
-@media (max-width: 700px) {
-  .league-table-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
-
-
-/* Rewards: position automatic promotions from the centre to the right edge. */
-.rewards-balance > div:first-child {
-  flex: 0 0 42%;
-  min-width: 0;
-}
-
-.rewards-balance .rewards-ad-carousel {
-  flex: 0 0 55%;
-  width: 55%;
-  max-width: none;
-  margin-left: auto;
-  display: flex;
-  justify-content: flex-start;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-
-.rewards-ad-controls,
-.rewards-ad-dots {
-  display: none !important;
-}
-
-@media (max-width: 640px) {
-  .rewards-balance > div:first-child,
-  .rewards-balance .rewards-ad-carousel {
-    flex: 1 1 auto;
-    width: 100%;
-    margin-left: 0;
-  }
-}
 
 /* =========================================================
    LIVE MATCH CENTRE — EMBEDDED FAN ROOM
@@ -8224,16 +7695,29 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   color: #82939d;
 }
 
-@media (max-width: 700px) {
-  .social-task-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .social-earn-heading {
-    align-items: flex-start;
-  }
+/* Rewards: position automatic promotions from the centre to the right edge. */
+.rewards-balance > div:first-child {
+  flex: 0 0 42%;
+  min-width: 0;
 }
 
+.rewards-balance .rewards-ad-carousel {
+  flex: 0 0 55%;
+  width: 55%;
+  max-width: none;
+  margin-left: auto;
+  display: flex;
+  justify-content: flex-start;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.rewards-ad-controls,
+.rewards-ad-dots {
+  display: none !important;
+}
 
 /* =========================================================
    CHOOSE SPORTS — FAN REGISTRATION
@@ -8483,35 +7967,6 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
     transform: rotate(360deg);
   }
 }
-
-@media (max-width: 650px) {
-  .choose-sports-page {
-    padding: 20px 14px;
-  }
-
-  .choose-sports-card {
-    padding: 28px 20px;
-  }
-
-  .choose-sports-heading h1 {
-    font-size: 29px;
-  }
-
-  .choose-sports-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .choose-sports-footer {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .choose-sports-continue {
-    width: 100%;
-  }
-}
-
 
 /* =========================================================
    DEDICATED TOP FANS LEADERBOARD
@@ -8846,24 +8301,6 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 600px) {
-  .sf-welcome-overlay {
-    padding: 12px;
-  }
-
-  .sf-welcome-modal {
-    padding: 28px 21px 25px;
-    border-radius: 18px;
-  }
-
-  .sf-welcome-crown-stage {
-    height: 130px;
-  }
-
-  .sf-welcome-modal > p {
-    font-size: 12px;
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .sf-welcome-overlay,
@@ -8917,5 +8354,642 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 @media (prefers-reduced-motion: reduce) {
   .sf-welcome-crown-image {
     animation: none;
+  }
+}
+
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+
+@media (max-width: 768px) {
+  .onboarding-page {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 100svh;
+    height: auto;
+
+    overflow: visible;
+  }
+
+  .onboarding-left {
+    width: 100%;
+    min-height: auto;
+
+    padding: 32px 24px;
+
+    box-sizing: border-box;
+  }
+
+  .onboarding-right {
+    width: 100%;
+    min-height: 280px;
+    height: 280px;
+
+    position: relative;
+  }
+
+  .onboarding-image-card {
+    position: absolute;
+    inset: 12px 16px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 400px) {
+  .onboarding-left {
+    padding: 32px 22px 24px;
+  }
+
+  .onboarding-left h1 {
+    font-size: 35px;
+    line-height: 1.04;
+    letter-spacing: -1.2px;
+  }
+
+  .onboarding-left > p {
+    font-size: 11px;
+  }
+
+  .onboarding-buttons {
+    gap: 8px;
+  }
+
+  .onboarding-features {
+    gap: 10px;
+  }
+
+  .onboarding-right {
+    min-height: 270px;
+    height: 270px;
+  }
+}
+
+@media (max-width: 1250px) {
+  :root {
+    --sidebar-width: 205px;
+  }
+
+  .sf-content {
+    padding: 22px;
+  }
+
+  .home-grid {
+    grid-template-columns:
+      minmax(0, 1.8fr)
+      minmax(220px, 1fr);
+
+    grid-template-areas:
+      "hero hero"
+      "live live"
+      "challenge trending"
+      "upcoming upcoming"
+      "promo promo";
+  }
+
+  .home-right-column {
+    grid-area: challenge;
+  }
+
+  .trending-rooms {
+    grid-area: trending;
+  }
+
+  .score-area {
+    gap: 40px;
+  }
+}
+
+
+@media (max-width: 1100px) {
+.trending-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+
+@media (max-width: 950px) {
+  .sf-sidebar {
+    width: 68px;
+  }
+
+  .sf-sidebar .sf-logo > div:last-child,
+  .sf-nav-item span,
+  .sf-sidebar-section,
+  .sf-user-info,
+  .sf-user-mini > svg {
+    display: none;
+  }
+
+  .sf-logo {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .sf-sidebar .sf-logo-mark {
+    width: 40px;
+  }
+
+  .sf-nav-item {
+    justify-content: center;
+    padding: 11px;
+  }
+
+  .sf-user-mini {
+    justify-content: center;
+  }
+
+  .sf-main {
+    width: calc(100% - 68px);
+    margin-left: 68px;
+  }
+
+  .match-centre-layout,
+  .fan-room-layout,
+  .participate-grid,
+  .discover-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .live-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .reward-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .rewards-balance {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .rewards-ad-carousel {
+    max-width: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .authContainer {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+
+  .brandPanel {
+    min-height: auto;
+    padding: 34px;
+  }
+
+  .logo {
+    margin-bottom: 40px;
+  }
+
+  .brandTitle {
+    font-size: 34px;
+  }
+
+  .brandFeatures {
+    margin-top: 35px;
+  }
+
+  .formPanel {
+    padding: 40px 34px;
+  }
+}
+
+@media (max-width: 760px) {
+  .sf-profile-hero {
+    padding: 22px;
+  }
+
+  .sf-profile-hero-content {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .sf-profile-main-avatar {
+    width: 82px;
+    height: 82px;
+  }
+
+  .sf-profile-hero-details h2 {
+    font-size: 21px;
+  }
+
+  .sf-profile-logout {
+    margin-left: auto;
+  }
+
+  .sf-profile-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sf-kingdom-activity {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .kyc-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kyc-field-full {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .sf-site-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 22px 18px;
+  }
+
+  .sf-footer-links {
+    gap: 14px;
+  }
+
+  .hero-card {
+  min-height: 330px;
+}
+
+.hero-content {
+  width: 88%;
+  padding: 20px 16px 70px;
+}
+
+.hero-overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(3, 17, 29, 0.96),
+    rgba(3, 17, 29, 0.67)
+  );
+}
+}
+
+@media (max-width: 600px) {
+  .authPage {
+    padding: 20px 14px;
+  }
+
+  .authContainer {
+    border-radius: 18px;
+  }
+
+  .brandPanel {
+    padding: 28px 24px;
+  }
+
+  .formPanel {
+    padding: 32px 24px;
+  }
+
+  .brandTitle {
+    font-size: 30px;
+  }
+
+  .formTitle {
+    font-size: 27px;
+  }
+
+  .sf-profile-trigger {
+    gap: 7px;
+    padding: 5px;
+  }
+
+  .sf-profile-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .sf-profile-identity {
+    max-width: 105px;
+  }
+
+  .sf-profile-menu {
+    right: -4px;
+    width: 290px;
+  }
+
+  .sf-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 18px 16px;
+  }
+
+  .sf-footer-links {
+    gap: 14px;
+  }
+
+  .sf-profile-identity {
+    display: none;
+  }
+
+  .sf-profile-trigger {
+    gap: 6px;
+    padding: 5px;
+  }
+
+  .trending-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+.sport-discover-card {
+  min-height: 180px;
+  padding: 14px 9px;
+}
+
+ .kyc-reminder {
+    align-items: stretch;
+    flex-direction: column;
+    margin: 14px 12px 0;
+    padding: 15px;
+  }
+
+  .kyc-reminder-link {
+    width: 100%;
+  }
+
+  .kyc-prompt {
+    padding: 26px 20px;
+  }
+
+  .kyc-prompt h2 {
+    font-size: 20px;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .sf-profile-panel {
+    padding: 17px;
+  }
+
+  .sf-profile-hero-stats {
+    gap: 16px;
+  }
+
+  .sf-avatar-options {
+    gap: 10px;
+  }
+
+  .sf-avatar-option {
+    width: 57px;
+    height: 57px;
+  }
+
+  .sf-avatar-save-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .sf-avatar-save {
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 700px) {
+  .sf-footer-social {
+    width: 100%;
+  }
+}
+
+
+
+@media (max-width: 900px) {
+  .match-centre-layout {
+    align-items: start;
+  }
+
+  .live-side {
+    display: block;
+    align-self: start;
+    height: fit-content;
+  }
+
+  .join-room-banner {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .match-scoreboard {
+    grid-template-columns: minmax(0, 1fr) minmax(95px, auto) minmax(0, 1fr);
+    gap: 7px;
+    padding: 20px 10px;
+  }
+
+  .match-score-team strong {
+    font-size: 10px;
+  }
+
+  .match-score-team img,
+  .match-team-placeholder {
+    width: 37px;
+    height: 37px;
+  }
+
+  .match-score-centre > strong {
+    font-size: 22px;
+  }
+
+  .match-detail-heading,
+  .match-tab-content {
+    padding: 15px;
+  }
+
+  .match-tabs {
+    padding: 0 8px;
+  }
+
+  .match-tabs button {
+    padding: 13px 10px 11px;
+    font-size: 10px;
+  }
+
+  .match-overview-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .match-lineups-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .match-centre-layout .live-side {
+    display: block;
+  }
+}
+
+
+@media (max-width: 700px) {
+  .league-table-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+
+
+@media (max-width: 640px) {
+  .rewards-balance > div:first-child,
+  .rewards-balance .rewards-ad-carousel {
+    flex: 1 1 auto;
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+
+@media (max-width: 700px) {
+  .social-task-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .social-earn-heading {
+    align-items: flex-start;
+  }
+}
+
+
+@media (max-width: 650px) {
+  .choose-sports-page {
+    padding: 20px 14px;
+  }
+
+  .choose-sports-card {
+    padding: 28px 20px;
+  }
+
+  .choose-sports-heading h1 {
+    font-size: 29px;
+  }
+
+  .choose-sports-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .choose-sports-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .choose-sports-continue {
+    width: 100%;
+  }
+}
+
+
+
+@media (max-width: 600px) {
+  .sf-welcome-overlay {
+    padding: 12px;
+  }
+
+  .sf-welcome-modal {
+    padding: 28px 21px 25px;
+    border-radius: 18px;
+  }
+
+  .sf-welcome-crown-stage {
+    height: 130px;
+  }
+
+  .sf-welcome-modal > p {
+    font-size: 12px;
+  }
+}
+
+
+@media (max-width: 800px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+  }
+
+  .auth-brand-panel {
+    padding: 35px;
+  }
+
+  .auth-brand-panel h1 {
+    font-size: 32px;
+  }
+
+  .auth-form-panel {
+    padding: 35px 25px;
+  }
+}
+
+@media (max-width: 520px) {
+  .live-news-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .live-news-card {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .live-news-card > img {
+    width: 112px;
+    min-width: 112px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 640px) {
+  .news-page {
+    padding-top: 0;
+  }
+
+  .news-heading h1 {
+    font-size: 24px;
+  }
+
+  .news-hero {
+    min-height: 330px;
+  }
+
+  .news-hero-content {
+    width: 88%;
+    padding: 20px 16px 66px;
+  }
+
+  .news-hero-content h2 {
+    font-size: 24px;
+  }
+
+  .news-hero-shade {
+    background: linear-gradient(
+      90deg,
+      rgba(3, 17, 29, 0.96),
+      rgba(3, 17, 29, 0.67)
+    );
+  }
+
+  .trending-story {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .trending-thumbnail {
+    width: 58px;
+    height: 52px;
+  }
+
+  .trending-story-content h3 {
+    font-size: 11px;
   }
 }

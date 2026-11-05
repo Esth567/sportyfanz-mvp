@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -109,7 +111,7 @@ export default function FanRoomsManagement() {
     setError("");
 
     try {
-      const response = await fetch("/api/admin/fanrooms", {
+      const response = await apiFetch("/api/admin/fanrooms", {
         cache: "no-store",
       });
 
@@ -149,7 +151,7 @@ export default function FanRoomsManagement() {
     setNotice("");
 
     try {
-      const response = await fetch("/api/admin/fanrooms", {
+      const response = await apiFetch("/api/admin/fanrooms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -185,7 +187,7 @@ export default function FanRoomsManagement() {
     setNotice("");
 
     try {
-      const response = await fetch("/api/admin/fanrooms", {
+      const response = await apiFetch("/api/admin/fanrooms", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: room.id, status }),

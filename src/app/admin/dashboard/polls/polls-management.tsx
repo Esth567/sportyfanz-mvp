@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useCallback, useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 
@@ -100,7 +102,7 @@ export default function PollsManagement() {
     setError("");
 
     try {
-      const response = await fetch("/api/admin/polls", {
+      const response = await apiFetch("/api/admin/polls", {
         cache: "no-store",
       });
 
@@ -210,7 +212,7 @@ export default function PollsManagement() {
     setNotice("");
 
     try {
-      const response = await fetch("/api/admin/polls", {
+      const response = await apiFetch("/api/admin/polls", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -264,7 +266,7 @@ async function confirmStatusChange() {
   setConfirmPoll(null);
 
   try {
-    const response = await fetch(`/api/admin/polls/${poll.id}`, {
+    const response = await apiFetch(`/api/admin/polls/${poll.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: nextStatus }),

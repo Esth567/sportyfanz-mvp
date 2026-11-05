@@ -1,6 +1,8 @@
 
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -14,7 +16,7 @@ export default function AdminLogoutButton() {
     setError("");
 
     try {
-      const response = await fetch("/api/admin/logout", {
+      const response = await apiFetch("/api/admin/logout", {
         method: "POST",
         cache: "no-store",
       });

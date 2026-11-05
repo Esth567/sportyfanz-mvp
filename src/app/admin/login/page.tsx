@@ -1,6 +1,8 @@
 
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -17,12 +19,11 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/admin/login", {
+      const response = await apiFetch("/api/admin/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "same-origin",
         body: JSON.stringify({ identifier, password }),
       });
 

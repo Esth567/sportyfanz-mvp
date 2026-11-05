@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Crown, Plus, Search, Check, LoaderCircle } from "lucide-react";
 
@@ -94,7 +96,7 @@ export default function DiscoverPage() {
     setError("");
 
     try {
-      const response = await fetch("/api/discover", {
+      const response = await apiFetch("/api/discover", {
         cache: "no-store",
       });
       const result = await response.json();
@@ -177,7 +179,7 @@ export default function DiscoverPage() {
     setError("");
 
     try {
-      const response = await fetch("/api/discover", {
+      const response = await apiFetch("/api/discover", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

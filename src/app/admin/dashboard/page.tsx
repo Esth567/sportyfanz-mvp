@@ -1,10 +1,53 @@
-import { redirect } from "next/navigation";
-import {
-  requireAdmin,
-  hasPermission,
-  type AdminPermission,
-} from "@/lib/admin/require-admin";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { apiFetch } from "@/lib/api";
 import AdminLogoutButton from "@/app/admin/logout-button";
+
+type StaffRole =
+  | "SUPER_ADMIN"
+  | "OPERATIONS"
+  | "CONTENT_MODERATION"
+  | "SUPPORT";
+
+type AdminPermission =
+  | "staff:read"
+  | "staff:manage"
+  | "rewards:manage"
+  | "predictions:manage"
+  | "trivia:manage"
+  | "polls:manage"
+  | "fanrooms:manage"
+  | "content:moderate"
+  | "fans:support"
+  | "players:manage"
+  | "kyc:manage";
+
+type AdminUser = {
+  name: string | null;
+  email: string;
+  staffRole: StaffRole;
+};
+
+const ROLE_PERMISSIONS: Record<StaffRole, AdminPermission[]> = {
+  SUPER_ADMIN: [
+    "staff:read",
+    "staff:manage",
+    "rewards:manage",
+    "predictions:manage",
+    "trivia:manage",
+    "polls:manage",
+    "fanrooms:manage",
+    "content:moderate",
+    "fans:support",
+    "players:manage",
+    "kyc:manage",
+  ],
+  OPERATIONS: ["rewards:manage", "predictions:manage", "kyc:manage"],
+  CONTENT_MODERATION: ["trivia:manage", "polls:manage", "content:moderate"],
+  SUPPORT: ["fans:support"],
+};
 
 const sections: {
   title: string;
@@ -92,27 +135,86 @@ const sections: {
 },
 ];
 
+export default function AdminDashboardPage() {
+  const router = useRouter();
+  const [admin, setAdmin] = useState<AdminUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export default async function AdminDashboardPage() {
-  
-const result = await requireAdmin();
+  useEffect(() => {
+    let active = true;
 
-   if (!result.authorized) {
-     if (result.reason === "password_change_required") {
-      redirect("/admin/change-password");
+    async function verifyAdmin() {
+      try {
+        const response = await apiFetch("/api/admin/me", {
+          cache: "no-store",
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!active) return;
+
+        if (
+          response.status === 403 &&
+          data.code === "PASSWORD_CHANGE_REQUIRED"
+        ) {
+          router.replace("/admin/change-password");
+          return;
+        }
+
+        if (response.status === 401 || !response.ok) {
+          router.replace("/admin/login");
+          return;
+        }
+
+        const currentAdmin = data.admin;
+        const role = currentAdmin?.staffRole as StaffRole | undefined;
+
+        if (!role || !ROLE_PERMISSIONS[role]) {
+          router.replace("/admin/login");
+          return;
+        }
+
+        setAdmin({
+          name: currentAdmin.name ?? null,
+          email: currentAdmin.email,
+          staffRole: role,
+        });
+      } catch {
+        if (active) {
+          router.replace("/admin/login");
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
     }
 
-    if (result.reason === "unauthenticated") {
-      redirect("/admin/login");
-    }
+    verifyAdmin();
 
-    redirect("/admin/login");
-   }
+    return () => {
+      active = false;
+    };
+  }, [router]);
 
-const visibleSections = sections.filter((section) =>
-  hasPermission(result.user.staffRole, section.permission)
-);
+  if (loading || !admin) {
+    return (
+      <main
+        style={{
+          minHeight: "100vh",
+          display: "grid",
+          placeItems: "center",
+          background: "#10121b",
+          color: "#f5b82e",
+          fontFamily: "Lato, Arial, sans-serif",
+        }}
+      >
+        Verifying staff access...
+      </main>
+    );
+  }
 
+  const visibleSections = sections.filter((section) =>
+    ROLE_PERMISSIONS[admin.staffRole].includes(section.permission)
+  );
 
   return (
     <main className="admin-shell">
@@ -156,13 +258,13 @@ const visibleSections = sections.filter((section) =>
           </div>
           <div className="admin-account">
             <span className="admin-avatar">
-              {(result.user.name || result.user.email)
+              {(admin.name || admin.email)
                 .charAt(0)
                 .toUpperCase()}
             </span>
             <span>
-              <strong>{result.user.name || "Staff Admin"}</strong>
-              <small>{result.user.email}</small>
+              <strong>{admin.name || "Staff Admin"}</strong>
+              <small>{admin.email}</small>
             </span>
           </div>
         </header>
@@ -188,7 +290,7 @@ const visibleSections = sections.filter((section) =>
               <p>Choose an area to manage.</p>
             </div>
             <span className="admin-role-pill">
-               {result.user.staffRole.replaceAll("_", " ")}
+               {admin.staffRole.replaceAll("_", " ")}
             </span>
           </div>
 

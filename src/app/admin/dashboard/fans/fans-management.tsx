@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
@@ -106,7 +108,7 @@ export default function FansManagement() {
     setNotice("");
 
     try {
-      const response = await fetch("/api/admin/fans", {
+      const response = await apiFetch("/api/admin/fans", {
         cache: "no-store",
       });
 
@@ -148,7 +150,7 @@ export default function FansManagement() {
     setNotice("");
 
     try {
-      const response = await fetch(`/api/admin/fans/${selectedFan.id}`, {
+      const response = await apiFetch(`/api/admin/fans/${selectedFan.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: nextStatus }),

@@ -1,6 +1,8 @@
 
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { useState, type FormEvent } from "react";
@@ -31,7 +33,7 @@ export default function LoginPage() {
     const formData = new FormData(event.currentTarget);
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await apiFetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

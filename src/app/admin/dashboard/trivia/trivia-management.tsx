@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import { useCallback, useEffect, useState } from "react";
 import * as XLSX from "xlsx";
@@ -90,7 +92,7 @@ export default function TriviaManagement() {
     setError("");
 
     try {
-      const response = await fetch("/api/admin/trivia", {
+      const response = await apiFetch("/api/admin/trivia", {
         cache: "no-store",
       });
       const data = await response.json();
@@ -165,7 +167,7 @@ export default function TriviaManagement() {
     setNotice("");
 
     try {
-      const response = await fetch("/api/admin/trivia", {
+      const response = await apiFetch("/api/admin/trivia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

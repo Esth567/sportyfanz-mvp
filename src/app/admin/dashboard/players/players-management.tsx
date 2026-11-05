@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 type Team = {
@@ -62,7 +64,7 @@ export default function PlayersManagement() {
     setError("");
 
     try {
-      const response = await fetch("/api/admin/players", {
+      const response = await apiFetch("/api/admin/players", {
         cache: "no-store",
       });
       const data = await response.json();
@@ -124,7 +126,7 @@ export default function PlayersManagement() {
     setNotice("");
 
     try {
-      const response = await fetch("/api/admin/players", {
+      const response = await apiFetch("/api/admin/players", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, RefreshCw, Send, Users } from "lucide-react";
 
@@ -183,7 +185,7 @@ export default function MatchesPage() {
               : "/api/matches/football"
             : `/api/matches/${encodeURIComponent(requestedSport)}?date=${encodeURIComponent(requestedDate)}`;
 
-        const response = await fetch(fixturesUrl, {
+        const response = await apiFetch(fixturesUrl, {
           cache: "no-store",
         });
 
@@ -272,7 +274,7 @@ export default function MatchesPage() {
       setDetails(null);
 
       try {
-        const response = await fetch(
+        const response = await apiFetch(
           selectedSport === "football"
            ? `/api/matches/football/${selectedMatch!.fixtureId ?? selectedMatch!.id}`
            : `/api/matches/${encodeURIComponent(selectedSport)}/${selectedMatch!.fixtureId ?? selectedMatch!.id}`,
@@ -1071,7 +1073,7 @@ function MatchFanRoom({
     loadingRequest = true;
 
     try {
-      const response = await fetch(
+      const response = await apiFetch(
         `/api/fanrooms/match/${fixtureId}?sport=${encodeURIComponent(sport)}`,
         { cache: "no-store" }
       );
@@ -1103,7 +1105,7 @@ function MatchFanRoom({
       ) {
         autoJoinAttempted.current = true;
 
-        const joinResponse = await fetch(
+        const joinResponse = await apiFetch(
           "/api/fanrooms/membership",
           {
             method: "POST",
@@ -1128,7 +1130,7 @@ function MatchFanRoom({
         setNotice("You've joined the match Fan Room.");
 
         // Load the messages immediately after joining.
-        const refreshResponse = await fetch(
+        const refreshResponse = await apiFetch(
           `/api/fanrooms/match/${fixtureId}?sport=${encodeURIComponent(sport)}`,
           { cache: "no-store" }
         );
@@ -1193,7 +1195,7 @@ function MatchFanRoom({
     setNotice("");
 
     try {
-      const response = await fetch("/api/fanrooms/membership", {
+      const response = await apiFetch("/api/fanrooms/membership", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1225,7 +1227,7 @@ function MatchFanRoom({
       setNotice(data.message ?? "");
 
       if (data.isJoined) {
-        const refreshResponse = await fetch(
+        const refreshResponse = await apiFetch(
           `/api/fanrooms/match/${fixtureId}?sport=${encodeURIComponent(sport)}`,
           { cache: "no-store" }
         );
@@ -1259,7 +1261,7 @@ function MatchFanRoom({
     setNotice("");
 
     try {
-      const response = await fetch("/api/fanrooms/messages", {
+      const response = await apiFetch("/api/fanrooms/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

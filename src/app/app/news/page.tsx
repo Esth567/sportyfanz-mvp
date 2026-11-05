@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -141,7 +143,7 @@ export default function NewsPage() {
       setError("");
 
       try {
-        const response = await fetch("/api/news", {
+        const response = await apiFetch("/api/news", {
           cache: "no-store",
         });
 
@@ -231,7 +233,7 @@ export default function NewsPage() {
 
 async function loadEngagement(story: NewsStory) {
   try {
-    const viewResponse = await fetch("/api/news/engagement", {
+    const viewResponse = await apiFetch("/api/news/engagement", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -248,7 +250,7 @@ async function loadEngagement(story: NewsStory) {
       );
     }
 
-    const response = await fetch(
+    const response = await apiFetch(
       `/api/news/engagement?url=${encodeURIComponent(story.link)}`,
       { cache: "no-store" }
     );
@@ -279,7 +281,7 @@ async function toggleArticleLike(story: NewsStory) {
   setEngagementError("");
 
   try {
-    const response = await fetch("/api/news/engagement", {
+    const response = await apiFetch("/api/news/engagement", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url: story.link, action: "like" }),
@@ -319,7 +321,7 @@ async function postComment() {
   setEngagementError("");
 
   try {
-    const response = await fetch("/api/news/engagement", {
+    const response = await apiFetch("/api/news/engagement", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

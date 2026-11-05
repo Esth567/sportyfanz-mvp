@@ -1,36 +1,20 @@
+"use client";
 
+import { useEffect, useState } from "react";
 import HomePage from "./home-page-client";
-import { getCachedNews } from "@/lib/news-feed";
 
-export const runtime = "nodejs";
+export default function Page() {
+  const [initialWelcome, setInitialWelcome] = useState(false);
 
-type HomePageSearchParams = {
-  welcome?: string;
-};
-
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<HomePageSearchParams>;
-}) {
-  const params = await searchParams;
-  const initialWelcome = params.welcome === "1";
-
-  let initialNews = [];
-
-  try {
-    const data = await getCachedNews();
-
-    initialNews = (data.stories ?? [])
-      .filter((story) => story.image && story.link && story.title)
-      .slice(0, 2);
-  } catch (error) {
-    console.error("Unable to load initial homepage news:", error);
-  }
+  useEffect(() => {
+    setInitialWelcome(
+      new URLSearchParams(window.location.search).get("welcome") === "1"
+    );
+  }, []);
 
   return (
     <HomePage
-      initialNews={initialNews}
+      initialNews={[]}
       initialWelcome={initialWelcome}
     />
   );

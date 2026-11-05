@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import { useEffect, useState, type FormEvent } from "react";
 
@@ -71,7 +73,7 @@ export default function StaffManagement() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/admin/staff", {
+      const response = await apiFetch("/api/admin/staff", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -128,7 +130,7 @@ async function loadStaff() {
   setStaffError("");
 
   try {
-    const response = await fetch("/api/admin/staff", {
+    const response = await apiFetch("/api/admin/staff", {
       cache: "no-store",
     });
 
@@ -158,7 +160,7 @@ useEffect(() => {
     setStaffError("");
 
     try {
-      const response = await fetch("/api/admin/staff", {
+      const response = await apiFetch("/api/admin/staff", {
         cache: "no-store",
       });
 
@@ -201,7 +203,7 @@ async function updateStaffRole(
   setStaffError("");
 
   try {
-    const response = await fetch(`/api/admin/staff/${staffId}`, {
+    const response = await apiFetch(`/api/admin/staff/${staffId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ staffRole: nextRole }),
@@ -233,7 +235,7 @@ async function updateStaffStatus(
   setStaffError("");
 
   try {
-    const response = await fetch(`/api/admin/staff/${staffId}`, {
+    const response = await apiFetch(`/api/admin/staff/${staffId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

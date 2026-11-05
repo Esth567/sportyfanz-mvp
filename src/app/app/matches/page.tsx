@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -92,7 +94,7 @@ const [selectedSportSlug, setSelectedSportSlug] = useState(
       setError("");
 
       try {
-        const response = await fetch(
+        const response = await apiFetch(
           `/api/matches/${encodeURIComponent(selectedSportSlug)}?date=${encodeURIComponent(selectedDate)}`,
           { cache: "no-store" }
         );

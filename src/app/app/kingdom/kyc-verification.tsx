@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useCallback, useEffect, useState } from "react";
 import {
   ShieldCheck,
@@ -59,7 +61,7 @@ export default function KycVerification() {
 
   const loadKyc = useCallback(async () => {
     try {
-      const response = await fetch("/api/kyc", {
+      const response = await apiFetch("/api/kyc", {
         cache: "no-store",
       });
       const data = await response.json();
@@ -94,7 +96,7 @@ export default function KycVerification() {
     setSubmitting(true);
 
     try {
-      const response = await fetch("/api/kyc", {
+      const response = await apiFetch("/api/kyc", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

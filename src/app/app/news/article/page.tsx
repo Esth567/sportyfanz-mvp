@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
@@ -107,7 +109,7 @@ function ArticleContent() {
       }
 
       try {
-        const response = await fetch("/api/news", {
+        const response = await apiFetch("/api/news", {
           cache: "no-store",
         });
 
@@ -170,7 +172,7 @@ function ArticleContent() {
       setSummaryLoading(true);
 
       try {
-        const response = await fetch("/api/news/summary", {
+        const response = await apiFetch("/api/news/summary", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -239,7 +241,7 @@ useEffect(() => {
 
   async function loadEngagement() {
     try {
-      const viewResponse = await fetch("/api/news/engagement", {
+      const viewResponse = await apiFetch("/api/news/engagement", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -249,7 +251,7 @@ useEffect(() => {
       });
 
       // Continue loading engagement even if view recording fails.
-      const response = await fetch(
+      const response = await apiFetch(
         `/api/news/engagement?url=${encodeURIComponent(story!.link)}`,
         { cache: "no-store" }
       );
@@ -292,7 +294,7 @@ async function toggleLike() {
   setEngagementError("");
 
   try {
-    const response = await fetch("/api/news/engagement", {
+    const response = await apiFetch("/api/news/engagement", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -330,7 +332,7 @@ async function submitComment(event: React.FormEvent<HTMLFormElement>) {
   setEngagementError("");
 
   try {
-    const response = await fetch("/api/news/engagement", {
+    const response = await apiFetch("/api/news/engagement", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -349,7 +351,7 @@ async function submitComment(event: React.FormEvent<HTMLFormElement>) {
     setCommentText("");
 
     // Reload counts and comments so both remain in sync.
-    const refreshResponse = await fetch(
+    const refreshResponse = await apiFetch(
       `/api/news/engagement?url=${encodeURIComponent(story.link)}`,
       { cache: "no-store" }
     );

@@ -1,24 +1,10 @@
-import { redirect } from "next/navigation";
-import { requirePermission } from "@/lib/admin/require-admin";
 import StaffManagement from "./staff-management";
+import AdminPermissionGuard from "@/components/admin/AdminPermissionGuard";
 
-export default async function StaffPage() {
-  const result = await requirePermission("staff:manage");
-
-if (!result.authorized) {
-  if (result.reason === "password_change_required") {
-    redirect("/admin/change-password");
-  }
-
-  if (result.reason === "unauthenticated") {
-    redirect("/admin/login");
-  }
-
-  redirect("/admin/dashboard");
-}
-
+export default function StaffPage() {
   return (
-    <main className="staff-page">
+    <AdminPermissionGuard permission="staff:manage">
+      <main className="staff-page">
       <header className="staff-header">
         <div>
           <p className="staff-eyebrow">SPORTYFANZ OPERATIONS</p>
@@ -87,5 +73,6 @@ if (!result.authorized) {
         }
       `}</style>
     </main>
+    </AdminPermissionGuard>
   );
 }

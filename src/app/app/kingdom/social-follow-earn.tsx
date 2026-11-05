@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useEffect, useState } from "react";
 import {
   CheckCircle2,
@@ -115,7 +117,7 @@ export default function SocialFollowEarn() {
 
     async function loadTasks() {
       try {
-        const response = await fetch("/api/progression/social", {
+        const response = await apiFetch("/api/progression/social", {
           cache: "no-store",
         });
 
@@ -155,7 +157,7 @@ export default function SocialFollowEarn() {
     setError("");
 
     try {
-      const response = await fetch("/api/progression/social", {
+      const response = await apiFetch("/api/progression/social", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

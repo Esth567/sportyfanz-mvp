@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useCallback, useEffect, useState } from "react";
 
 type KycStatus = "PENDING" | "APPROVED" | "REJECTED";
@@ -68,7 +70,7 @@ export default function KycManagement() {
 
     try {
       const query = filter === "ALL" ? "" : `?status=${filter}`;
-      const response = await fetch(`/api/admin/kyc${query}`, {
+      const response = await apiFetch(`/api/admin/kyc${query}`, {
         cache: "no-store",
       });
 
@@ -111,7 +113,7 @@ export default function KycManagement() {
     setBusyId(submissionId);
 
     try {
-      const response = await fetch("/api/admin/kyc", {
+      const response = await apiFetch("/api/admin/kyc", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

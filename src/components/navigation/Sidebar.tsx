@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -77,7 +79,7 @@ useEffect(() => {
 
   async function loadFan() {
     try {
-      const response = await fetch("/api/auth/me", {
+      const response = await apiFetch("/api/auth/me", {
         cache: "no-store",
       });
 

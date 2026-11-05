@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -52,7 +54,7 @@ export default function Profile() {
 
     async function loadProfile() {
       try {
-        const response = await fetch("/api/profile", {
+        const response = await apiFetch("/api/profile", {
           cache: "no-store",
         });
 
@@ -111,7 +113,7 @@ export default function Profile() {
     setLoggingOut(true);
 
     try {
-      const response = await fetch("/api/auth/logout", {
+      const response = await apiFetch("/api/auth/logout", {
         method: "POST",
       });
 
@@ -140,7 +142,7 @@ export default function Profile() {
     setAvatarMessage("");
 
     try {
-      const response = await fetch("/api/profile", {
+      const response = await apiFetch("/api/profile", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

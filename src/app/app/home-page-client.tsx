@@ -1,4 +1,6 @@
-"use client"
+"use client";
+
+import { apiFetch } from "@/lib/api";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -193,7 +195,7 @@ function moveHomeHero(direction: number) {
 
   async function loadFan() {
     try {
-      const response = await fetch("/api/auth/me", {
+      const response = await apiFetch("/api/auth/me", {
         cache: "no-store",
       });
       if (response.status === 401) {
@@ -247,7 +249,7 @@ useEffect(() => {
     setSportsError("");
 
     try {
-      const response = await fetch("/api/sports", {
+      const response = await apiFetch("/api/sports", {
         cache: "no-store",
       });
 
@@ -307,7 +309,7 @@ useEffect(() => {
         ? `?date=${encodeURIComponent(selectedDate)}`
         : "";
 
-       const response = await fetch(
+       const response = await apiFetch(
         `/api/matches/${encodeURIComponent(selectedSportSlug)}${query}`,
         { cache: "no-store" }
       );
@@ -351,7 +353,7 @@ useEffect(() => {
 
   async function loadFeaturedNews() {
     try {
-      const response = await fetch("/api/news", {
+      const response = await apiFetch("/api/news", {
         cache: "no-store",
       });
 
@@ -388,7 +390,7 @@ async function handleDailyCheckIn() {
   setCheckInMessage("");
 
   try {
-    const response = await fetch("/api/progression/check-in", {
+    const response = await apiFetch("/api/progression/check-in", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -430,7 +432,7 @@ async function handleDailyCheckIn() {
 useEffect(() => {
   async function loadCheckInStatus() {
     try {
-      const response = await fetch("/api/progression/check-in", {
+      const response = await apiFetch("/api/progression/check-in", {
         cache: "no-store",
       });
 

@@ -1,6 +1,8 @@
 
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { useState, type FormEvent } from "react";
@@ -21,7 +23,7 @@ export default function RegisterPage() {
     const formData = new FormData(event.currentTarget);
 
     try {
-      const response = await fetch("/api/auth/register", {
+      const response = await apiFetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

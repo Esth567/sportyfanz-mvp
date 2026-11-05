@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, LockKeyhole, ShieldCheck } from "lucide-react";
@@ -41,7 +43,7 @@ export default function AdminChangePasswordPage() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/admin/change-password", {
+      const response = await apiFetch("/api/admin/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentPassword, newPassword }),

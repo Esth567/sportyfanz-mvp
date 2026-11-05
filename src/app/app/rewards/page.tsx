@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import {
   Gift,
   Package,
@@ -136,7 +138,7 @@ export default function RewardPage() {
       setLoading(true);
       setError("");
 
-      const response = await fetch("/api/rewards", {
+      const response = await apiFetch("/api/rewards", {
         cache: "no-store",
       });
 
@@ -170,7 +172,7 @@ export default function RewardPage() {
       setMessage("");
       setError("");
 
-      const response = await fetch(
+      const response = await apiFetch(
         "/api/rewards/redeem",
         {
           method: "POST",

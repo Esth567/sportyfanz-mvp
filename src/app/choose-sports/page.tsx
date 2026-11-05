@@ -2,6 +2,8 @@
 
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
@@ -43,7 +45,7 @@ export default function ChooseSportsPage() {
   useEffect(() => {
     async function loadSports() {
       try {
-        const response = await fetch("/api/sports");
+        const response = await apiFetch("/api/sports");
         const data = await response.json();
 
         if (!response.ok) {
@@ -82,7 +84,7 @@ export default function ChooseSportsPage() {
     setError("");
 
     try {
-      const response = await fetch("/api/sports", {
+      const response = await apiFetch("/api/sports", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

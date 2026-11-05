@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -29,7 +31,7 @@ export default function KycReminder() {
 
     async function loadKyc() {
       try {
-        const response = await fetch("/api/kyc", {
+        const response = await apiFetch("/api/kyc", {
           cache: "no-store",
         });
 

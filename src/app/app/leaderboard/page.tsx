@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -25,7 +27,7 @@ export default function LeaderboardPage() {
     try {
       setError("");
 
-      const response = await fetch("/api/fanrooms/top-fans", {
+      const response = await apiFetch("/api/fanrooms/top-fans", {
         cache: "no-store",
       });
 

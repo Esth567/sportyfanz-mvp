@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import { useCallback, useEffect, useState } from "react";
 import * as XLSX from "xlsx";
@@ -122,7 +124,7 @@ export default function RewardsManagement() {
     setError("");
 
     try {
-      const response = await fetch("/api/admin/rewards", {
+      const response = await apiFetch("/api/admin/rewards", {
         cache: "no-store",
       });
 
@@ -305,7 +307,7 @@ function exportRedemptionsToExcel() {
     };
 
     try {
-      const response = await fetch(
+      const response = await apiFetch(
         editingId
           ? `/api/admin/rewards/${editingId}`
           : "/api/admin/rewards",
@@ -368,7 +370,7 @@ function exportRedemptionsToExcel() {
      setNotice("");
 
   try {
-    const response = await fetch(
+    const response = await apiFetch(
       `/api/admin/rewards/redemptions/${id}`,
       {
         method: "PATCH",

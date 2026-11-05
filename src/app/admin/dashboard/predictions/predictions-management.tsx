@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
@@ -237,7 +239,7 @@ export default function PredictionsManagement() {
     setError("");
 
     try {
-      const response = await fetch("/api/admin/predictions", {
+      const response = await apiFetch("/api/admin/predictions", {
         cache: "no-store",
       });
 
@@ -430,7 +432,7 @@ async function saveMatch() {
     };
 
     // Send the update to the protected admin API.
-    const response = await fetch(
+    const response = await apiFetch(
       `/api/admin/predictions/${editingMatch.id}`,
       {
         method: "PATCH",
@@ -500,7 +502,7 @@ async function createMatch() {
       );
     }
 
-    const response = await fetch("/api/admin/predictions", {
+    const response = await apiFetch("/api/admin/predictions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

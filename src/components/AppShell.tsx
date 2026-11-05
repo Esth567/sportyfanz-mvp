@@ -1,5 +1,7 @@
 "use client";
 
+import { apiFetch } from "@/lib/api";
+
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -95,7 +97,7 @@ useEffect(() => {
 
   async function loadKycStatus() {
     try {
-      const response = await fetch("/api/kyc", {
+      const response = await apiFetch("/api/kyc", {
         cache: "no-store",
       });
 
@@ -155,7 +157,7 @@ function dismissKycWelcome() {
 
     async function verifyFanAccount() {
       try {
-        const response = await fetch("/api/auth/me", {
+        const response = await apiFetch("/api/auth/me", {
           cache: "no-store",
         });
 
@@ -180,7 +182,7 @@ function dismissKycWelcome() {
 
     const logoutForInactivity = async () => {
       try {
-        await fetch("/api/auth/logout", {
+        await apiFetch("/api/auth/logout", {
           method: "POST",
         });
       } finally {

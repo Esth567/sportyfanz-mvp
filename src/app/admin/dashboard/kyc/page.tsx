@@ -1,24 +1,10 @@
-import { redirect } from "next/navigation";
-import { requirePermission } from "@/lib/admin/require-admin";
 import KycManagement from "./kyc-management";
+import AdminPermissionGuard from "@/components/admin/AdminPermissionGuard";
 
-export default async function KycPage() {
-  const result = await requirePermission("kyc:manage");
-
-  if (!result.authorized) {
-    if (result.reason === "password_change_required") {
-      redirect("/admin/change-password");
-    }
-
-    if (result.reason === "unauthenticated") {
-      redirect("/admin/login");
-    }
-
-    redirect("/admin/dashboard");
-  }
-
+export default function KycPage() {
   return (
-    <main className="kyc-page">
+    <AdminPermissionGuard permission="kyc:manage">
+      <main className="kyc-page">
       <header className="kyc-header">
         <div>
           <p className="kyc-eyebrow">SPORTYFANZ OPERATIONS</p>
@@ -93,5 +79,6 @@ export default async function KycPage() {
         }
       `}</style>
     </main>
+    </AdminPermissionGuard>
   );
 }

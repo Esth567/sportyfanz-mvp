@@ -1,5 +1,7 @@
-
 "use client";
+
+import { apiFetch } from "@/lib/api";
+
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -33,7 +35,7 @@ export default function UserProfile() {
 
   async function loadProfile() {
     try {
-      const response = await fetch("/api/profile", {
+      const response = await apiFetch("/api/profile", {
         cache: "no-store",
       });
 
@@ -95,7 +97,7 @@ export default function UserProfile() {
     setLoggingOut(true);
 
     try {
-      const response = await fetch("/api/auth/logout", {
+      const response = await apiFetch("/api/auth/logout", {
         method: "POST",
       });
 
