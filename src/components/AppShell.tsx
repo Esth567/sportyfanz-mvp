@@ -14,6 +14,7 @@ import {
   Gift,
   Home,
   MessageCircle,
+  Menu,
   Radio,
   Search,
   Target,
@@ -82,6 +83,11 @@ export default function SportyFanzShell({
   children,
 }: Props) {
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const [kycStatus, setKycStatus] =
   useState<KycNoticeStatus>("LOADING");
@@ -226,13 +232,40 @@ function dismissKycWelcome() {
   
   return (
     <main className="sf-app">
+      {/* MOBILE SIDEBAR BACKDROP */}
+      {mobileMenuOpen && (
+        <button
+          type="button"
+          className="sf-mobile-sidebar-backdrop"
+          aria-label="Close navigation menu"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       {/* SIDEBAR */}
-      <Sidebar />
+      <Sidebar
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+      />
 
       {/* MAIN AREA */}
       <section className="sf-main">
         {/* TOP BAR */}
         <header className="sf-topbar">
+          <button
+            type="button"
+            className="sf-mobile-menu-toggle"
+            aria-label="Open navigation menu"
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <Menu size={23} />
+          </button>
+
+          <Link href="/app" className="sf-mobile-brand" aria-label="SportyFanz home">
+            <Logo small />
+          </Link>
+
           <SearchBar />
 
           <div className="sf-top-actions">

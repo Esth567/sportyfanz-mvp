@@ -349,8 +349,9 @@ export default function DiscoverPage() {
             </div>
 
             {active === "Sports" && (
-              <div className="trending-grid">
-                {filteredSports.map((sport) => (
+              <div className="white-panel discover-list discover-trending-panel">
+                <div className="trending-grid">
+                  {filteredSports.map((sport) => (
                   <div className="sport-discover-card" key={sport.id}>
                     <div>
                       {sport.iconUrl ? (
@@ -372,7 +373,8 @@ export default function DiscoverPage() {
                     <span>{sport.description || "Explore"}</span>
                     {renderFollowButton("sport", sport.id, followingSport(sport.id))}
                   </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
 

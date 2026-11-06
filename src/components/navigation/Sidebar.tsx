@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Logo } from "@/components/Logo";
 
 import {
+  X,
   Award,
   ChevronRight,
   Crown,
@@ -67,7 +68,12 @@ const navItems = [
   },
 ];
 
-export default function Sidebar() {
+type SidebarProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
 
 const [fanName, setFanName] = useState("SportyFanz Fan");
@@ -123,12 +129,18 @@ useEffect(() => {
 }, []);
 
   return (
-    <aside className="sf-sidebar">
-      {/* LOGO */}
+    <aside className={`sf-sidebar ${isOpen ? "is-open" : ""}`}>
       <div className="sf-logo">
         <Logo small />
       </div>
-
+      <button
+        type="button"
+        className="sf-mobile-sidebar-close"
+        aria-label="Close navigation menu"
+        onClick={onClose}
+      >
+        <X size={22} />
+      </button>
       <div className="sf-sidebar-divider" />
 
       {/* MAIN NAVIGATION */}
@@ -149,6 +161,7 @@ useEffect(() => {
               className={`sf-nav-item ${
                 active ? "active" : ""
               }`}
+              onClick={onClose}
             >
               <Icon size={17} />
               <span>{item.label}</span>
@@ -166,6 +179,7 @@ useEffect(() => {
         <Link
           href="/app/participate"
           className="sf-nav-item"
+          onClick={onClose}
         >
           <Award size={17} />
           <span>Challenges</span>
@@ -174,6 +188,7 @@ useEffect(() => {
         <Link
           href="/app/leaderboard"
           className="sf-nav-item"
+          onClick={onClose}
         >
          <Trophy size={17} />
          <span>Leaderboards</span>

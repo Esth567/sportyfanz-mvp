@@ -3,6 +3,7 @@
 "use client";
 
 import { apiFetch } from "@/lib/api";
+import { Logo } from "@/components/Logo";
 
 import { useEffect, useState } from "react";
 import {
@@ -125,10 +126,7 @@ export default function ChooseSportsPage() {
     <main className="choose-sports-page">
       <section className="choose-sports-card">
         <div className="choose-sports-brand">
-          <div className="choose-sports-brand-mark">
-            <Trophy size={22} />
-          </div>
-          <span>Sporty<strong>Fanz</strong></span>
+          <Logo />
         </div>
 
         <div className="choose-sports-heading">

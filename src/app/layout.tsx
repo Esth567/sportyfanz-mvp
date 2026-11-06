@@ -6,6 +6,11 @@ import "../styles/globals.css";
 export const metadata: Metadata = {
   title: "SportyFanz",
   description: "Every Sport. Every Fan. Every Moment.",
+  icons: {
+    icon: "/browserlogo.svg",
+    shortcut: "/browserlogo.svg",
+    apple: "/browserlogo.svg",
+  },
 };
 
 export const viewport: Viewport = {
