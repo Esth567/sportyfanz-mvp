@@ -34,9 +34,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'78767cc44c9ec49bebee2fe4dcd8dfd1783187b41e0543fc7484496caa455992'>;
+  StorageHashBase<'8b7faafa5c5150ec506fd164934cc8075837b6aa7973ceb67152d3a5ebc29bc9'>;
 export type ExecutionHash =
-  ExecutionHashBase<'d5ae6a1f96f6f4420b2f34f715e08c58b8cbc9cfc36c99d4123c337c3bac6600'>;
+  ExecutionHashBase<'2cc3d2d82c8e5661963949da23f78cedab8040242c11002c81b87f72b71952d5'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -305,6 +305,14 @@ export type FieldOutputTypes = {
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly userId: CodecTypes['pg/int4@1']['output'];
     };
+    readonly EmailVerificationCode: {
+      readonly attempts: CodecTypes['pg/int4@1']['output'];
+      readonly codeHash: CodecTypes['pg/text@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly expiresAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly userId: CodecTypes['pg/int4@1']['output'];
+    };
     readonly FanProfile: {
       readonly avatarUrl: CodecTypes['pg/text@1']['output'] | null;
       readonly bio: CodecTypes['pg/text@1']['output'] | null;
@@ -358,13 +366,22 @@ export type FieldOutputTypes = {
     readonly FanRoomMessage: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly fanRoomId: CodecTypes['pg/int4@1']['output'];
+      readonly guestId: CodecTypes['pg/text@1']['output'] | null;
+      readonly guestName: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly isDeleted: CodecTypes['pg/bool@1']['output'];
       readonly isEdited: CodecTypes['pg/bool@1']['output'];
       readonly message: CodecTypes['pg/text@1']['output'];
       readonly replyToId: CodecTypes['pg/int4@1']['output'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
-      readonly userId: CodecTypes['pg/int4@1']['output'];
+      readonly userId: CodecTypes['pg/int4@1']['output'] | null;
+    };
+    readonly GuestPollVote: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly guestTokenHash: CodecTypes['pg/text@1']['output'];
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly optionId: CodecTypes['pg/int4@1']['output'];
+      readonly pollId: CodecTypes['pg/int4@1']['output'];
     };
     readonly KycSubmission: {
       readonly country: CodecTypes['pg/text@1']['output'];
@@ -622,30 +639,52 @@ export type FieldOutputTypes = {
       readonly correctOption: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly endsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+      readonly explanation: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly imageUrl: CodecTypes['pg/text@1']['output'] | null;
       readonly optionA: CodecTypes['pg/text@1']['output'];
       readonly optionB: CodecTypes['pg/text@1']['output'];
       readonly optionC: CodecTypes['pg/text@1']['output'];
       readonly optionD: CodecTypes['pg/text@1']['output'];
       readonly pointsReward: CodecTypes['pg/int4@1']['output'];
       readonly question: CodecTypes['pg/text@1']['output'];
+      readonly questionOrder: CodecTypes['pg/int4@1']['output'];
+      readonly quizId: CodecTypes['pg/int4@1']['output'] | null;
       readonly startsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
       readonly status: 'DRAFT' | 'ACTIVE' | 'CLOSED';
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
     };
-    readonly User: {
+    readonly TriviaQuiz: {
+      readonly coverImageUrl: CodecTypes['pg/text@1']['output'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly description: CodecTypes['pg/text@1']['output'] | null;
+      readonly endsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly startsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+      readonly status: 'DRAFT' | 'ACTIVE' | 'CLOSED';
+      readonly title: CodecTypes['pg/text@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    };
+    readonly User: {
+      readonly country: CodecTypes['pg/text@1']['output'] | null;
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly dateOfBirth: CodecTypes['pg/text@1']['output'] | null;
       readonly email: CodecTypes['pg/text@1']['output'];
       readonly emailVerified: CodecTypes['pg/bool@1']['output'];
+      readonly firstName: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly lastLoginAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+      readonly lastName: CodecTypes['pg/text@1']['output'] | null;
       readonly mustChangePassword: CodecTypes['pg/bool@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'] | null;
       readonly passwordHash: CodecTypes['pg/text@1']['output'];
       readonly role: 'USER' | 'ADMIN';
+      readonly sex: 'FEMALE' | 'MALE' | null;
+      readonly state: CodecTypes['pg/text@1']['output'] | null;
       readonly status: 'ACTIVE' | 'SUSPENDED' | 'DELETED';
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly username: CodecTypes['pg/text@1']['output'] | null;
+      readonly whatsappNumber: CodecTypes['pg/text@1']['output'] | null;
     };
     readonly UserAchievement: {
       readonly achievementId: CodecTypes['pg/int4@1']['output'];
@@ -728,6 +767,14 @@ export type FieldInputTypes = {
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly userId: CodecTypes['pg/int4@1']['input'];
     };
+    readonly EmailVerificationCode: {
+      readonly attempts: CodecTypes['pg/int4@1']['input'];
+      readonly codeHash: CodecTypes['pg/text@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly expiresAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly userId: CodecTypes['pg/int4@1']['input'];
+    };
     readonly FanProfile: {
       readonly avatarUrl: CodecTypes['pg/text@1']['input'] | null;
       readonly bio: CodecTypes['pg/text@1']['input'] | null;
@@ -781,13 +828,22 @@ export type FieldInputTypes = {
     readonly FanRoomMessage: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly fanRoomId: CodecTypes['pg/int4@1']['input'];
+      readonly guestId: CodecTypes['pg/text@1']['input'] | null;
+      readonly guestName: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly isDeleted: CodecTypes['pg/bool@1']['input'];
       readonly isEdited: CodecTypes['pg/bool@1']['input'];
       readonly message: CodecTypes['pg/text@1']['input'];
       readonly replyToId: CodecTypes['pg/int4@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
-      readonly userId: CodecTypes['pg/int4@1']['input'];
+      readonly userId: CodecTypes['pg/int4@1']['input'] | null;
+    };
+    readonly GuestPollVote: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly guestTokenHash: CodecTypes['pg/text@1']['input'];
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly optionId: CodecTypes['pg/int4@1']['input'];
+      readonly pollId: CodecTypes['pg/int4@1']['input'];
     };
     readonly KycSubmission: {
       readonly country: CodecTypes['pg/text@1']['input'];
@@ -1045,30 +1101,52 @@ export type FieldInputTypes = {
       readonly correctOption: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly endsAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
+      readonly explanation: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly imageUrl: CodecTypes['pg/text@1']['input'] | null;
       readonly optionA: CodecTypes['pg/text@1']['input'];
       readonly optionB: CodecTypes['pg/text@1']['input'];
       readonly optionC: CodecTypes['pg/text@1']['input'];
       readonly optionD: CodecTypes['pg/text@1']['input'];
       readonly pointsReward: CodecTypes['pg/int4@1']['input'];
       readonly question: CodecTypes['pg/text@1']['input'];
+      readonly questionOrder: CodecTypes['pg/int4@1']['input'];
+      readonly quizId: CodecTypes['pg/int4@1']['input'] | null;
       readonly startsAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
       readonly status: 'DRAFT' | 'ACTIVE' | 'CLOSED';
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
     };
-    readonly User: {
+    readonly TriviaQuiz: {
+      readonly coverImageUrl: CodecTypes['pg/text@1']['input'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly description: CodecTypes['pg/text@1']['input'] | null;
+      readonly endsAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly startsAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
+      readonly status: 'DRAFT' | 'ACTIVE' | 'CLOSED';
+      readonly title: CodecTypes['pg/text@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
+    };
+    readonly User: {
+      readonly country: CodecTypes['pg/text@1']['input'] | null;
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly dateOfBirth: CodecTypes['pg/text@1']['input'] | null;
       readonly email: CodecTypes['pg/text@1']['input'];
       readonly emailVerified: CodecTypes['pg/bool@1']['input'];
+      readonly firstName: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly lastLoginAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
+      readonly lastName: CodecTypes['pg/text@1']['input'] | null;
       readonly mustChangePassword: CodecTypes['pg/bool@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'] | null;
       readonly passwordHash: CodecTypes['pg/text@1']['input'];
       readonly role: 'USER' | 'ADMIN';
+      readonly sex: 'FEMALE' | 'MALE' | null;
+      readonly state: CodecTypes['pg/text@1']['input'] | null;
       readonly status: 'ACTIVE' | 'SUSPENDED' | 'DELETED';
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly username: CodecTypes['pg/text@1']['input'] | null;
+      readonly whatsappNumber: CodecTypes['pg/text@1']['input'] | null;
     };
     readonly UserAchievement: {
       readonly achievementId: CodecTypes['pg/int4@1']['input'];
@@ -1151,6 +1229,14 @@ export type StorageColumnTypes = {
       readonly type: 'DAILY' | 'WEEKLY' | 'MATCH' | 'PREDICTION' | 'ENGAGEMENT' | 'COMMUNITY';
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
     };
+    readonly email_verification_codes: {
+      readonly attempts: CodecTypes['pg/int4@1']['output'];
+      readonly codeHash: CodecTypes['pg/text@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly expiresAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly userId: CodecTypes['pg/int4@1']['output'];
+    };
     readonly fan_profiles: {
       readonly avatarUrl: CodecTypes['pg/text@1']['output'] | null;
       readonly bio: CodecTypes['pg/text@1']['output'] | null;
@@ -1189,13 +1275,15 @@ export type StorageColumnTypes = {
     readonly fan_room_messages: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly fanRoomId: CodecTypes['pg/int4@1']['output'];
+      readonly guestId: CodecTypes['pg/text@1']['output'] | null;
+      readonly guestName: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly isDeleted: CodecTypes['pg/bool@1']['output'];
       readonly isEdited: CodecTypes['pg/bool@1']['output'];
       readonly message: CodecTypes['pg/text@1']['output'];
       readonly replyToId: CodecTypes['pg/int4@1']['output'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
-      readonly userId: CodecTypes['pg/int4@1']['output'];
+      readonly userId: CodecTypes['pg/int4@1']['output'] | null;
     };
     readonly fan_rooms: {
       readonly apiFootballFixtureId: CodecTypes['pg/int4@1']['output'] | null;
@@ -1211,6 +1299,13 @@ export type StorageColumnTypes = {
       readonly sport: CodecTypes['pg/text@1']['output'];
       readonly status: 'ACTIVE' | 'CLOSED' | 'ARCHIVED';
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    };
+    readonly guest_poll_votes: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly guestTokenHash: CodecTypes['pg/text@1']['output'];
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly optionId: CodecTypes['pg/int4@1']['output'];
+      readonly pollId: CodecTypes['pg/int4@1']['output'];
     };
     readonly kyc_submissions: {
       readonly country: CodecTypes['pg/text@1']['output'];
@@ -1468,15 +1563,30 @@ export type StorageColumnTypes = {
       readonly correctOption: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly endsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+      readonly explanation: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly imageUrl: CodecTypes['pg/text@1']['output'] | null;
       readonly optionA: CodecTypes['pg/text@1']['output'];
       readonly optionB: CodecTypes['pg/text@1']['output'];
       readonly optionC: CodecTypes['pg/text@1']['output'];
       readonly optionD: CodecTypes['pg/text@1']['output'];
       readonly pointsReward: CodecTypes['pg/int4@1']['output'];
       readonly question: CodecTypes['pg/text@1']['output'];
+      readonly questionOrder: CodecTypes['pg/int4@1']['output'];
+      readonly quizId: CodecTypes['pg/int4@1']['output'] | null;
       readonly startsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
       readonly status: 'DRAFT' | 'ACTIVE' | 'CLOSED';
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    };
+    readonly trivia_quizzes: {
+      readonly coverImageUrl: CodecTypes['pg/text@1']['output'] | null;
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly description: CodecTypes['pg/text@1']['output'] | null;
+      readonly endsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly startsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+      readonly status: 'DRAFT' | 'ACTIVE' | 'CLOSED';
+      readonly title: CodecTypes['pg/text@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
     };
     readonly user_achievements: {
@@ -1502,18 +1612,25 @@ export type StorageColumnTypes = {
       readonly userId: CodecTypes['pg/int4@1']['output'];
     };
     readonly users: {
+      readonly country: CodecTypes['pg/text@1']['output'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly dateOfBirth: CodecTypes['pg/text@1']['output'] | null;
       readonly email: CodecTypes['pg/text@1']['output'];
       readonly emailVerified: CodecTypes['pg/bool@1']['output'];
+      readonly firstName: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly lastLoginAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+      readonly lastName: CodecTypes['pg/text@1']['output'] | null;
       readonly mustChangePassword: CodecTypes['pg/bool@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'] | null;
       readonly passwordHash: CodecTypes['pg/text@1']['output'];
       readonly role: 'USER' | 'ADMIN';
+      readonly sex: 'FEMALE' | 'MALE' | null;
+      readonly state: CodecTypes['pg/text@1']['output'] | null;
       readonly status: 'ACTIVE' | 'SUSPENDED' | 'DELETED';
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly username: CodecTypes['pg/text@1']['output'] | null;
+      readonly whatsappNumber: CodecTypes['pg/text@1']['output'] | null;
     };
   };
 };
@@ -1574,6 +1691,14 @@ export type StorageColumnInputTypes = {
       readonly type: 'DAILY' | 'WEEKLY' | 'MATCH' | 'PREDICTION' | 'ENGAGEMENT' | 'COMMUNITY';
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
     };
+    readonly email_verification_codes: {
+      readonly attempts: CodecTypes['pg/int4@1']['input'];
+      readonly codeHash: CodecTypes['pg/text@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly expiresAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly userId: CodecTypes['pg/int4@1']['input'];
+    };
     readonly fan_profiles: {
       readonly avatarUrl: CodecTypes['pg/text@1']['input'] | null;
       readonly bio: CodecTypes['pg/text@1']['input'] | null;
@@ -1612,13 +1737,15 @@ export type StorageColumnInputTypes = {
     readonly fan_room_messages: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly fanRoomId: CodecTypes['pg/int4@1']['input'];
+      readonly guestId: CodecTypes['pg/text@1']['input'] | null;
+      readonly guestName: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly isDeleted: CodecTypes['pg/bool@1']['input'];
       readonly isEdited: CodecTypes['pg/bool@1']['input'];
       readonly message: CodecTypes['pg/text@1']['input'];
       readonly replyToId: CodecTypes['pg/int4@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
-      readonly userId: CodecTypes['pg/int4@1']['input'];
+      readonly userId: CodecTypes['pg/int4@1']['input'] | null;
     };
     readonly fan_rooms: {
       readonly apiFootballFixtureId: CodecTypes['pg/int4@1']['input'] | null;
@@ -1634,6 +1761,13 @@ export type StorageColumnInputTypes = {
       readonly sport: CodecTypes['pg/text@1']['input'];
       readonly status: 'ACTIVE' | 'CLOSED' | 'ARCHIVED';
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
+    };
+    readonly guest_poll_votes: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly guestTokenHash: CodecTypes['pg/text@1']['input'];
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly optionId: CodecTypes['pg/int4@1']['input'];
+      readonly pollId: CodecTypes['pg/int4@1']['input'];
     };
     readonly kyc_submissions: {
       readonly country: CodecTypes['pg/text@1']['input'];
@@ -1891,15 +2025,30 @@ export type StorageColumnInputTypes = {
       readonly correctOption: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly endsAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
+      readonly explanation: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly imageUrl: CodecTypes['pg/text@1']['input'] | null;
       readonly optionA: CodecTypes['pg/text@1']['input'];
       readonly optionB: CodecTypes['pg/text@1']['input'];
       readonly optionC: CodecTypes['pg/text@1']['input'];
       readonly optionD: CodecTypes['pg/text@1']['input'];
       readonly pointsReward: CodecTypes['pg/int4@1']['input'];
       readonly question: CodecTypes['pg/text@1']['input'];
+      readonly questionOrder: CodecTypes['pg/int4@1']['input'];
+      readonly quizId: CodecTypes['pg/int4@1']['input'] | null;
       readonly startsAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
       readonly status: 'DRAFT' | 'ACTIVE' | 'CLOSED';
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
+    };
+    readonly trivia_quizzes: {
+      readonly coverImageUrl: CodecTypes['pg/text@1']['input'] | null;
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly description: CodecTypes['pg/text@1']['input'] | null;
+      readonly endsAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly startsAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
+      readonly status: 'DRAFT' | 'ACTIVE' | 'CLOSED';
+      readonly title: CodecTypes['pg/text@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
     };
     readonly user_achievements: {
@@ -1925,18 +2074,25 @@ export type StorageColumnInputTypes = {
       readonly userId: CodecTypes['pg/int4@1']['input'];
     };
     readonly users: {
+      readonly country: CodecTypes['pg/text@1']['input'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly dateOfBirth: CodecTypes['pg/text@1']['input'] | null;
       readonly email: CodecTypes['pg/text@1']['input'];
       readonly emailVerified: CodecTypes['pg/bool@1']['input'];
+      readonly firstName: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly lastLoginAt: CodecTypes['pg/timestamptz-string@1']['input'] | null;
+      readonly lastName: CodecTypes['pg/text@1']['input'] | null;
       readonly mustChangePassword: CodecTypes['pg/bool@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'] | null;
       readonly passwordHash: CodecTypes['pg/text@1']['input'];
       readonly role: 'USER' | 'ADMIN';
+      readonly sex: 'FEMALE' | 'MALE' | null;
+      readonly state: CodecTypes['pg/text@1']['input'] | null;
       readonly status: 'ACTIVE' | 'SUSPENDED' | 'DELETED';
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly username: CodecTypes['pg/text@1']['input'] | null;
+      readonly whatsappNumber: CodecTypes['pg/text@1']['input'] | null;
     };
   };
 };
@@ -2004,6 +2160,15 @@ export namespace Models {
     user: public_User;
     readonly [RelationKeys]?: 'challenge' | 'user';
   };
+  export type public_EmailVerificationCode = {
+    attempts: CodecTypes['pg/int4@1']['output'];
+    codeHash: CodecTypes['pg/text@1']['output'];
+    createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    expiresAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    id: CodecTypes['pg/int4@1']['output'];
+    userId: CodecTypes['pg/int4@1']['output'];
+    readonly [RelationKeys]?: never;
+  };
   export type public_FanProfile = {
     avatarUrl: CodecTypes['pg/text@1']['output'] | null;
     bio: CodecTypes['pg/text@1']['output'] | null;
@@ -2068,16 +2233,28 @@ export namespace Models {
   export type public_FanRoomMessage = {
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
     fanRoomId: CodecTypes['pg/int4@1']['output'];
+    guestId: CodecTypes['pg/text@1']['output'] | null;
+    guestName: CodecTypes['pg/text@1']['output'] | null;
     id: CodecTypes['pg/int4@1']['output'];
     isDeleted: CodecTypes['pg/bool@1']['output'];
     isEdited: CodecTypes['pg/bool@1']['output'];
     message: CodecTypes['pg/text@1']['output'];
     replyToId: CodecTypes['pg/int4@1']['output'] | null;
     updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
-    userId: CodecTypes['pg/int4@1']['output'];
+    userId: CodecTypes['pg/int4@1']['output'] | null;
     fanRoom: public_FanRoom;
-    user: public_User;
+    user: public_User | null;
     readonly [RelationKeys]?: 'fanRoom' | 'user';
+  };
+  export type public_GuestPollVote = {
+    createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    guestTokenHash: CodecTypes['pg/text@1']['output'];
+    id: CodecTypes['pg/int4@1']['output'];
+    optionId: CodecTypes['pg/int4@1']['output'];
+    pollId: CodecTypes['pg/int4@1']['output'];
+    option: public_PollOption;
+    poll: public_Poll;
+    readonly [RelationKeys]?: 'option' | 'poll';
   };
   export type public_KycSubmission = {
     country: CodecTypes['pg/text@1']['output'];
@@ -2274,18 +2451,20 @@ export namespace Models {
     startsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
     status: 'DRAFT' | 'ACTIVE' | 'CLOSED';
     updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    guestVotes: public_GuestPollVote[];
     options: public_PollOption[];
     votes: public_PollVote[];
-    readonly [RelationKeys]?: 'options' | 'votes';
+    readonly [RelationKeys]?: 'guestVotes' | 'options' | 'votes';
   };
   export type public_PollOption = {
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
     id: CodecTypes['pg/int4@1']['output'];
     label: CodecTypes['pg/text@1']['output'];
     pollId: CodecTypes['pg/int4@1']['output'];
+    guestVotes: public_GuestPollVote[];
     poll: public_Poll;
     votes: public_PollVote[];
-    readonly [RelationKeys]?: 'poll' | 'votes';
+    readonly [RelationKeys]?: 'guestVotes' | 'poll' | 'votes';
   };
   export type public_PollVote = {
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -2403,32 +2582,57 @@ export namespace Models {
     correctOption: CodecTypes['pg/text@1']['output'];
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
     endsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+    explanation: CodecTypes['pg/text@1']['output'] | null;
     id: CodecTypes['pg/int4@1']['output'];
+    imageUrl: CodecTypes['pg/text@1']['output'] | null;
     optionA: CodecTypes['pg/text@1']['output'];
     optionB: CodecTypes['pg/text@1']['output'];
     optionC: CodecTypes['pg/text@1']['output'];
     optionD: CodecTypes['pg/text@1']['output'];
     pointsReward: CodecTypes['pg/int4@1']['output'];
     question: CodecTypes['pg/text@1']['output'];
+    questionOrder: CodecTypes['pg/int4@1']['output'];
+    quizId: CodecTypes['pg/int4@1']['output'] | null;
     startsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
     status: 'DRAFT' | 'ACTIVE' | 'CLOSED';
     updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
     attempts: public_TriviaAttempt[];
-    readonly [RelationKeys]?: 'attempts';
+    quiz: public_TriviaQuiz | null;
+    readonly [RelationKeys]?: 'attempts' | 'quiz';
+  };
+  export type public_TriviaQuiz = {
+    coverImageUrl: CodecTypes['pg/text@1']['output'] | null;
+    createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    description: CodecTypes['pg/text@1']['output'] | null;
+    endsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+    id: CodecTypes['pg/int4@1']['output'];
+    startsAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+    status: 'DRAFT' | 'ACTIVE' | 'CLOSED';
+    title: CodecTypes['pg/text@1']['output'];
+    updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    questions: public_TriviaQuestion[];
+    readonly [RelationKeys]?: 'questions';
   };
   export type public_User = {
+    country: CodecTypes['pg/text@1']['output'] | null;
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    dateOfBirth: CodecTypes['pg/text@1']['output'] | null;
     email: CodecTypes['pg/text@1']['output'];
     emailVerified: CodecTypes['pg/bool@1']['output'];
+    firstName: CodecTypes['pg/text@1']['output'] | null;
     id: CodecTypes['pg/int4@1']['output'];
     lastLoginAt: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+    lastName: CodecTypes['pg/text@1']['output'] | null;
     mustChangePassword: CodecTypes['pg/bool@1']['output'];
     name: CodecTypes['pg/text@1']['output'] | null;
     passwordHash: CodecTypes['pg/text@1']['output'];
     role: 'USER' | 'ADMIN';
+    sex: 'FEMALE' | 'MALE' | null;
+    state: CodecTypes['pg/text@1']['output'] | null;
     status: 'ACTIVE' | 'SUSPENDED' | 'DELETED';
     updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
     username: CodecTypes['pg/text@1']['output'] | null;
+    whatsappNumber: CodecTypes['pg/text@1']['output'] | null;
     achievements: public_UserAchievement[];
     challengeParticipations: public_ChallengeParticipation[];
     fanRoomMemberships: public_FanRoomMember[];
@@ -2515,11 +2719,13 @@ export declare const models: {
     AdminUser: Models.public_AdminUser;
     Challenge: Models.public_Challenge;
     ChallengeParticipation: Models.public_ChallengeParticipation;
+    EmailVerificationCode: Models.public_EmailVerificationCode;
     FanProfile: Models.public_FanProfile;
     FanReaction: Models.public_FanReaction;
     FanRoom: Models.public_FanRoom;
     FanRoomMember: Models.public_FanRoomMember;
     FanRoomMessage: Models.public_FanRoomMessage;
+    GuestPollVote: Models.public_GuestPollVote;
     KycSubmission: Models.public_KycSubmission;
     Match: Models.public_Match;
     MatchEvent: Models.public_MatchEvent;
@@ -2542,6 +2748,7 @@ export declare const models: {
     Team: Models.public_Team;
     TriviaAttempt: Models.public_TriviaAttempt;
     TriviaQuestion: Models.public_TriviaQuestion;
+    TriviaQuiz: Models.public_TriviaQuiz;
     User: Models.public_User;
     UserAchievement: Models.public_UserAchievement;
     UserPlayerFollow: Models.public_UserPlayerFollow;
@@ -2975,6 +3182,53 @@ type ContractBase = Omit<
               ];
               foreignKeys: readonly [];
             };
+            readonly email_verification_codes: {
+              columns: {
+                readonly attempts: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/int4@1', 0>;
+                  };
+                };
+                readonly codeHash: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly expiresAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                };
+                readonly id: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                };
+                readonly userId: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['userId'] }];
+              indexes: readonly [];
+              foreignKeys: readonly [];
+            };
             readonly fan_profiles: {
               columns: {
                 readonly avatarUrl: {
@@ -3302,6 +3556,16 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/int4@1';
                   readonly nullable: false;
                 };
+                readonly guestId: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly guestName: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
                 readonly id: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
@@ -3347,7 +3611,7 @@ type ContractBase = Omit<
                 readonly userId: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
-                  readonly nullable: false;
+                  readonly nullable: true;
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
@@ -3363,6 +3627,12 @@ type ContractBase = Omit<
                   readonly name: 'fan_room_messages_fanRoomId_idx_5b3ed17c';
                   readonly prefix: 'fan_room_messages_fanRoomId_idx';
                   readonly columns: readonly ['fanRoomId'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'fan_room_messages_guestId_idx_39c95865';
+                  readonly prefix: 'fan_room_messages_guestId_idx';
+                  readonly columns: readonly ['guestId'];
                   readonly unique: false;
                 },
                 {
@@ -3520,6 +3790,82 @@ type ContractBase = Omit<
                   readonly target: {
                     readonly namespaceId: 'public' & NamespaceId;
                     readonly tableName: 'matches';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
+            readonly guest_poll_votes: {
+              columns: {
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly guestTokenHash: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly id: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                };
+                readonly optionId: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                };
+                readonly pollId: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['pollId', 'guestTokenHash'] }];
+              indexes: readonly [
+                {
+                  readonly name: 'guest_poll_votes_optionId_idx_b1d5fce5';
+                  readonly prefix: 'guest_poll_votes_optionId_idx';
+                  readonly columns: readonly ['optionId'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'guest_poll_votes_pollId_idx_c217e50b';
+                  readonly prefix: 'guest_poll_votes_pollId_idx';
+                  readonly columns: readonly ['pollId'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'guest_poll_votes';
+                    readonly columns: readonly ['pollId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'polls';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'guest_poll_votes';
+                    readonly columns: readonly ['optionId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'poll_options';
                     readonly columns: readonly ['id'];
                   };
                 },
@@ -5562,6 +5908,11 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-string@1';
                   readonly nullable: true;
                 };
+                readonly explanation: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
                 readonly id: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
@@ -5570,6 +5921,11 @@ type ContractBase = Omit<
                     readonly kind: 'function';
                     readonly expression: 'autoincrement()';
                   };
+                };
+                readonly imageUrl: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                 };
                 readonly optionA: {
                   readonly nativeType: 'text';
@@ -5605,6 +5961,20 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
                 };
+                readonly questionOrder: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/int4@1', 0>;
+                  };
+                };
+                readonly quizId: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: true;
+                };
                 readonly startsAt: {
                   readonly nativeType: 'timestamptz';
                   readonly codecId: 'pg/timestamptz-string@1';
@@ -5629,8 +5999,102 @@ type ContractBase = Omit<
               uniques: readonly [];
               indexes: readonly [
                 {
+                  readonly name: 'trivia_questions_quizId_idx_c721979c';
+                  readonly prefix: 'trivia_questions_quizId_idx';
+                  readonly columns: readonly ['quizId'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'trivia_questions_quizId_questionOrder_idx_90344e95';
+                  readonly prefix: 'trivia_questions_quizId_questionOrder_idx';
+                  readonly columns: readonly ['quizId', 'questionOrder'];
+                  readonly unique: false;
+                },
+                {
                   readonly name: 'trivia_questions_status_idx_e98638ab';
                   readonly prefix: 'trivia_questions_status_idx';
+                  readonly columns: readonly ['status'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'trivia_questions';
+                    readonly columns: readonly ['quizId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'trivia_quizzes';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
+            readonly trivia_quizzes: {
+              columns: {
+                readonly coverImageUrl: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly description: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly endsAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: true;
+                };
+                readonly id: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                };
+                readonly startsAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: true;
+                };
+                readonly status: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'DRAFT'>;
+                  };
+                };
+                readonly title: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly updatedAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'trivia_quizzes_status_idx_e98638ab';
+                  readonly prefix: 'trivia_quizzes_status_idx';
                   readonly columns: readonly ['status'];
                   readonly unique: false;
                 },
@@ -5901,11 +6365,21 @@ type ContractBase = Omit<
             };
             readonly users: {
               columns: {
+                readonly country: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
                 readonly createdAt: {
                   readonly nativeType: 'timestamptz';
                   readonly codecId: 'pg/timestamptz-string@1';
                   readonly nullable: false;
                   readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly dateOfBirth: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                 };
                 readonly email: {
                   readonly nativeType: 'text';
@@ -5921,6 +6395,11 @@ type ContractBase = Omit<
                     readonly value: DefaultLiteralValue<'pg/bool@1', false>;
                   };
                 };
+                readonly firstName: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
                 readonly id: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
@@ -5933,6 +6412,11 @@ type ContractBase = Omit<
                 readonly lastLoginAt: {
                   readonly nativeType: 'timestamptz';
                   readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: true;
+                };
+                readonly lastName: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
                   readonly nullable: true;
                 };
                 readonly mustChangePassword: {
@@ -5963,6 +6447,16 @@ type ContractBase = Omit<
                     readonly value: DefaultLiteralValue<'pg/text@1', 'USER'>;
                   };
                 };
+                readonly sex: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly state: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
                 readonly status: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
@@ -5978,6 +6472,11 @@ type ContractBase = Omit<
                   readonly nullable: false;
                 };
                 readonly username: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly whatsappNumber: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: true;
@@ -6177,6 +6676,10 @@ type ContractBase = Omit<
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'Challenge';
     };
+    readonly email_verification_codes: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'EmailVerificationCode';
+    };
     readonly fan_profiles: {
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'FanProfile';
@@ -6194,6 +6697,10 @@ type ContractBase = Omit<
       readonly model: 'FanRoomMessage';
     };
     readonly fan_rooms: { readonly namespace: 'public' & NamespaceId; readonly model: 'FanRoom' };
+    readonly guest_poll_votes: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'GuestPollVote';
+    };
     readonly kyc_submissions: {
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'KycSubmission';
@@ -6257,6 +6764,10 @@ type ContractBase = Omit<
     readonly trivia_questions: {
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'TriviaQuestion';
+    };
+    readonly trivia_quizzes: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'TriviaQuiz';
     };
     readonly user_achievements: {
       readonly namespace: 'public' & NamespaceId;
@@ -6636,6 +7147,53 @@ type ContractBase = Omit<
               };
             };
           };
+          readonly EmailVerificationCode: {
+            readonly fields: {
+              readonly attempts: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly codeHash: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+              readonly expiresAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly userId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+            };
+            readonly relations: Record<string, never>;
+            readonly storage: {
+              readonly table: 'email_verification_codes';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly attempts: { readonly column: 'attempts' };
+                readonly codeHash: { readonly column: 'codeHash' };
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly expiresAt: { readonly column: 'expiresAt' };
+                readonly id: { readonly column: 'id' };
+                readonly userId: { readonly column: 'userId' };
+              };
+            };
+          };
           readonly FanProfile: {
             readonly fields: {
               readonly avatarUrl: {
@@ -7001,6 +7559,14 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
+              readonly guestId: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly guestName: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
@@ -7029,7 +7595,7 @@ type ContractBase = Omit<
                 };
               };
               readonly userId: {
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
             };
@@ -7049,7 +7615,7 @@ type ContractBase = Omit<
               readonly user: {
                 readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
                 readonly cardinality: 'N:1';
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly on: {
                   readonly localFields: readonly ['userId'];
                   readonly targetFields: readonly ['id'];
@@ -7062,6 +7628,8 @@ type ContractBase = Omit<
               readonly fields: {
                 readonly createdAt: { readonly column: 'createdAt' };
                 readonly fanRoomId: { readonly column: 'fanRoomId' };
+                readonly guestId: { readonly column: 'guestId' };
+                readonly guestName: { readonly column: 'guestName' };
                 readonly id: { readonly column: 'id' };
                 readonly isDeleted: { readonly column: 'isDeleted' };
                 readonly isEdited: { readonly column: 'isEdited' };
@@ -7069,6 +7637,67 @@ type ContractBase = Omit<
                 readonly replyToId: { readonly column: 'replyToId' };
                 readonly updatedAt: { readonly column: 'updatedAt' };
                 readonly userId: { readonly column: 'userId' };
+              };
+            };
+          };
+          readonly GuestPollVote: {
+            readonly fields: {
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+              readonly guestTokenHash: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly optionId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly pollId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+            };
+            readonly relations: {
+              readonly option: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'PollOption';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['optionId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly poll: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'Poll' };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['pollId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'guest_poll_votes';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly guestTokenHash: { readonly column: 'guestTokenHash' };
+                readonly id: { readonly column: 'id' };
+                readonly optionId: { readonly column: 'optionId' };
+                readonly pollId: { readonly column: 'pollId' };
               };
             };
           };
@@ -8119,6 +8748,17 @@ type ContractBase = Omit<
               };
             };
             readonly relations: {
+              readonly guestVotes: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'GuestPollVote';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['pollId'];
+                };
+              };
               readonly options: {
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
@@ -8181,6 +8821,17 @@ type ContractBase = Omit<
               };
             };
             readonly relations: {
+              readonly guestVotes: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'GuestPollVote';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['optionId'];
+                };
+              };
               readonly poll: {
                 readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'Poll' };
                 readonly cardinality: 'N:1';
@@ -8918,9 +9569,17 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-string@1';
                 };
               };
+              readonly explanation: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly imageUrl: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly optionA: {
                 readonly nullable: false;
@@ -8945,6 +9604,14 @@ type ContractBase = Omit<
               readonly question: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly questionOrder: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly quizId: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
               readonly startsAt: {
                 readonly nullable: true;
@@ -8977,6 +9644,18 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['questionId'];
                 };
               };
+              readonly quiz: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'TriviaQuiz';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: true;
+                readonly on: {
+                  readonly localFields: readonly ['quizId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
             };
             readonly storage: {
               readonly table: 'trivia_questions';
@@ -8985,27 +9664,119 @@ type ContractBase = Omit<
                 readonly correctOption: { readonly column: 'correctOption' };
                 readonly createdAt: { readonly column: 'createdAt' };
                 readonly endsAt: { readonly column: 'endsAt' };
+                readonly explanation: { readonly column: 'explanation' };
                 readonly id: { readonly column: 'id' };
+                readonly imageUrl: { readonly column: 'imageUrl' };
                 readonly optionA: { readonly column: 'optionA' };
                 readonly optionB: { readonly column: 'optionB' };
                 readonly optionC: { readonly column: 'optionC' };
                 readonly optionD: { readonly column: 'optionD' };
                 readonly pointsReward: { readonly column: 'pointsReward' };
                 readonly question: { readonly column: 'question' };
+                readonly questionOrder: { readonly column: 'questionOrder' };
+                readonly quizId: { readonly column: 'quizId' };
                 readonly startsAt: { readonly column: 'startsAt' };
                 readonly status: { readonly column: 'status' };
                 readonly updatedAt: { readonly column: 'updatedAt' };
               };
             };
           };
-          readonly User: {
+          readonly TriviaQuiz: {
             readonly fields: {
+              readonly coverImageUrl: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly createdAt: {
                 readonly nullable: false;
                 readonly type: {
                   readonly kind: 'scalar';
                   readonly codecId: 'pg/timestamptz-string@1';
                 };
+              };
+              readonly description: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly endsAt: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly startsAt: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly title: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly updatedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+            };
+            readonly relations: {
+              readonly questions: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'TriviaQuestion';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['quizId'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'trivia_quizzes';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly coverImageUrl: { readonly column: 'coverImageUrl' };
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly description: { readonly column: 'description' };
+                readonly endsAt: { readonly column: 'endsAt' };
+                readonly id: { readonly column: 'id' };
+                readonly startsAt: { readonly column: 'startsAt' };
+                readonly status: { readonly column: 'status' };
+                readonly title: { readonly column: 'title' };
+                readonly updatedAt: { readonly column: 'updatedAt' };
+              };
+            };
+          };
+          readonly User: {
+            readonly fields: {
+              readonly country: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+              readonly dateOfBirth: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly email: {
                 readonly nullable: false;
@@ -9014,6 +9785,10 @@ type ContractBase = Omit<
               readonly emailVerified: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
+              readonly firstName: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly id: {
                 readonly nullable: false;
@@ -9025,6 +9800,10 @@ type ContractBase = Omit<
                   readonly kind: 'scalar';
                   readonly codecId: 'pg/timestamptz-string@1';
                 };
+              };
+              readonly lastName: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly mustChangePassword: {
                 readonly nullable: false;
@@ -9042,6 +9821,14 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly sex: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly state: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly status: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -9054,6 +9841,10 @@ type ContractBase = Omit<
                 };
               };
               readonly username: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly whatsappNumber: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
@@ -9296,18 +10087,25 @@ type ContractBase = Omit<
               readonly table: 'users';
               readonly namespaceId: 'public';
               readonly fields: {
+                readonly country: { readonly column: 'country' };
                 readonly createdAt: { readonly column: 'createdAt' };
+                readonly dateOfBirth: { readonly column: 'dateOfBirth' };
                 readonly email: { readonly column: 'email' };
                 readonly emailVerified: { readonly column: 'emailVerified' };
+                readonly firstName: { readonly column: 'firstName' };
                 readonly id: { readonly column: 'id' };
                 readonly lastLoginAt: { readonly column: 'lastLoginAt' };
+                readonly lastName: { readonly column: 'lastName' };
                 readonly mustChangePassword: { readonly column: 'mustChangePassword' };
                 readonly name: { readonly column: 'name' };
                 readonly passwordHash: { readonly column: 'passwordHash' };
                 readonly role: { readonly column: 'role' };
+                readonly sex: { readonly column: 'sex' };
+                readonly state: { readonly column: 'state' };
                 readonly status: { readonly column: 'status' };
                 readonly updatedAt: { readonly column: 'updatedAt' };
                 readonly username: { readonly column: 'username' };
+                readonly whatsappNumber: { readonly column: 'whatsappNumber' };
               };
             };
           };
@@ -9908,6 +10706,15 @@ type ContractBase = Omit<
           readonly onUpdate: { readonly id: 'timestampNow'; readonly kind: 'generator' };
           readonly ref: {
             readonly entry: 'trivia_questions';
+            readonly field: 'updatedAt';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: { readonly id: 'timestampNow'; readonly kind: 'generator' };
+          readonly onUpdate: { readonly id: 'timestampNow'; readonly kind: 'generator' };
+          readonly ref: {
+            readonly entry: 'trivia_quizzes';
             readonly field: 'updatedAt';
             readonly namespace: 'public';
           };
