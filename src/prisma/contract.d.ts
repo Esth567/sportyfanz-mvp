@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'8b7faafa5c5150ec506fd164934cc8075837b6aa7973ceb67152d3a5ebc29bc9'>;
+  StorageHashBase<'ff54a38b9d0c1339683c07a6dd2e6e1eb365d55a2b186d2c0217a00e4e803817'>;
 export type ExecutionHash =
   ExecutionHashBase<'2cc3d2d82c8e5661963949da23f78cedab8040242c11002c81b87f72b71952d5'>;
 export type ProfileHash =
@@ -456,17 +456,20 @@ export type FieldOutputTypes = {
     readonly NewsArticleLike: {
       readonly articleUrl: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly guestTokenHash: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
-      readonly userId: CodecTypes['pg/int4@1']['output'];
+      readonly userId: CodecTypes['pg/int4@1']['output'] | null;
     };
     readonly NewsComment: {
       readonly articleUrl: CodecTypes['pg/text@1']['output'];
       readonly body: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly guestName: CodecTypes['pg/text@1']['output'] | null;
+      readonly guestTokenHash: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly parentId: CodecTypes['pg/int4@1']['output'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
-      readonly userId: CodecTypes['pg/int4@1']['output'];
+      readonly userId: CodecTypes['pg/int4@1']['output'] | null;
     };
     readonly NewsCommentLike: {
       readonly commentId: CodecTypes['pg/int4@1']['output'];
@@ -918,17 +921,20 @@ export type FieldInputTypes = {
     readonly NewsArticleLike: {
       readonly articleUrl: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly guestTokenHash: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
-      readonly userId: CodecTypes['pg/int4@1']['input'];
+      readonly userId: CodecTypes['pg/int4@1']['input'] | null;
     };
     readonly NewsComment: {
       readonly articleUrl: CodecTypes['pg/text@1']['input'];
       readonly body: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly guestName: CodecTypes['pg/text@1']['input'] | null;
+      readonly guestTokenHash: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly parentId: CodecTypes['pg/int4@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
-      readonly userId: CodecTypes['pg/int4@1']['input'];
+      readonly userId: CodecTypes['pg/int4@1']['input'] | null;
     };
     readonly NewsCommentLike: {
       readonly commentId: CodecTypes['pg/int4@1']['input'];
@@ -1380,8 +1386,9 @@ export type StorageColumnTypes = {
     readonly news_article_likes: {
       readonly articleUrl: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly guestTokenHash: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
-      readonly userId: CodecTypes['pg/int4@1']['output'];
+      readonly userId: CodecTypes['pg/int4@1']['output'] | null;
     };
     readonly news_comment_likes: {
       readonly commentId: CodecTypes['pg/int4@1']['output'];
@@ -1393,10 +1400,12 @@ export type StorageColumnTypes = {
       readonly articleUrl: CodecTypes['pg/text@1']['output'];
       readonly body: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly guestName: CodecTypes['pg/text@1']['output'] | null;
+      readonly guestTokenHash: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly parentId: CodecTypes['pg/int4@1']['output'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
-      readonly userId: CodecTypes['pg/int4@1']['output'];
+      readonly userId: CodecTypes['pg/int4@1']['output'] | null;
     };
     readonly news_views: {
       readonly articleUrl: CodecTypes['pg/text@1']['output'];
@@ -1842,8 +1851,9 @@ export type StorageColumnInputTypes = {
     readonly news_article_likes: {
       readonly articleUrl: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly guestTokenHash: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
-      readonly userId: CodecTypes['pg/int4@1']['input'];
+      readonly userId: CodecTypes['pg/int4@1']['input'] | null;
     };
     readonly news_comment_likes: {
       readonly commentId: CodecTypes['pg/int4@1']['input'];
@@ -1855,10 +1865,12 @@ export type StorageColumnInputTypes = {
       readonly articleUrl: CodecTypes['pg/text@1']['input'];
       readonly body: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly guestName: CodecTypes['pg/text@1']['input'] | null;
+      readonly guestTokenHash: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly parentId: CodecTypes['pg/int4@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
-      readonly userId: CodecTypes['pg/int4@1']['input'];
+      readonly userId: CodecTypes['pg/int4@1']['input'] | null;
     };
     readonly news_views: {
       readonly articleUrl: CodecTypes['pg/text@1']['input'];
@@ -2342,23 +2354,26 @@ export namespace Models {
   export type public_NewsArticleLike = {
     articleUrl: CodecTypes['pg/text@1']['output'];
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    guestTokenHash: CodecTypes['pg/text@1']['output'] | null;
     id: CodecTypes['pg/int4@1']['output'];
-    userId: CodecTypes['pg/int4@1']['output'];
-    user: public_User;
+    userId: CodecTypes['pg/int4@1']['output'] | null;
+    user: public_User | null;
     readonly [RelationKeys]?: 'user';
   };
   export type public_NewsComment = {
     articleUrl: CodecTypes['pg/text@1']['output'];
     body: CodecTypes['pg/text@1']['output'];
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    guestName: CodecTypes['pg/text@1']['output'] | null;
+    guestTokenHash: CodecTypes['pg/text@1']['output'] | null;
     id: CodecTypes['pg/int4@1']['output'];
     parentId: CodecTypes['pg/int4@1']['output'] | null;
     updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
-    userId: CodecTypes['pg/int4@1']['output'];
+    userId: CodecTypes['pg/int4@1']['output'] | null;
     likes: public_NewsCommentLike[];
     parent: public_NewsComment | null;
     replies: public_NewsComment[];
-    user: public_User;
+    user: public_User | null;
     readonly [RelationKeys]?: 'likes' | 'parent' | 'replies' | 'user';
   };
   export type public_NewsCommentLike = {
@@ -4367,6 +4382,11 @@ type ContractBase = Omit<
                   readonly nullable: false;
                   readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
                 };
+                readonly guestTokenHash: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
                 readonly id: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
@@ -4379,11 +4399,14 @@ type ContractBase = Omit<
                 readonly userId: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
-                  readonly nullable: false;
+                  readonly nullable: true;
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [{ readonly columns: readonly ['articleUrl', 'userId'] }];
+              uniques: readonly [
+                { readonly columns: readonly ['articleUrl', 'userId'] },
+                { readonly columns: readonly ['articleUrl', 'guestTokenHash'] },
+              ];
               indexes: readonly [
                 {
                   readonly name: 'news_article_likes_articleUrl_idx_52fec833';
@@ -4502,6 +4525,16 @@ type ContractBase = Omit<
                   readonly nullable: false;
                   readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
                 };
+                readonly guestName: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly guestTokenHash: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
                 readonly id: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
@@ -4524,7 +4557,7 @@ type ContractBase = Omit<
                 readonly userId: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
-                  readonly nullable: false;
+                  readonly nullable: true;
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
@@ -4534,6 +4567,12 @@ type ContractBase = Omit<
                   readonly name: 'news_comments_articleUrl_createdAt_idx_efc1ce87';
                   readonly prefix: 'news_comments_articleUrl_createdAt_idx';
                   readonly columns: readonly ['articleUrl', 'createdAt'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'news_comments_articleUrl_guestTokenHash_idx_0e05ab3d';
+                  readonly prefix: 'news_comments_articleUrl_guestTokenHash_idx';
+                  readonly columns: readonly ['articleUrl', 'guestTokenHash'];
                   readonly unique: false;
                 },
                 {
@@ -4616,6 +4655,12 @@ type ContractBase = Omit<
                   readonly name: 'news_views_articleUrl_createdAt_idx_efc1ce87';
                   readonly prefix: 'news_views_articleUrl_createdAt_idx';
                   readonly columns: readonly ['articleUrl', 'createdAt'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'news_views_articleUrl_visitorKey_idx_a9ba95c1';
+                  readonly prefix: 'news_views_articleUrl_visitorKey_idx';
+                  readonly columns: readonly ['articleUrl', 'visitorKey'];
                   readonly unique: false;
                 },
                 {
@@ -8153,12 +8198,16 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-string@1';
                 };
               };
+              readonly guestTokenHash: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
               readonly userId: {
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
             };
@@ -8166,7 +8215,7 @@ type ContractBase = Omit<
               readonly user: {
                 readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
                 readonly cardinality: 'N:1';
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly on: {
                   readonly localFields: readonly ['userId'];
                   readonly targetFields: readonly ['id'];
@@ -8179,6 +8228,7 @@ type ContractBase = Omit<
               readonly fields: {
                 readonly articleUrl: { readonly column: 'articleUrl' };
                 readonly createdAt: { readonly column: 'createdAt' };
+                readonly guestTokenHash: { readonly column: 'guestTokenHash' };
                 readonly id: { readonly column: 'id' };
                 readonly userId: { readonly column: 'userId' };
               };
@@ -8201,6 +8251,14 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-string@1';
                 };
               };
+              readonly guestName: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly guestTokenHash: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
@@ -8217,7 +8275,7 @@ type ContractBase = Omit<
                 };
               };
               readonly userId: {
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
             };
@@ -8259,7 +8317,7 @@ type ContractBase = Omit<
               readonly user: {
                 readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
                 readonly cardinality: 'N:1';
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly on: {
                   readonly localFields: readonly ['userId'];
                   readonly targetFields: readonly ['id'];
@@ -8273,6 +8331,8 @@ type ContractBase = Omit<
                 readonly articleUrl: { readonly column: 'articleUrl' };
                 readonly body: { readonly column: 'body' };
                 readonly createdAt: { readonly column: 'createdAt' };
+                readonly guestName: { readonly column: 'guestName' };
+                readonly guestTokenHash: { readonly column: 'guestTokenHash' };
                 readonly id: { readonly column: 'id' };
                 readonly parentId: { readonly column: 'parentId' };
                 readonly updatedAt: { readonly column: 'updatedAt' };

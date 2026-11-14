@@ -1117,19 +1117,22 @@ model AdminUser {
 model NewsComment {
   id        Int      @id @default(autoincrement())
   articleUrl String
-  userId    Int
+  userId    Int?
+  guestTokenHash String?
+  guestName String?
   body      String
   parentId  Int?
   createdAt TimestamptzString @default(now())
   updatedAt temporal.updatedAtString()
 
-  user      User          @relation(fields: [userId], references: [id])
+  user      User?         @relation(fields: [userId], references: [id])
   parent    NewsComment?  @relation("NewsCommentReplies", fields: [parentId], references: [id])
   replies   NewsComment[] @relation("NewsCommentReplies")
   likes     NewsCommentLike[]
 
   @@index([articleUrl, createdAt])
   @@index([userId])
+  @@index([articleUrl, guestTokenHash])
   @@index([parentId])
   @@map("news_comments")
 }
@@ -1159,18 +1162,21 @@ model NewsView {
 
   @@index([articleUrl, createdAt])
   @@index([userId, articleUrl])
+  @@index([articleUrl, visitorKey])
   @@map("news_views")
 }
 
 model NewsArticleLike {
   id         Int      @id @default(autoincrement())
   articleUrl String
-  userId     Int
+  userId     Int?
+  guestTokenHash String?
   createdAt  TimestamptzString @default(now())
 
-  user       User     @relation(fields: [userId], references: [id])
+  user       User?    @relation(fields: [userId], references: [id])
 
   @@unique([articleUrl, userId])
+  @@unique([articleUrl, guestTokenHash])
   @@index([articleUrl])
   @@index([userId])
   @@map("news_article_likes")
