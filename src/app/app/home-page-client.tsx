@@ -98,6 +98,7 @@ export default function HomePage({
   initialNews,
   initialWelcome,
 }: HomePageProps) {
+  const [isAuthenticatedFan, setIsAuthenticatedFan] = useState(false);
   const [fanName, setFanName] = useState("SportyFanz Fan");
   const [fanInitials, setFanInitials] = useState("S");
   const [fanPoints, setFanPoints] = useState(0);
@@ -115,7 +116,7 @@ export default function HomePage({
   const [featuredNews, setFeaturedNews] =
    useState<HomeNewsStory | null>(initialNews[0] ?? null);
   const [liveNews, setLiveNews] =
-   useState<HomeNewsStory[]>(initialNews.slice(0, 2));
+   useState<HomeNewsStory[]>(initialNews.slice(0, 4));
   const [checkInLoading, setCheckInLoading] = useState(false);
   const [checkedInToday, setCheckedInToday] = useState(false);
   const [checkInMessage, setCheckInMessage] = useState("");
@@ -137,8 +138,8 @@ export default function HomePage({
       "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=1400&q=85",
     actionLabel: "Explore Sports News",
     href: featuredNews
-     ? `/app/news/article?url=${encodeURIComponent(featuredNews.link)}`
-     : "/app/news",
+     ? `/news/article?url=${encodeURIComponent(featuredNews.link)}`
+     : "/news",
    },
   {
     id: "advertisement",
@@ -150,7 +151,7 @@ export default function HomePage({
     image:
       "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1400&q=85",
     actionLabel: "Explore SportyFanz",
-    href: "/app/discover",
+    href: "/discover",
   },
   {
     id: "sponsored",
@@ -162,7 +163,7 @@ export default function HomePage({
     image:
       "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1400&q=85",
     actionLabel: "Discover More",
-    href: "/app/discover",
+    href: "/discover",
   },
   {
     id: "promotion",
@@ -174,7 +175,7 @@ export default function HomePage({
     image:
       "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1400&q=85",
     actionLabel: "Explore Rewards",
-    href: "/app/rewards",
+    href: "/rewards",
   },
 ];
 
@@ -189,9 +190,9 @@ function moveHomeHero(direction: number) {
   );
 }
 
-  
+
   useEffect(() => {
-    let active = true;  
+    let active = true;
 
   async function loadFan() {
     try {
@@ -199,8 +200,7 @@ function moveHomeHero(direction: number) {
         cache: "no-store",
       });
       if (response.status === 401) {
-        window.location.replace("/login");
-        return;
+       return;
       }
 
       if (!response.ok) return;
@@ -209,6 +209,8 @@ function moveHomeHero(direction: number) {
       const user = data.user;
 
       if (!active || !user) return;
+
+      setIsAuthenticatedFan(true);
 
       const name =
         user.name?.trim() ||
@@ -231,7 +233,7 @@ function moveHomeHero(direction: number) {
       console.error("Unable to load home profile:", error);
     }
   }
-  
+
 
   loadFan();
 
@@ -240,7 +242,7 @@ function moveHomeHero(direction: number) {
   };
  }, []);
 
- 
+
 useEffect(() => {
   let active = true;
 
@@ -256,28 +258,34 @@ useEffect(() => {
       const data: SportsResponse = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error("Unable to load your selected sports.");
+        throw new Error("Unable to load available sports.");
       }
 
       if (!active) return;
 
-      const selected = data.sports.filter((sport) =>
-        data.followedSportIds.includes(sport.id)
+      const sports = (data.sports ?? []).filter(
+        (sport: FanSport) =>
+          !["badminton", "formula-1", "athletics"].includes(
+            sport.slug
+          )
       );
 
-      setFanSports(selected);
+
+
+
+      setFanSports(sports);
 
       setSelectedSportSlug((current) => {
-        if (selected.some((sport) => sport.slug === current)) {
+        if (sports.some((sport) => sport.slug === current)) {
           return current;
         }
 
-        return selected[0]?.slug ?? "";
+        return sports[0]?.slug ?? "";
       });
     } catch {
       if (!active) return;
 
-      setSportsError("Unable to load your selected sports.");
+      setSportsError("Unable to load available sports.");
       setFanSports([]);
     } finally {
       if (active) setSportsLoading(false);
@@ -291,7 +299,7 @@ useEffect(() => {
   };
 }, []);
 
-  
+
 useEffect(() => {
   let active = true;
 
@@ -369,7 +377,7 @@ useEffect(() => {
 
       if (active) {
         setFeaturedNews(availableStories[0] ?? null);
-        setLiveNews(availableStories.slice(0, 2));
+        setLiveNews(availableStories.slice(0, 4));
       }
     } catch (error) {
       console.error("Unable to load home news:", error);
@@ -480,153 +488,142 @@ useEffect(() => {
 
 
                  <div className="sf-welcome-crown-stage">
-  <div className="sf-welcome-crown-glow" />
+                   <div className="sf-welcome-crown-glow" />
 
-  <Image
-    src="/crown.webp"
-    alt="Golden SportyFanz crown"
-    width={180}
-    height={160}
-    priority
-    className="sf-welcome-crown-image"
-  />
+                     <Image
+                        src="/crown.webp"
+                        alt="Golden SportyFanz crown"
+                        width={180}
+                        height={160}
+                        priority
+                        className="sf-welcome-crown-image"
+                      />
 
-  <span className="sf-welcome-spark sf-spark-one">✦</span>
-  <span className="sf-welcome-spark sf-spark-two">✧</span>
-  <span className="sf-welcome-spark sf-spark-three">✦</span>
-  <span className="sf-welcome-spark sf-spark-four">✧</span>
-</div>
+                      <span className="sf-welcome-spark sf-spark-one">✦</span>
+                      <span className="sf-welcome-spark sf-spark-two">✧</span>
+                      <span className="sf-welcome-spark sf-spark-three">✦</span>
+                      <span className="sf-welcome-spark sf-spark-four">✧</span>
+                    </div>
 
-            <span className="sf-welcome-eyebrow">
-              YOUR KINGDOM AWAITS
-            </span>
+                    <span className="sf-welcome-eyebrow">
+                      YOUR KINGDOM AWAITS
+                    </span>
 
-            <h2 id="sf-welcome-title">
-              WELCOME TO YOUR PALACE.
-            </h2>
+                    <h2 id="sf-welcome-title">
+                      WELCOME TO YOUR PALACE.
+                    </h2>
 
-            <h3>
-              YOUR KINGDOM. YOUR RULES. YOUR WORLD.
-            </h3>
+                    <h3>
+                     YOUR KINGDOM. YOUR RULES. YOUR WORLD.
+                    </h3>
 
-            <p>
-              You are the ruler here. In this kingdom, you decide
-              what matters. Share your opinions, celebrate your
-              teams, take part in exciting activities and let
-              your passion for sport speak.
-            </p>
+                    <p>
+                      You are the ruler here. In this kingdom, you decide
+                       what matters. Share your opinions, celebrate your
+                       teams, take part in exciting activities and let
+                       your passion for sport speak.
+                     </p>
 
-            <div className="sf-welcome-divider" />
+                  <div className="sf-welcome-divider" />
 
-            <strong className="sf-welcome-signature">
-              YOUR PASSION. YOUR PEOPLE. YOUR KINGDOM.
-            </strong>
+                    <strong className="sf-welcome-signature">
+                      YOUR PASSION. YOUR PEOPLE. YOUR KINGDOM.
+                    </strong>
 
-            <button
-              type="button"
-              className="sf-welcome-enter"
-              onClick={() => setShowWelcome(false)}
-            >
-              ENTER MY KINGDOM
-              <ArrowRight size={18} />
-            </button>
+                   <button
+                     type="button"
+                     className="sf-welcome-enter"
+                     onClick={() => setShowWelcome(false)}
+                   >
+                    ENTER MY KINGDOM
+                     <ArrowRight size={18} />
+                   </button>
 
-            <small>SPORTYFANZ — THE FAN IS KING</small>
+                   <small>SPORTYFANZ — THE FAN IS KING</small>
 
-          </section>
-        </div>
-      )}
-      {/* PAGE HEADER */}
-      <div className="page-header">
-        <div>
-          <span>WELCOME BACK, {fanName.toUpperCase()}</span>
+                    </section>
+                 </div>
+                )}
+                {/* PAGE HEADER */}
+              <div className="page-header">
+                <div>
+                 <span>WELCOME BACK, {fanName.toUpperCase()}</span>
 
-          <h1>Your Fan Kingdom</h1>
+                   <h1>Your Fan Kingdom</h1>
 
-          <p>
-            Everything happening in your sports world,
-            all in one place.
-          </p>
-        </div>
+                  <p>
+                    Everything happening in your sports world,
+                    all in one place.
+                  </p>
+                </div>
+               </div>
 
-        <div className="header-actions">
-          <button className="secondary-button">
-            <CalendarDays size={15} />
-            Today
-            <ChevronDown size={14} />
-          </button>
-        </div>
-      </div>
+               {/* HOME GRID */}
+                <section className="home-grid">
 
-      {/* HOME GRID */}
-      <section className="home-grid">
+        <div className="home-left-column">
 
-       {/* HOME HERO CAROUSEL */}
-       <section
-         className="hero-card"
-         aria-label="Featured SportyFanz content"
-         style={{
-           backgroundImage: `url("${activeHero.image}")`,
-         }}
-        >
-        <div className="hero-overlay" />
+               {/* HOME HERO CAROUSEL */}
+               <section
+                 className="hero-card"
+                 aria-label="Featured SportyFanz content"
+                 style={{
+                   backgroundImage: `url("${activeHero.image}")`,
+                 }}
+                >
+                <div className="hero-overlay" />
 
-        <div className="hero-content">
-           <span className="home-hero-eyebrow">
-           <span className="home-hero-mark">S</span>
-            {activeHero.eyebrow}
-           </span>
+                <div className="hero-content">
+                   <h1>{activeHero.title}</h1>
+                   <p>{activeHero.description}</p>
 
-          <h1>{activeHero.title}</h1>
+                  <Link
+                    href={activeHero.href}
+                    className="home-hero-button"
+                   >
+                   {activeHero.actionLabel}
+                   <ArrowRight size={16} />
+                  </Link>
+                </div>
 
-          <p>{activeHero.description}</p>
+              <div className="home-hero-controls">
+               <div className="home-hero-dots">
+                 {homeHeroSlides.map((slide, index) => (
+                 <button
+                    key={slide.id}
+                    type="button"
+                    aria-label={`Show ${slide.eyebrow} slide`}
+                    aria-current={activeHeroSlide === index}
+                    className={activeHeroSlide === index ? "active" : ""}
+                    onClick={() => setActiveHeroSlide(index)}
+                   />
+                 ))}
+               </div>
 
-          <Link
-            href={activeHero.href}
-            className="home-hero-button"
-          >
-           {activeHero.actionLabel}
-           <ArrowRight size={16} />
-          </Link>
-         </div>
+                 <span className="home-hero-count">
+                   {activeHeroSlide + 1}/{homeHeroSlides.length}
+                 </span>
 
-         <div className="home-hero-controls">
-           <div className="home-hero-dots">
-             {homeHeroSlides.map((slide, index) => (
-           <button
-             key={slide.id}
-             type="button"
-             aria-label={`Show ${slide.eyebrow} slide`}
-             aria-current={activeHeroSlide === index}
-             className={activeHeroSlide === index ? "active" : ""}
-             onClick={() => setActiveHeroSlide(index)}
-            />
-           ))}
-          </div>
+                <button
+                  type="button"
+                  aria-label="Previous featured content"
+                  onClick={() => moveHomeHero(-1)}
+                >
+                 <ChevronLeft size={16} />
+                </button>
 
-          <span className="home-hero-count">
-            {activeHeroSlide + 1}/{homeHeroSlides.length}
-          </span>
+               <button
+                 type="button"
+                 aria-label="Next featured content"
+                 onClick={() => moveHomeHero(1)}
+               >
+                <ChevronRight size={16} />
+               </button>
+              </div>
+            </section>
 
-          <button
-           type="button"
-           aria-label="Previous featured content"
-           onClick={() => moveHomeHero(-1)}
-          >
-         <ChevronLeft size={16} />
-        </button>
-
-        <button
-         type="button"
-         aria-label="Next featured content"
-         onClick={() => moveHomeHero(1)}
-         >
-          <ChevronRight size={16} />
-         </button>
-        </div>
-       </section>
-
-        {/* DAILY FAN CHECK-IN */}
+        {/* DAILY FAN CHECK-IN — REGISTERED FANS ONLY */}
+        {isAuthenticatedFan && (
         <div className="daily-checkin-card">
           <div className="checkin-heading">
             <div>
@@ -675,12 +672,14 @@ useEffect(() => {
             <strong>{fanLevel.replaceAll("_", " ")}</strong>
           </div>
         </div>
-        
+
+        )}
+
         {/* LIVE MATCHES */}
         <div className="section-block live-block">
          <div className="section-title">
           <h2>News Update</h2>
-          <Link href="/app/news">
+          <Link href="/news">
            View All
            <ChevronRight size={14} />
          </Link>
@@ -691,7 +690,7 @@ useEffect(() => {
         {liveNews.map((story) => (
         <Link
           key={story.id}
-          href={`/app/news/article?url=${encodeURIComponent(story.link)}`}
+          href={`/news/article?url=${encodeURIComponent(story.link)}`}
           className="live-news-card"
          >
         <img
@@ -713,153 +712,6 @@ useEffect(() => {
        </div>
        </div>
 
-        {/* RIGHT COLUMN */}
-        <div className="home-right-column">
-
-          {/* CHALLENGE */}
-          <div className="challenge-card">
-
-            <div className="challenge-icon">
-              <Target size={21} />
-            </div>
-
-            <div>
-              <span>Fan Challenge</span>
-
-              <strong>
-                Predict the next goal scorer
-              </strong>
-
-              <small>
-                Win up to +100 pts
-              </small>
-            </div>
-
-            <Link href="/participate">
-              Join
-            </Link>
-
-          </div>
-
-          {/* TRENDING ROOMS */}
-          <div className="white-panel trending-rooms">
-
-            <div className="panel-title">
-              <h3>Trending in Fan Rooms</h3>
-
-              <Link href="/app/fanroom">
-                View All
-                <ChevronRight size={13} />
-              </Link>
-            </div>
-
-            {[
-              ["Arsenal Fans", "5.2K fans", "🔥"],
-              ["Football Fans", "3.8K fans", "⚽"],
-              ["Premier League", "2.9K fans", "🏆"],
-            ].map((room) => (
-
-              <Link
-                href="/app/fanroom"
-                className="room-row"
-                key={room[0]}
-              >
-                <div className="room-icon">
-                  {room[2]}
-                </div>
-
-                <div>
-                  <strong>{room[0]}</strong>
-                  <span>{room[1]}</span>
-                </div>
-
-                <ChevronRight size={15} />
-              </Link>
-
-            ))}
-
-          </div>
-        </div>
-
-          
-        {/* FAN'S SELECTED SPORTS */}
-        <div
-          style={{
-            background: "#fff",
-            border: "1px solid #e8e8e8",
-            borderRadius: 16,
-            padding: 20,
-            marginBottom: 16,
-          }}
-        >
-          <h2 style={{ margin: "0 0 6px", fontSize: 18 }}>
-             Your Sports
-          </h2>
-
-         <p style={{ margin: "0 0 16px", color: "#64748b", fontSize: 13 }}>
-           Choose a sport to explore its matches.
-         </p>
-
-         {sportsLoading ? (
-           <p>Loading your sports...</p>
-          ) : sportsError ? (
-           <p>{sportsError}</p>
-          ) : fanSports.length === 0 ? (
-           <p>
-             You haven't selected any sports yet. Update your sports
-             preferences to get started.
-           </p>
-          ) : (
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 10,
-          }}
-        >
-        {fanSports.map((sport) => {
-        const active = selectedSportSlug === sport.slug;
-
-        const icons: Record<string, string> = {
-          football: "⚽",
-          basketball: "🏀",
-          tennis: "🎾",
-          cricket: "🏏",
-          rugby: "🏉",
-          volleyball: "🏐",
-          baseball: "⚾",
-          badminton: "🏸",
-          "formula-1": "🏎️",
-          athletics: "🏃",
-        };
-
-        return (
-          <button
-            key={sport.id}
-            type="button"
-            onClick={() => setSelectedSportSlug(sport.slug)}
-            aria-pressed={active}
-            className="secondary-button"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: active ? "#16a34a" : "#fff",
-              color: active ? "#fff" : "#243447",
-              border: `1px solid ${active ? "#16a34a" : "#ddd"}`,
-              borderRadius: 10,
-              padding: "10px 16px",
-            }}
-          >
-            <span>{icons[sport.slug] ?? "🏆"}</span>
-            {sport.name}
-          </button>
-           );
-          })}
-         </div>
-        )}
-       </div>
-  
         {/* UPCOMING MATCHES */}
         <div className="section-block upcoming-block"
            style={{
@@ -879,7 +731,7 @@ useEffect(() => {
             </h2>
 
             <Link
-              href={`/app/matches?sport=${encodeURIComponent(selectedSportSlug)}&date=${encodeURIComponent(selectedDate)}`}
+              href={`/matches?sport=${encodeURIComponent(selectedSportSlug)}&date=${encodeURIComponent(selectedDate)}`}
               className="secondary-button"
               style={{
                 display: "inline-flex",
@@ -892,7 +744,7 @@ useEffect(() => {
             <ChevronRight size={14} />
            </Link>
           </div>
-            
+
          <div
            style={{
              display: "flex",
@@ -928,7 +780,7 @@ useEffect(() => {
            color: matchDay === "tomorrow" ? "#fff" : "#333",
            borderColor: matchDay === "tomorrow" ? "#16a34a" : "#ddd",
           }}
-           type="button"          
+           type="button"
            onClick={() => {
             setMatchDay("tomorrow");
             setSelectedDate(getLagosDate(1));
@@ -941,7 +793,7 @@ useEffect(() => {
        </button>
       </div>
 
-        
+
      <div style={{ position: "relative" }}>
       <button
        type="button"
@@ -974,7 +826,7 @@ useEffect(() => {
         onChange={(event) => {
           if (event.target.value) {
             setSelectedDate(event.target.value);
-            setMatchDay("custom"); 
+            setMatchDay("custom");
             setShowDatePicker(false);
           }
         }}
@@ -993,7 +845,7 @@ useEffect(() => {
        </div>
 
          </div>
-     
+
           <div className="upcoming-list">
             {matchesLoading ? (
               <p>Loading upcoming matches...</p>
@@ -1038,10 +890,10 @@ useEffect(() => {
                  day: "numeric",
                  })} · Time TBC`
                  : kickoffTime;
-                
+
                 return (
                   <Link
-                   href={`/app/live?sport=${encodeURIComponent(selectedSportSlug)}&fixtureId=${match.fixtureId}&date=${encodeURIComponent(selectedDate)}`}
+                   href={`/live?sport=${encodeURIComponent(selectedSportSlug)}&fixtureId=${match.fixtureId}&date=${encodeURIComponent(selectedDate)}`}
                    className="upcoming-card"
                    key={`${selectedSportSlug}-${match.id}`}
                    style={{
@@ -1166,7 +1018,7 @@ useEffect(() => {
                               ? "Full-time"
                               : displayedKickoff}
                         </small>
-                   
+
                       <small
                        style={{
                         fontWeight: 700,
@@ -1199,7 +1051,168 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* FAN ROOM PROMO */}
+        </div> {/* END HOME LEFT COLUMN */}
+
+        {/* RIGHT COLUMN */}
+        <div className="home-right-column">
+
+          {/* FEATURED SPORTYFANZ TRIVIA CHALLENGE */}
+          <div className="challenge-card sf-featured-trivia">
+            <div className="challenge-icon">
+              <Crown size={25} />
+            </div>
+
+            <div>
+              <span>SPORTYFANZ TRIVIA CHALLENGE</span>
+
+              <strong>
+                Think You Know Sports?
+              </strong>
+
+              <small>
+                Test your knowledge, answer exciting questions
+                and earn Fan Points.
+              </small>
+            </div>
+
+            <Link href="/participate?tab=trivia">
+              Play Trivia
+            </Link>
+          </div>
+
+          {/* TRENDING ROOMS */}
+          <div className="white-panel trending-rooms">
+
+            <div className="panel-title">
+              <h3>Trending in Fan Rooms</h3>
+
+              <Link href="/fanroom">
+                View All
+                <ChevronRight size={13} />
+              </Link>
+            </div>
+
+            {[
+              ["Arsenal Fans", "5.2K fans", "🔥"],
+              ["Football Fans", "3.8K fans", "⚽"],
+              ["Premier League", "2.9K fans", "🏆"],
+            ].map((room) => (
+
+              <Link
+                href="/fanroom"
+                className="room-row"
+                key={room[0]}
+              >
+                <div className="room-icon">
+                  {room[2]}
+                </div>
+
+                <div>
+                  <strong>{room[0]}</strong>
+                  <span>{room[1]}</span>
+                </div>
+
+                <ChevronRight size={15} />
+              </Link>
+
+            ))}
+
+          </div>
+
+        {/* FAN'S SELECTED SPORTS */}
+        <div
+          style={{
+            background: "#fff",
+            border: "1px solid #e8e8e8",
+            borderRadius: 16,
+            padding: 20,
+            marginBottom: 16,
+          }}
+        >
+          <h2 style={{ margin: "0 0 6px", fontSize: 18 }}>
+             Your Sports
+          </h2>
+
+         <p style={{ margin: "0 0 16px", color: "#64748b", fontSize: 13 }}>
+           Choose a sport to explore its matches.
+         </p>
+
+         {sportsLoading ? (
+           <p>Loading available sports...</p>
+          ) : sportsError ? (
+           <p>{sportsError}</p>
+          ) : fanSports.length === 0 ? (
+           <p>
+             No sports are available right now. Please check back soon.
+           </p>
+          ) : (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 10,
+          }}
+        >
+        {fanSports
+          .filter(
+            (sport) =>
+              !["badminton", "formula-1", "athletics"].includes(
+                sport.slug
+              )
+          )
+          .map((sport) => {
+        const active = selectedSportSlug === sport.slug;
+
+        const icons: Record<string, string> = {
+          football: "⚽",
+          basketball: "🏀",
+          tennis: "🎾",
+          cricket: "🏏",
+          rugby: "🏉",
+          volleyball: "🏐",
+          baseball: "⚾",
+          badminton: "🏸",
+          "formula-1": "🏎️",
+          athletics: "🏃",
+        };
+
+        return (
+          <button
+            key={sport.id}
+            type="button"
+            onClick={() => setSelectedSportSlug(sport.slug)}
+            aria-pressed={active}
+            className="secondary-button"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: active ? "#16a34a" : "#fff",
+              color: active ? "#fff" : "#243447",
+              border: `1px solid ${active ? "#16a34a" : "#ddd"}`,
+              borderRadius: 10,
+              padding: "10px 16px",
+            }}
+          >
+            <span>{icons[sport.slug] ?? "🏆"}</span>
+            {sport.name}
+          </button>
+           );
+          })}
+         </div>
+        )}
+       </div>
+
+        {/* FAN ROOM PROMO AND ORIGINAL SPORTYFANZ ADVERT */}
+        <div className="sf-home-promo-stack">
+          <div className="sf-home-advert">
+            <img
+              src="/anticipateCard.jpg"
+              alt="SportyFanz Anticipate — Guess What's Coming? Stay Tuned"
+              loading="lazy"
+            />
+          </div>
+
         <div className="promo-card">
 
           <div className="promo-image">
@@ -1219,13 +1232,15 @@ useEffect(() => {
               with fans.
             </p>
 
-            <Link href="/app/fanroom">
+            <Link href="/fanroom">
               Enter Fan Room
               <ArrowRight size={14} />
             </Link>
 
           </div>
         </div>
+        </div>
+        </div> {/* END HOME RIGHT COLUMN */}
 
       </section>
     </div>

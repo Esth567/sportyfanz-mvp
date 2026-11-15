@@ -28,42 +28,42 @@ import {
 const navItems = [
   {
     label: "Home",
-    href: "/app",
+    href: "/",
     icon: Home,
   },
   {
     label: "Live & Matches",
-    href: "/app/live",
+    href: "/live",
     icon: Radio,
   },
   {
     label: "Participate",
-    href: "/app/participate",
+    href: "/participate",
     icon: Target,
   },
   {
     label: "Discover",
-    href: "/app/discover",
+    href: "/discover",
     icon: Search,
   },
   {
   label: "News",
-  href: "/app/news",
+  href: "/news",
   icon: Newspaper,
   },
   {
     label: "My Kingdom",
-    href: "/app/kingdom",
+    href: "/kingdom",
     icon: Crown,
   },
   {
     label: "Fan Rooms",
-    href: "/app/fanroom",
+    href: "/fanroom",
     icon: MessageCircle,
   },
   {
     label: "Rewards",
-    href: "/app/rewards",
+    href: "/rewards",
     icon: Gift,
   },
 ];
@@ -75,6 +75,26 @@ type SidebarProps = {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const [activeTab, setActiveTab] = useState("");
+
+  useEffect(() => {
+    const updateActiveTab = () => {
+      const params = new URLSearchParams(window.location.search);
+      setActiveTab(params.get("tab") ?? "");
+    };
+
+    updateActiveTab();
+
+    window.addEventListener("popstate", updateActiveTab);
+
+    return () => {
+      window.removeEventListener("popstate", updateActiveTab);
+    };
+  }, [pathname]);
+
+  const isTriviaPage =
+    pathname === "/participate" &&
+    activeTab === "trivia";
 
 const [fanName, setFanName] = useState("SportyFanz Fan");
 const [fanLevel, setFanLevel] = useState("NEW FAN");
@@ -149,10 +169,14 @@ useEffect(() => {
           const Icon = item.icon;
 
           const active =
-            item.href === "/app"
-            ? pathname === "/app"
-            : pathname === item.href ||
-            pathname.startsWith(`${item.href}/`);
+            item.href === "/"
+              ? pathname === "/"
+              : item.href === "/participate"
+                ? (pathname === "/participate" ||
+                    pathname.startsWith("/participate/")) &&
+                  !isTriviaPage
+                : pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
 
           return (
             <Link
@@ -177,21 +201,27 @@ useEffect(() => {
         </div>
 
         <Link
-          href="/app/participate"
-          className="sf-nav-item"
+          href="/participate?tab=trivia"
+          className={`sf-nav-item ${isTriviaPage ? "active" : ""}`}
+          aria-current={isTriviaPage ? "page" : undefined}
           onClick={onClose}
         >
           <Award size={17} />
-          <span>Challenges</span>
+          <span>Trivia</span>
         </Link>
 
         <Link
-          href="/app/leaderboard"
-          className="sf-nav-item"
+          href="/leaderboard"
+          className={`sf-nav-item ${
+            pathname === "/leaderboard" ||
+            pathname.startsWith("/leaderboard/")
+              ? "active"
+              : ""
+          }`}
           onClick={onClose}
         >
-         <Trophy size={17} />
-         <span>Leaderboards</span>
+          <Trophy size={17} />
+          <span>Leaderboards</span>
         </Link>
       </div>
     </aside>

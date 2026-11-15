@@ -1,6 +1,7 @@
 "use client";
 
 import { apiFetch } from "@/lib/api";
+import Link from "next/link";
 
 import {
   CheckCircle2,
@@ -8,36 +9,7 @@ import {
   Sparkles,
   Target,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-
-type Participation = {
-  id: number;
-  progress: number;
-  target: number | null;
-  status: string;
-  completedAt: string | null;
-};
-
-type Challenge = {
-  id: number;
-  title: string;
-  slug: string;
-  description: string | null;
-  type: string;
-  pointsReward: number;
-  targetValue: number | null;
-  targetLabel: string | null;
-  startsAt: string | null;
-  endsAt: string | null;
-  imageUrl: string | null;
-  participation: Participation | null;
-};
-
-type ChallengesResponse = {
-  balance: number;
-  totalPoints: number;
-  challenges: Challenge[];
-};
+import { useEffect, useRef, useState } from "react";
 
 type Prediction = {
   id: number;
@@ -73,7 +45,7 @@ type PredictionMatch = {
 };
 
 type PredictionsResponse = {
-  balance: number;
+  balance: number | null;
   matches: PredictionMatch[];
 };
 
@@ -101,8 +73,8 @@ type FanPoll = {
 };
 
 type PollsResponse = {
-  balance: number;
-  totalPoints: number;
+  balance: number | null;
+  totalPoints: number | null;
   polls: FanPoll[];
 };
 
@@ -121,8 +93,8 @@ type TriviaQuestion = {
 
 type TriviaResponse = {
   success: boolean;
-  balance: number;
-  totalPoints: number;
+  balance: number | null;
+  totalPoints: number | null;
   roundSize: number;
   questions: TriviaQuestion[];
   attemptedCount: number;
@@ -132,6 +104,10 @@ type TriviaAnswerResponse = {
   success: boolean;
   message: string;
   isCorrect: boolean;
+  selectedOption: string;
+  correctOption: string;
+  correctAnswer: string;
+  explanation: string | null;
   pointsAwarded: number;
   balance: number;
   totalPoints: number;
@@ -139,18 +115,59 @@ type TriviaAnswerResponse = {
   attemptId: number;
 };
 
+type TriviaQuizSummary = {
+  id: number;
+  title: string;
+  description: string | null;
+  coverImageUrl: string | null;
+  startsAt: string | null;
+  endsAt: string | null;
+  questionCount: number;
+  maxPoints: number;
+  completedCount: number | null;
+  earnedPoints: number | null;
+  isCompleted: boolean | null;
+};
+
+type TriviaQuizzesResponse = {
+  success: boolean;
+  quizzes: TriviaQuizSummary[];
+};
+
+type TriviaQuizQuestion = TriviaQuestion & {
+  questionOrder: number;
+  imageUrl: string | null;
+  earnedPoints: number | null;
+};
+
+type TriviaQuizDetailsResponse = {
+  success: boolean;
+  quiz: Pick<
+    TriviaQuizSummary,
+    | "id"
+    | "title"
+    | "description"
+    | "coverImageUrl"
+    | "startsAt"
+    | "endsAt"
+    | "questionCount"
+    | "maxPoints"
+  >;
+  progress: {
+    completedCount: number;
+    earnedPoints: number;
+    isCompleted: boolean;
+  } | null;
+  questions: TriviaQuizQuestion[];
+};
+
 type ParticipateTab =
   | "predictions"
   | "polls"
-  | "trivia"
-  | "challenges";
+  | "trivia";
 
 function formatPoints(points: number) {
   return new Intl.NumberFormat("en-US").format(points);
-}
-
-function formatChallengeType(type: string) {
-  return type.replace(/_/g, " ");
 }
 
 function formatDate(date: string | null) {
@@ -186,19 +203,61 @@ export default function ParticipatePage() {
   const [activeTab, setActiveTab] =
     useState<ParticipateTab>("predictions");
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedTab = params.get("tab");
+
+    if (
+      requestedTab === "predictions" ||
+      requestedTab === "polls" ||
+      requestedTab === "trivia"
+    ) {
+      setActiveTab(requestedTab);
+    }
+  }, []);
+
   /*
    * ============================================================
-   * CHALLENGES STATE
+   * PARTICIPATION AUTHENTICATION
    * ============================================================
    */
 
-  const [data, setData] =
-    useState<ChallengesResponse | null>(null);
+  const [participationAuth, setParticipationAuth] =
+    useState<"checking" | "authenticated" | "guest" | "error">(
+      "checking"
+    );
 
-  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    let cancelled = false;
 
-  const [joiningId, setJoiningId] =
-    useState<number | null>(null);
+    async function checkParticipationAuth() {
+      try {
+        const response = await apiFetch("/api/auth/me", {
+          cache: "no-store",
+        });
+
+        if (cancelled) return;
+
+        setParticipationAuth(
+          response.ok
+            ? "authenticated"
+            : response.status === 401
+              ? "guest"
+              : "error"
+        );
+      } catch {
+        if (!cancelled) {
+          setParticipationAuth("error");
+        }
+      }
+    }
+
+    void checkParticipationAuth();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   /*
    * ============================================================
@@ -262,6 +321,33 @@ const [triviaSubmittingId, setTriviaSubmittingId] =
 const [triviaAnswers, setTriviaAnswers] =
   useState<Record<number, TriviaOption["value"]>>({});
 
+const [triviaResults, setTriviaResults] =
+  useState<Record<number, TriviaAnswerResponse>>({});
+
+const triviaResultsRef =
+  useRef<Record<number, TriviaAnswerResponse>>({});
+
+/*
+ * ============================================================
+ * CONTINUOUS TRIVIA QUIZ STATE
+ * ============================================================
+ */
+
+const [triviaQuizzes, setTriviaQuizzes] =
+  useState<TriviaQuizSummary[]>([]);
+
+const [triviaQuizzesLoading, setTriviaQuizzesLoading] =
+  useState(false);
+
+const [selectedTriviaQuiz, setSelectedTriviaQuiz] =
+  useState<TriviaQuizDetailsResponse | null>(null);
+
+const [selectedTriviaQuizLoading, setSelectedTriviaQuizLoading] =
+  useState(false);
+
+const [quizQuestionIndex, setQuizQuestionIndex] =
+  useState(0);
+
   /*
    * ============================================================
    * GLOBAL UI STATE
@@ -272,40 +358,66 @@ const [triviaAnswers, setTriviaAnswers] =
 
   const [message, setMessage] = useState("");
 
-  /*
-   * ============================================================
-   * LOAD CHALLENGES
-   * ============================================================
-   */
+  const [participationPrompt, setParticipationPrompt] =
+    useState<"prediction" | "trivia" | null>(null);
 
-  async function loadChallenges() {
-    try {
-      setLoading(true);
-      setError("");
+  const participationDialogRef = useRef<HTMLDivElement>(null);
 
-      const response = await apiFetch("/api/challenges", {
-        cache: "no-store",
-      });
+  useEffect(() => {
+    if (!participationPrompt) return;
 
-      const result = await response.json();
+    const previouslyFocused = document.activeElement;
 
-      if (!response.ok) {
-        throw new Error(
-          result.error || "Failed to load challenges"
-        );
+    const dialog = participationDialogRef.current;
+    const controls = dialog?.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled])'
+    );
+
+    controls?.[0]?.focus();
+
+    function handleDialogKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setParticipationPrompt(null);
+        return;
       }
 
-      setData(result);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Failed to load challenges"
+      if (event.key !== "Tab") return;
+
+      const focusable = Array.from(
+        participationDialogRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled])'
+        ) ?? []
       );
-    } finally {
-      setLoading(false);
+
+      if (!focusable.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (
+        !event.shiftKey &&
+        document.activeElement === last
+      ) {
+        event.preventDefault();
+        first.focus();
+      }
     }
-  }
+
+    document.addEventListener("keydown", handleDialogKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleDialogKeyDown);
+
+      if (previouslyFocused instanceof HTMLElement) {
+        previouslyFocused.focus();
+      }
+    };
+  }, [participationPrompt]);
+
 
   /*
    * ============================================================
@@ -408,6 +520,93 @@ async function loadPolls() {
 
 /*
  * ============================================================
+ * LOAD CONTINUOUS TRIVIA QUIZZES
+ * ============================================================
+ */
+
+async function loadTriviaQuizzes() {
+  try {
+    setTriviaQuizzesLoading(true);
+    setError("");
+
+    const response = await apiFetch("/api/trivia/quizzes", {
+      cache: "no-store",
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Unable to load Trivia quizzes."
+      );
+    }
+
+    const data = result as TriviaQuizzesResponse;
+    setTriviaQuizzes(data.quizzes);
+  } catch (err) {
+    setError(
+      err instanceof Error
+        ? err.message
+        : "Unable to load Trivia quizzes."
+    );
+  } finally {
+    setTriviaQuizzesLoading(false);
+  }
+}
+
+/*
+ * ============================================================
+ * OPEN A CONTINUOUS TRIVIA QUIZ
+ * ============================================================
+ */
+
+async function openTriviaQuiz(quizId: number) {
+  try {
+    setSelectedTriviaQuizLoading(true);
+    setError("");
+    setMessage("");
+
+    const response = await apiFetch(
+      `/api/trivia/quizzes/${quizId}`,
+      { cache: "no-store" }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Unable to open this Trivia quiz."
+      );
+    }
+
+    const data = result as TriviaQuizDetailsResponse;
+
+    setSelectedTriviaQuiz(data);
+
+    const firstUnansweredIndex =
+      data.questions.findIndex(
+        (question) => !question.attempted
+      );
+
+    setQuizQuestionIndex(
+      firstUnansweredIndex >= 0
+        ? firstUnansweredIndex
+        : data.questions.length
+    );
+
+  } catch (err) {
+    setError(
+      err instanceof Error
+        ? err.message
+        : "Unable to open this Trivia quiz."
+    );
+  } finally {
+    setSelectedTriviaQuizLoading(false);
+  }
+}
+
+/*
+ * ============================================================
  * LOAD TRIVIA
  * ============================================================
  */
@@ -503,6 +702,59 @@ useEffect(() => {
 
 /*
  * ============================================================
+ * LOAD CONTINUOUS QUIZZES WHEN TRIVIA TAB OPENS
+ * ============================================================
+ */
+
+useEffect(() => {
+  if (activeTab !== "trivia") return;
+
+  let cancelled = false;
+
+  async function fetchQuizzes() {
+    setTriviaQuizzesLoading(true);
+
+    try {
+      const response = await apiFetch("/api/trivia/quizzes", {
+        cache: "no-store",
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || "Unable to load Trivia quizzes."
+        );
+      }
+
+      if (!cancelled) {
+        const data = result as TriviaQuizzesResponse;
+        setTriviaQuizzes(data.quizzes);
+      }
+    } catch (err) {
+      if (!cancelled) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Unable to load Trivia quizzes."
+        );
+      }
+    } finally {
+      if (!cancelled) {
+        setTriviaQuizzesLoading(false);
+      }
+    }
+  }
+
+  void fetchQuizzes();
+
+  return () => {
+    cancelled = true;
+  };
+}, [activeTab]);
+
+/*
+ * ============================================================
  * LOAD AND REFRESH TRIVIA WHILE TAB IS OPEN
  * ============================================================
  */
@@ -538,7 +790,30 @@ useEffect(() => {
       }
 
       if (!cancelled) {
-        setTriviaData(result);
+        setTriviaData((current) => {
+          const incoming = result as TriviaResponse;
+
+          if (!current) return incoming;
+
+          const incomingIds = new Set(
+            incoming.questions.map((question) => question.id)
+          );
+
+          const preservedQuestions = current.questions.filter(
+            (question) =>
+              triviaResultsRef.current[question.id] &&
+              !incomingIds.has(question.id)
+          );
+
+          return {
+            ...incoming,
+            questions: [
+              ...preservedQuestions,
+              ...incoming.questions,
+            ],
+          };
+        });
+
         setError("");
       }
     } catch (err) {
@@ -605,15 +880,14 @@ useEffect(() => {
     }
 
     setMessage(
-      `${result.message} You earned ${formatPoints(
-        result.pointsEarned
-      )} Sporty Points.`
+      result.isGuestVote
+        ? "Your vote has been recorded successfully!"
+        : `${result.message} You earned ${formatPoints(
+            result.pointsEarned
+          )} Fan Points.`
     );
 
-    await Promise.all([
-      loadPolls(),
-      loadChallenges(),
-    ]);
+    await loadPolls();
    } catch (err) {
     setError(
       err instanceof Error
@@ -632,6 +906,23 @@ useEffect(() => {
  */
 
 async function handleTriviaAnswer(questionId: number) {
+  if (participationAuth === "checking") {
+    setError("Checking your sign-in status. Please try again.");
+    return;
+  }
+
+  if (participationAuth === "guest") {
+    setParticipationPrompt("trivia");
+    return;
+  }
+
+  if (participationAuth === "error") {
+    setError(
+      "Unable to verify your sign-in status. Please try again."
+    );
+    return;
+  }
+
   const selectedOption = triviaAnswers[questionId];
 
   if (!selectedOption) {
@@ -658,6 +949,13 @@ async function handleTriviaAnswer(questionId: number) {
     const result = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        setParticipationAuth("guest");
+        throw new Error(
+          "Your session has expired. Please sign in to continue."
+        );
+      }
+
       throw new Error(
         result.error || "Unable to submit your answer."
       );
@@ -670,7 +968,7 @@ async function handleTriviaAnswer(questionId: number) {
       answerResult.isCorrect
         ? `Correct! You earned ${formatPoints(
             answerResult.pointsAwarded
-          )} Sporty Points.`
+          )} Fan Points.`
         : "Not quite! No points were awarded."
     );
 
@@ -684,7 +982,58 @@ async function handleTriviaAnswer(questionId: number) {
         : current
     );
 
-    await loadTrivia();
+    const updatedResults = {
+      ...triviaResultsRef.current,
+      [questionId]: answerResult,
+    };
+
+    triviaResultsRef.current = updatedResults;
+    setTriviaResults(updatedResults);
+
+    // Update continuous quiz progress only after a successful
+    // backend submission. Independent Trivia is unaffected.
+    setSelectedTriviaQuiz((current) => {
+      if (!current) return current;
+
+      const question = current.questions.find(
+        (item) => item.id === questionId
+      );
+
+      if (!question || question.attempted) {
+        return current;
+      }
+
+      const questions = current.questions.map((item) =>
+        item.id === questionId
+          ? {
+              ...item,
+              attempted: true,
+              earnedPoints: answerResult.pointsAwarded,
+            }
+          : item
+      );
+
+      const completedCount = questions.filter(
+        (item) => item.attempted
+      ).length;
+
+      const earnedPoints = questions.reduce(
+        (total, item) => total + (item.earnedPoints ?? 0),
+        0
+      );
+
+      return {
+        ...current,
+        questions,
+        progress: {
+          completedCount,
+          earnedPoints,
+          isCompleted:
+            completedCount === questions.length &&
+            questions.length > 0,
+        },
+      };
+    });
   } catch (err) {
     setError(
       err instanceof Error
@@ -695,62 +1044,6 @@ async function handleTriviaAnswer(questionId: number) {
     setTriviaSubmittingId(null);
   }
 }
-
-  /*
-   * ============================================================
-   * INITIAL CHALLENGE LOAD
-   * ============================================================
-   */
-
-  useEffect(() => {
-  let cancelled = false;
-
-  async function fetchChallenges() {
-    try {
-      const responsePromise = apiFetch("/api/challenges", {
-        cache: "no-store",
-      });
-
-      await Promise.resolve();
-
-      if (cancelled) return;
-
-      setLoading(true);
-      setError("");
-
-      const response = await responsePromise;
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          result.error || "Failed to load challenges"
-        );
-      }
-
-      if (!cancelled) {
-        setData(result);
-      }
-    } catch (err) {
-      if (!cancelled) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to load challenges"
-        );
-      }
-    } finally {
-      if (!cancelled) {
-        setLoading(false);
-      }
-    }
-  }
-
-  void fetchChallenges();
-
-   return () => {
-    cancelled = true;
-   };
-  }, []);
 
   /*
    * ============================================================
@@ -834,59 +1127,6 @@ async function handleTriviaAnswer(questionId: number) {
 
   /*
    * ============================================================
-   * JOIN CHALLENGE
-   * ============================================================
-   */
-
-  async function handleJoinChallenge(
-    challengeId: number
-  ) {
-    try {
-      setJoiningId(challengeId);
-      setError("");
-      setMessage("");
-
-      const response = await apiFetch(
-        "/api/challenges/participate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            challengeId,
-          }),
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          result.error ||
-            "Unable to join challenge"
-        );
-      }
-
-      setMessage(
-        result.message ||
-          "Challenge joined successfully."
-      );
-
-      await loadChallenges();
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Unable to join challenge"
-      );
-    } finally {
-      setJoiningId(null);
-    }
-  }
-
-  /*
-   * ============================================================
    * SUBMIT PREDICTION
    * ============================================================
    */
@@ -894,6 +1134,25 @@ async function handleTriviaAnswer(questionId: number) {
   async function handleSubmitPrediction(
     matchId: number
   ) {
+    if (participationAuth === "checking") {
+      setError(
+        "Checking your sign-in status. Please try again."
+      );
+      return;
+    }
+
+    if (participationAuth === "guest") {
+      setParticipationPrompt("prediction");
+      return;
+    }
+
+    if (participationAuth !== "authenticated") {
+      setError(
+        "Unable to verify your account. Please try again."
+      );
+      return;
+    }
+
     const scores = predictionScores[matchId];
 
     if (!scores) {
@@ -976,18 +1235,8 @@ async function handleTriviaAnswer(questionId: number) {
           "Prediction submitted successfully."
       );
 
-      /*
-       * Reload both predictions and challenges.
-       *
-       * This is important because submitting the prediction
-       * can complete the "Predict the Match" challenge and
-       * award the user's Sporty Points.
-       */
-
-      await Promise.all([
-        loadPredictions(),
-        loadChallenges(),
-      ]);
+      // Refresh predictions after a successful submission.
+      await loadPredictions();
     } catch (err) {
       setError(
         err instanceof Error
@@ -1001,22 +1250,17 @@ async function handleTriviaAnswer(questionId: number) {
 
   /*
    * ============================================================
-   * DERIVED CHALLENGE DATA
+   * PARTICIPATE FAN POINTS BALANCE
    * ============================================================
    */
 
-  const challenges = data?.challenges ?? [];
-
-  const joinedChallenges = challenges.filter(
-    (challenge) =>
-      challenge.participation !== null
-  );
-
-  const completedChallenges = challenges.filter(
-    (challenge) =>
-      challenge.participation?.status ===
-      "COMPLETED"
-  );
+  const participateFanPoints =
+    participationAuth === "authenticated"
+      ? triviaData?.balance ??
+        pollsData?.balance ??
+        predictionsData?.balance ??
+        null
+      : null;
 
   /*
    * ============================================================
@@ -1026,90 +1270,53 @@ async function handleTriviaAnswer(questionId: number) {
 
   return (
     <div className="page">
-      <div className="page-header">
-        <div>
-          <span>PLAY • PREDICT • EARN</span>
-
-          <h1>Participate</h1>
-
-          <p>
-            Put your sports knowledge to work and earn
-            Sporty Points.
-          </p>
+      <section className="sf-arena-hero" aria-label="SportyFanz Arena">
+        <div className="sf-arena-brand">
+          <span>
+            <span className="sf-arena-trophy">🏆</span>
+            SPORTYFANZ ARENA
+          </span>
+          <span className="sf-arena-sparkle">✧</span>
         </div>
-      </div>
+
+        <h1>Your Game. Your Glory.</h1>
+
+        <p>
+          Predict matches, vote on the biggest debates and prove your
+          sports knowledge. Every correct play brings you closer to rewards.
+        </p>
+
+        <div className="sf-arena-actions" role="group" aria-label="Participation activities">
+          {([
+            ["predictions", "◎", "Predict"],
+            ["polls", "☑", "Vote"],
+            ["trivia", "♧", "Trivia"],
+          ] as const).map(([tab, symbol, label]) => (
+            <button
+              key={tab}
+              type="button"
+              className={activeTab === tab ? "sf-arena-action active" : "sf-arena-action"}
+              aria-pressed={activeTab === tab}
+              onClick={() => {
+                setActiveTab(tab);
+                setMessage("");
+                setError("");
+              }}
+            >
+              <span className={`sf-arena-action-icon sf-arena-icon-${tab}`}>
+                {symbol}
+              </span>
+              <strong>{label}</strong>
+            </button>
+          ))}
+        </div>
+      </section>
 
       <div className="participate-grid">
         <div className="white-panel prediction-card">
           {/* =====================================================
               TABS
           ====================================================== */}
-
-          <div className="participate-tabs">
-            <button
-              type="button"
-              className={
-                activeTab === "predictions"
-                  ? "active"
-                  : ""
-              }
-              onClick={() => {
-                setActiveTab("predictions");
-                setMessage("");
-                setError("");
-              }}
-            >
-              Predictions
-            </button>
-
-            <button
-              type="button"
-              className={
-                activeTab === "polls"
-                  ? "active"
-                  : ""
-              }
-              onClick={() => {
-                setActiveTab("polls");
-                setMessage("");
-                setError("");
-              }}
-            >
-              Polls
-            </button>
-
-            <button
-              type="button"
-              className={
-                activeTab === "trivia"
-                  ? "active"
-                  : ""
-              }
-              onClick={() => {
-                setActiveTab("trivia");
-                setMessage("");
-                setError("");
-              }}
-            >
-              Trivia
-            </button>
-
-            <button
-              type="button"
-              className={
-                activeTab === "challenges"
-                  ? "active"
-                  : ""
-              }
-              onClick={() => {
-                setActiveTab("challenges");
-                setMessage("");
-                setError("");
-              }}
-            >
-              Challenges
-            </button>
-          </div>
 
           {/* =====================================================
               SUCCESS MESSAGE
@@ -1440,11 +1647,9 @@ async function handleTriviaAnswer(questionId: number) {
                             submitting ||
                             submitted
                           }
-                          onClick={() =>
-                            handleSubmitPrediction(
-                              match.id
-                            )
-                          }
+                          onClick={() => {
+                            void handleSubmitPrediction(match.id);
+                          }}
                           style={{
                             marginTop: "22px",
                           }}
@@ -1470,9 +1675,11 @@ async function handleTriviaAnswer(questionId: number) {
                             <>
                               Submit Prediction
 
-                              <span>
-                                +50 pts
-                              </span>
+                              {participationAuth === "authenticated" && (
+                                <span>
+                                  +50 Fan Points
+                                </span>
+                              )}
                             </>
                           )}
                         </button>
@@ -1500,7 +1707,8 @@ async function handleTriviaAnswer(questionId: number) {
 
               <p>
                 Share your opinion on the biggest moments in
-                sports. Cast your vote and earn Sporty Points.
+                sports. Everyone can vote, and registered fans
+                earn Fan Points for participating.
               </p>
             </div>
 
@@ -1563,14 +1771,11 @@ async function handleTriviaAnswer(questionId: number) {
                 marginBottom: "18px",
               }}
             >
-              <strong>
-                +{formatPoints(poll.pointsReward)} pts
-              </strong>
-
-              <span>
-                {formatPoints(poll.totalVotes)}{" "}
-                {poll.totalVotes === 1 ? "vote" : "votes"}
-              </span>
+              {participationAuth === "authenticated" && (
+                <strong>
+                  +{formatPoints(poll.pointsReward)} pts
+                </strong>
+              )}
             </div>
 
             <div
@@ -1633,7 +1838,8 @@ async function handleTriviaAnswer(questionId: number) {
 
                       {hasVoted && (
                         <strong>
-                          {option.percentage}%
+                          {formatPoints(option.votes)}{" "}
+                          {option.votes === 1 ? "vote" : "votes"}
                         </strong>
                       )}
                     </button>
@@ -1715,6 +1921,321 @@ async function handleTriviaAnswer(questionId: number) {
 
           {activeTab === "trivia" && (
   <>
+    <section className="question-block">
+      <span className="question-label">
+        TRIVIA ARENA
+      </span>
+
+      <h2>Trivia Arena</h2>
+
+      <p>
+        Choose a quiz, test your sports knowledge and
+        earn Sporty Points.
+      </p>
+
+      {triviaQuizzesLoading ? (
+        <p>Loading available quizzes...</p>
+      ) : triviaQuizzes.length > 0 ? (
+        <div className="sf-trivia-quiz-grid">
+          {triviaQuizzes.map((quiz) => (
+            <article className="sf-trivia-quiz-card" key={quiz.id}>
+              <div className="sf-trivia-quiz-cover">
+                {quiz.coverImageUrl ? (
+                  <img
+                    src={quiz.coverImageUrl}
+                    alt=""
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="sf-trivia-cover-placeholder">
+                    <span aria-hidden="true">🏆</span>
+                    <strong>SPORTYFANZ TRIVIA</strong>
+                  </div>
+                )}
+              </div>
+
+              <div className="sf-trivia-quiz-content">
+                <div className="sf-trivia-quiz-heading">
+                  <h3>{quiz.title}</h3>
+
+                  <span
+                    className={
+                      quiz.isCompleted
+                        ? "sf-trivia-status completed"
+                        : "sf-trivia-status available"
+                    }
+                  >
+                    {quiz.isCompleted ? "Completed" : "Available"}
+                  </span>
+                </div>
+
+                {quiz.description && (
+                  <p className="sf-trivia-quiz-description">
+                    {quiz.description}
+                  </p>
+                )}
+
+                <p className="sf-trivia-quiz-meta">
+                  {quiz.questionCount} questions
+                  <span aria-hidden="true"> · </span>
+                  {formatPoints(quiz.maxPoints)} Fan Points
+                </p>
+
+                {quiz.completedCount !== null && (
+                  <p className="sf-trivia-quiz-progress">
+                    {quiz.completedCount} of {quiz.questionCount} questions completed
+                  </p>
+                )}
+
+                <button
+                  type="button"
+                  className="sf-trivia-quiz-button"
+                  disabled={selectedTriviaQuizLoading}
+                  onClick={() => void openTriviaQuiz(quiz.id)}
+                >
+                  {selectedTriviaQuizLoading
+                    ? "Opening..."
+                    : quiz.isCompleted
+                      ? "Review Quiz"
+                      : quiz.completedCount
+                        ? "Resume Quiz"
+                        : "Start Quiz"}
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p>
+          No continuous quizzes are available yet.
+          Check back for new sports quizzes.
+        </p>
+      )}
+
+    </section>
+
+    {selectedTriviaQuiz && (
+      <section className="question-block" style={{ marginTop: 20 }}>
+        <button
+          type="button"
+          onClick={() => {
+            setSelectedTriviaQuiz(null);
+            setQuizQuestionIndex(0);
+            setMessage("");
+          }}
+        >
+          Back to Quizzes
+        </button>
+
+        <div style={{ marginTop: 20 }}>
+          <span className="question-label">
+            CONTINUOUS QUIZ QUESTION
+          </span>
+          <h2>{selectedTriviaQuiz.quiz.title}</h2>
+          {selectedTriviaQuiz.quiz.description && (
+            <p>{selectedTriviaQuiz.quiz.description}</p>
+          )}
+        </div>
+
+        {quizQuestionIndex >= selectedTriviaQuiz.questions.length ? (
+          <div style={{ marginTop: 20 }}>
+            <h3>
+              {selectedTriviaQuiz.progress?.isCompleted
+                ? "Quiz Complete!"
+                : "Quiz Questions"}
+            </h3>
+            <p>
+              {selectedTriviaQuiz.progress?.isCompleted
+                ? "You have completed every question in this quiz."
+                : "You have reached the end of the available questions."}
+            </p>
+            {selectedTriviaQuiz.progress && (
+              <p>
+                Questions completed:{" "}
+                {selectedTriviaQuiz.progress.completedCount}
+                {" / "}
+                {selectedTriviaQuiz.quiz.questionCount}
+                {" · "}
+                Points earned:{" "}
+                {formatPoints(selectedTriviaQuiz.progress.earnedPoints)}
+              </p>
+            )}
+          </div>
+        ) : (
+          (() => {
+            const question =
+              selectedTriviaQuiz.questions[quizQuestionIndex];
+
+            return (
+              <div style={{ marginTop: 20 }}>
+                <span className="question-label">
+                  QUESTION {quizQuestionIndex + 1} OF{" "}
+                  {selectedTriviaQuiz.questions.length}
+                </span>
+
+                <h3 style={{ marginTop: 12 }}>
+                  {question.question}
+                </h3>
+
+                {question.imageUrl && (
+                  <img
+                    src={question.imageUrl}
+                    alt=""
+                    loading="lazy"
+                    style={{
+                      width: "100%",
+                      maxHeight: 300,
+                      objectFit: "contain",
+                      borderRadius: 12,
+                      marginTop: 16,
+                    }}
+                  />
+                )}
+
+                <p style={{ marginTop: 12 }}>
+                  Earn {formatPoints(question.pointsReward)}{" "}
+                  Fan Points for a correct answer.
+                </p>
+
+                <div style={{ display: "grid", gap: 10, marginTop: 16 }}>
+                  {question.options.map((option) => (
+                    <label
+                      key={option.value}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        padding: 14,
+                        border: "1px solid #e5e7eb",
+                        borderRadius: 10,
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name={`quiz-${question.id}`}
+                        checked={
+                          triviaAnswers[question.id] === option.value
+                        }
+                        disabled={
+                          question.attempted ||
+                          Boolean(triviaResults[question.id]) ||
+                          triviaSubmittingId === question.id
+                        }
+                        onChange={() =>
+                          setTriviaAnswers((current) => ({
+                            ...current,
+                            [question.id]: option.value,
+                          }))
+                        }
+                      />
+                      <span>
+                        <strong>{option.value}.</strong>{" "}
+                        {option.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+
+                {triviaResults[question.id] ? (
+                  <div
+                    role="status"
+                    style={{
+                      marginTop: 16,
+                      padding: 16,
+                      borderRadius: 12,
+                      background: triviaResults[question.id].isCorrect
+                        ? "#ecfdf5"
+                        : "#fef2f2",
+                      border: "1px solid #e5e7eb",
+                    }}
+                  >
+                    <strong>
+                      {triviaResults[question.id].isCorrect
+                        ? "Correct answer!"
+                        : "Incorrect answer"}
+                    </strong>
+
+                    <p style={{ marginTop: 10 }}>
+                      Correct answer:{" "}
+                      <strong>
+                        {triviaResults[question.id].correctOption}.
+                        {" "}
+                        {triviaResults[question.id].correctAnswer}
+                      </strong>
+                    </p>
+
+                    <p>
+                      Points earned:{" "}
+                      {formatPoints(
+                        triviaResults[question.id].pointsAwarded
+                      )}
+                    </p>
+
+                    {triviaResults[question.id].explanation && (
+                      <p style={{ marginTop: 10 }}>
+                        {triviaResults[question.id].explanation}
+                      </p>
+                    )}
+                  </div>
+                ) : question.attempted ? (
+                  <p style={{ marginTop: 16 }}>
+                    You have already answered this question.
+                  </p>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={
+                      !triviaAnswers[question.id] ||
+                      triviaSubmittingId === question.id
+                    }
+                    onClick={() =>
+                      void handleTriviaAnswer(question.id)
+                    }
+                    style={{ marginTop: 16 }}
+                  >
+                    {triviaSubmittingId === question.id
+                      ? "Submitting..."
+                      : "Submit Answer"}
+                  </button>
+                )}
+
+                {(question.attempted ||
+                  triviaResults[question.id]) && (
+                  <button
+                    type="button"
+                    style={{ marginTop: 16 }}
+                    onClick={() => {
+                      const nextIndex =
+                        selectedTriviaQuiz.questions.findIndex(
+                          (item, index) =>
+                            index > quizQuestionIndex &&
+                            !item.attempted
+                        );
+
+                      const firstUnansweredIndex =
+                        selectedTriviaQuiz.questions.findIndex(
+                          (item) => !item.attempted
+                        );
+
+                      setQuizQuestionIndex(
+                        nextIndex >= 0
+                          ? nextIndex
+                          : firstUnansweredIndex >= 0
+                            ? firstUnansweredIndex
+                            : selectedTriviaQuiz.questions.length
+                      );
+                    }}
+                  >
+                    Next Question
+                  </button>
+                )}
+              </div>
+            );
+          })()
+        )}
+      </section>
+    )}
+
     <div className="question-block">
       <span className="question-label">
         SPORTY TRIVIA
@@ -1726,18 +2247,19 @@ async function handleTriviaAnswer(questionId: number) {
 
       <p>
         Answer each question correctly to earn
-        Sporty Points. Each question can only be
+        Fan Points. Each question can only be
         attempted once.
       </p>
 
-      {triviaData && (
-        <p>
-          <strong>
-            Your balance:{" "}
-            {formatPoints(triviaData.balance)} Sporty Points
-          </strong>
-        </p>
-      )}
+      {participationAuth === "authenticated" &&
+        triviaData?.balance != null && (
+          <p>
+            <strong>
+              Your balance:{" "}
+              {formatPoints(triviaData.balance)} Fan Points
+            </strong>
+          </p>
+        )}
     </div>
 
     {triviaLoading ? (
@@ -1766,7 +2288,7 @@ async function handleTriviaAnswer(questionId: number) {
 
           <p>
             Earn {formatPoints(question.pointsReward)}{" "}
-            Sporty Points for a correct answer.
+            Fan Points for a correct answer.
           </p>
 
           <div
@@ -1818,21 +2340,87 @@ async function handleTriviaAnswer(questionId: number) {
             ))}
           </div>
 
-          <button
-            type="button"
-            disabled={
-              !triviaAnswers[question.id] ||
-              triviaSubmittingId === question.id
-            }
-            onClick={() =>
-              handleTriviaAnswer(question.id)
-            }
-            style={{ marginTop: "16px" }}
-          >
-            {triviaSubmittingId === question.id
-              ? "Submitting..."
-              : "Submit Answer"}
-          </button>
+          {triviaResults[question.id] ? (
+            <div
+              role="status"
+              style={{
+                marginTop: 16,
+                padding: 16,
+                borderRadius: 12,
+                background: triviaResults[question.id].isCorrect
+                  ? "#ecfdf5"
+                  : "#fef2f2",
+                border: `1px solid ${
+                  triviaResults[question.id].isCorrect
+                    ? "#86efac"
+                    : "#fca5a5"
+                }`,
+                color: "#172033",
+              }}
+            >
+              <strong>
+                {triviaResults[question.id].isCorrect
+                  ? `Correct! +${formatPoints(
+                      triviaResults[question.id].pointsAwarded
+                    )} Fan Points`
+                  : "Incorrect answer. +0 Fan Points"}
+              </strong>
+
+              <p style={{ marginTop: 10 }}>
+                Correct answer:{" "}
+                <strong>
+                  {triviaResults[question.id].correctOption}.{" "}
+                  {triviaResults[question.id].correctAnswer}
+                </strong>
+              </p>
+
+              <button
+                type="button"
+                style={{ marginTop: 12 }}
+                onClick={() => {
+                  const next = {
+                    ...triviaResultsRef.current,
+                  };
+
+                  delete next[question.id];
+
+                  triviaResultsRef.current = next;
+                  setTriviaResults(next);
+
+                  setTriviaData((current) =>
+                    current
+                      ? {
+                          ...current,
+                          questions: current.questions.filter(
+                            (item) => item.id !== question.id
+                          ),
+                        }
+                      : current
+                  );
+
+                  void loadTrivia();
+                }}
+              >
+                Continue
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              disabled={
+                !triviaAnswers[question.id] ||
+                triviaSubmittingId === question.id
+              }
+              onClick={() =>
+                handleTriviaAnswer(question.id)
+              }
+              style={{ marginTop: "16px" }}
+            >
+              {triviaSubmittingId === question.id
+                ? "Submitting..."
+                : "Submit Answer"}
+            </button>
+          )}
         </div>
       ))
     ) : (
@@ -1854,265 +2442,6 @@ async function handleTriviaAnswer(questionId: number) {
    </>
  )}  
 
-          {/* =====================================================
-              CHALLENGES
-          ====================================================== */}
-
-          {activeTab === "challenges" && (
-            <>
-              <div className="question-block">
-                <span className="question-label">
-                  SPORTYFANZ CHALLENGES
-                </span>
-
-                <h2>
-                  Complete challenges. Earn points.
-                </h2>
-
-                <p>
-                  Take part in fan activities and
-                  build your progress toward SportyFanz
-                  rewards.
-                </p>
-              </div>
-
-              {loading ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    padding: "50px",
-                  }}
-                >
-                  <Loader2
-                    size={28}
-                    className="animate-spin"
-                  />
-                </div>
-              ) : challenges.length === 0 ? (
-                <div className="question-block">
-                  <Target size={28} />
-
-                  <h2>
-                    No active challenges
-                  </h2>
-
-                  <p>
-                    Check back soon for new SportyFanz
-                    challenges.
-                  </p>
-                </div>
-              ) : (
-                challenges.map((challenge) => {
-                  const participation =
-                    challenge.participation;
-
-                  const joined =
-                    participation !== null;
-
-                  const completed =
-                    participation?.status ===
-                    "COMPLETED";
-
-                  const joining =
-                    joiningId === challenge.id;
-
-                  const progress =
-                    participation?.progress ?? 0;
-
-                  const target =
-                    participation?.target ??
-                    challenge.targetValue ??
-                    0;
-
-                  const progressPercent =
-                    target > 0
-                      ? Math.min(
-                          100,
-                          Math.round(
-                            (progress /
-                              target) *
-                              100
-                          )
-                        )
-                      : 0;
-
-                  return (
-                    <div
-                      className="question-block"
-                      key={challenge.id}
-                    >
-                      <span className="question-label">
-                        {formatChallengeType(
-                          challenge.type
-                        )}
-                      </span>
-
-                      <h2>
-                        {challenge.title}
-                      </h2>
-
-                      {challenge.description && (
-                        <p>
-                          {challenge.description}
-                        </p>
-                      )}
-
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems:
-                            "center",
-                          justifyContent:
-                            "space-between",
-                          gap: "16px",
-                          marginTop: "12px",
-                        }}
-                      >
-                        <strong>
-                          +
-                          {formatPoints(
-                            challenge.pointsReward
-                          )}{" "}
-                          pts
-                        </strong>
-
-                        {challenge.targetLabel && (
-                          <span>
-                            {
-                              challenge.targetLabel
-                            }
-                          </span>
-                        )}
-                      </div>
-
-                      {/* ===============================
-                          PROGRESS
-                      ================================ */}
-
-                      {joined && (
-                        <div
-                          style={{
-                            marginTop: "18px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent:
-                                "space-between",
-                              marginBottom: "8px",
-                            }}
-                          >
-                            <span>
-                              Progress
-                            </span>
-
-                            <strong>
-                              {progress} /{" "}
-                              {target}
-                            </strong>
-                          </div>
-
-                          <div className="progress-track">
-                            <span
-                              style={{
-                                width: `${progressPercent}%`,
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      {/* ===============================
-                          JOIN BUTTON
-                      ================================ */}
-
-                      <button
-                        type="button"
-                        className="green-button"
-                        disabled={
-                          joining ||
-                          completed
-                        }
-                        onClick={() =>
-                          handleJoinChallenge(
-                            challenge.id
-                          )
-                        }
-                        style={{
-                          marginTop: "18px",
-                        }}
-                      >
-                        {joining ? (
-                          <>
-                            <Loader2
-                              size={15}
-                              className="animate-spin"
-                            />
-
-                            Joining...
-                          </>
-                        ) : completed ? (
-                          <>
-                            <CheckCircle2
-                              size={15}
-                            />
-
-                            Completed
-                          </>
-                        ) : joined ? (
-                          <>
-                            <CheckCircle2
-                              size={15}
-                            />
-
-                            Joined
-                          </>
-                        ) : (
-                          <>
-                            <Target
-                              size={15}
-                            />
-
-                            Join Challenge
-                          </>
-                        )}
-                      </button>
-
-                      {/* ===============================
-                          CHALLENGE DATES
-                      ================================ */}
-
-                      {(challenge.startsAt ||
-                        challenge.endsAt) && (
-                        <small
-                          style={{
-                            display: "block",
-                            marginTop: "12px",
-                          }}
-                        >
-                          {challenge.startsAt &&
-                            `Starts ${formatDate(
-                              challenge.startsAt
-                            )}`}
-
-                          {challenge.startsAt &&
-                            challenge.endsAt &&
-                            " • "}
-
-                          {challenge.endsAt &&
-                            `Ends ${formatDate(
-                              challenge.endsAt
-                            )}`}
-                        </small>
-                      )}
-                    </div>
-                  );
-                })
-              )}
-            </>
-          )}
         </div>
 
         {/* =======================================================
@@ -2120,118 +2449,118 @@ async function handleTriviaAnswer(questionId: number) {
         ======================================================== */}
 
         <aside className="participate-side">
-          {/* =====================================================
-              PARTICIPATE BANNER
-          ====================================================== */}
-
           <div className="participate-banner">
             <Sparkles size={27} />
 
-            <h3>
-              Earn while you watch.
-            </h3>
+            <h3>Earn while you watch.</h3>
 
             <p>
-              Every prediction, poll and challenge
-              brings you closer to your next reward.
+              Make predictions, vote in polls and answer
+              Trivia questions to enjoy SportyFanz.
+              Registered fans can earn Fan Points.
             </p>
           </div>
 
-          {/* =====================================================
-              YOUR PROGRESS
-          ====================================================== */}
-
-          <div className="white-panel">
-            <div className="panel-title">
-              <h3>Your Progress</h3>
-            </div>
-
-            {/* SPORTY POINTS */}
-
-            <div className="progress-stat">
-              <span>
-                Sporty Points
-              </span>
-
-              <strong>
-                {loading
-                  ? "..."
-                  : formatPoints(
-                      data?.balance ?? 0
-                    )}
-              </strong>
-            </div>
-
-            <div className="progress-track">
-              <span
-                style={{
-                  width: "100%",
-                }}
-              />
-            </div>
-
-            {/* CHALLENGES JOINED */}
-
-            <div className="progress-stat">
-              <span>
-                Challenges Joined
-              </span>
-
-              <strong>
-                {joinedChallenges.length}
-              </strong>
-            </div>
-
-            <div className="progress-track">
-              <span
-                style={{
-                  width:
-                    challenges.length > 0
-                      ? `${Math.min(
-                          100,
-                          Math.round(
-                            (joinedChallenges.length /
-                              challenges.length) *
-                              100
-                          )
-                        )}%`
-                      : "0%",
-                }}
-              />
-            </div>
-
-            {/* CHALLENGES COMPLETED */}
-
-            <div className="progress-stat">
-              <span>
-                Challenges Completed
-              </span>
-
-              <strong>
-                {completedChallenges.length}
-              </strong>
-            </div>
-
-            <div className="progress-track">
-              <span
-                style={{
-                  width:
-                    challenges.length > 0
-                      ? `${Math.min(
-                          100,
-                          Math.round(
-                            (completedChallenges.length /
-                              challenges.length) *
-                              100
-                          )
-                        )}%`
-                      : "0%",
-                }}
-              />
-            </div>
-          </div>
         </aside>
       </div>
+
+      {participationPrompt && (
+        <div
+          role="presentation"
+          onClick={() => setParticipationPrompt(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20,
+            background: "rgba(0, 20, 35, 0.65)",
+          }}
+        >
+          <div
+            ref={participationDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="participation-auth-title"
+            onClick={(event) => event.stopPropagation()}
+            style={{
+              width: "100%",
+              maxWidth: 420,
+              padding: 28,
+              borderRadius: 16,
+              background: "#ffffff",
+              color: "#062f49",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+            }}
+          >
+            <h2
+              id="participation-auth-title"
+              style={{ marginBottom: 12 }}
+            >
+              Join SportyFanz to Submit
+            </h2>
+
+            <p style={{ lineHeight: 1.6, marginBottom: 22 }}>
+              {participationPrompt === "prediction"
+                ? "Sign in or create an account to submit your prediction and earn eligible Fan Points."
+                : "Sign in or create an account to submit your Trivia answer and earn eligible Fan Points."}
+            </p>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                flexWrap: "wrap",
+              }}
+            >
+              <Link
+                href="/login"
+                style={{
+                  padding: "12px 20px",
+                  borderRadius: 8,
+                  background: "#062f49",
+                  color: "#ffffff",
+                  textDecoration: "none",
+                  fontWeight: 600,
+                }}
+              >
+                Sign In
+              </Link>
+
+              <Link
+                href="/register"
+                style={{
+                  padding: "12px 20px",
+                  borderRadius: 8,
+                  background: "#7ccf72",
+                  color: "#062f49",
+                  textDecoration: "none",
+                  fontWeight: 600,
+                }}
+              >
+                Create Account
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setParticipationPrompt(null)}
+                style={{
+                  padding: "12px 16px",
+                  border: "1px solid #cbd5e1",
+                  borderRadius: 8,
+                  background: "#ffffff",
+                  color: "#062f49",
+                  cursor: "pointer",
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

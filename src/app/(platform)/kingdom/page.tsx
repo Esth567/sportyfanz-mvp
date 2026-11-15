@@ -1,9 +1,10 @@
 "use client";
 
 import { apiFetch } from "@/lib/api";
+import Link from "next/link";
 
 import { useEffect, useState } from "react";
-import KycVerification from "./kyc-verification";
+
 import SocialFollowEarn from "./social-follow-earn";
 import {
   Shield,
@@ -11,6 +12,7 @@ import {
   Target,
   MessageCircle,
   Activity,
+  Gift,
 } from "lucide-react";
 
 type FanProfile = {
@@ -40,6 +42,8 @@ type Sport = {
 export default function MyKingdomPage() {
   const [fan, setFan] = useState<FanProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
+  const [profileError, setProfileError] = useState("");
   const [mySports, setMySports] = useState<Sport[]>([]);
   const [sportsLoading, setSportsLoading] = useState(true);
 
@@ -56,20 +60,39 @@ export default function MyKingdomPage() {
         );
 
         if (!response.ok) {
-          setLoading(false);
+          if (active) {
+            if (response.status === 401) {
+              setIsGuest(true);
+            } else {
+              setProfileError(
+                "We couldn't load your fan profile. Please try again."
+              );
+            }
+          }
           return;
         }
 
         const data = await response.json();
 
-        if (active && data.user) {
-          setFan(data.user);
+        if (active) {
+          if (data.user) {
+            setFan(data.user);
+          } else {
+            setProfileError(
+              "Your fan profile is currently unavailable."
+            );
+          }
         }
       } catch (error) {
         console.error(
           "Unable to load kingdom profile:",
           error
         );
+        if (active) {
+          setProfileError(
+            "We couldn't connect to your fan profile. Please try again."
+          );
+        }
       } finally {
         if (active) {
           setLoading(false);
@@ -157,19 +180,100 @@ export default function MyKingdomPage() {
     );
   }
 
+  if (!fan && isGuest) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div>
+            <span>YOUR FAN KINGDOM</span>
+            <h1>My Kingdom</h1>
+            <p>Every fan deserves a place to belong.</p>
+          </div>
+        </div>
+
+        <section className="kingdom-guest-hero">
+          <div className="kingdom-guest-content">
+            <span className="kingdom-guest-eyebrow">
+              WELCOME TO SPORTYFANZ
+            </span>
+
+            <h2>
+              Every Fan Has a Kingdom.
+              <br />
+              <em>It's Time to Build Yours.</em>
+            </h2>
+
+            <p>
+              Turn your passion for sports into exciting opportunities.
+              Challenge yourself with trivia, predict match outcomes,
+              earn Sporty Points, climb the leaderboard, and redeem
+              exclusive rewards.
+            </p>
+
+            <div className="kingdom-guest-actions">
+              <Link href="/register" className="kingdom-guest-join">
+                Join SportyFanz
+              </Link>
+              <Link href="/login" className="kingdom-guest-login">
+                Already a Fan? Login
+              </Link>
+            </div>
+          </div>
+
+          <div className="kingdom-guest-emblem" aria-hidden="true">
+            <span>♛</span>
+            <strong>YOUR KINGDOM</strong>
+            <small>YOUR RULES. YOUR WORLD.</small>
+          </div>
+        </section>
+
+        <div className="kingdom-guest-features">
+          <div>
+            <Target size={26} />
+            <h3>Play & Predict</h3>
+            <p>Take on sports trivia and match predictions.</p>
+          </div>
+
+          <div>
+            <Trophy size={26} />
+            <h3>Earn Sporty Points</h3>
+            <p>Get rewarded for eligible fan participation.</p>
+          </div>
+
+          <div>
+            <Shield size={26} />
+            <h3>Rise Through the Ranks</h3>
+            <p>Build your fan identity and climb the leaderboard.</p>
+          </div>
+
+          <div>
+            <Gift size={26} />
+            <h3>Unlock Rewards</h3>
+            <p>Redeem your Sporty Points for available rewards.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!fan) {
     return (
       <div className="page">
         <div className="page-header">
           <div>
             <span>YOUR PROFILE</span>
-
             <h1>My Kingdom</h1>
-
             <p>
-              We couldn't load your fan profile.
-              Please log in again.
+              {profileError ||
+                "Your fan profile is currently unavailable."}
             </p>
+            <button
+              type="button"
+              className="outline-button"
+              onClick={() => window.location.reload()}
+            >
+              Try Again
+            </button>
           </div>
         </div>
       </div>
@@ -388,8 +492,7 @@ export default function MyKingdomPage() {
         {/* SOCIAL FOLLOW & EARN */}
         <SocialFollowEarn />
 
-         {/* KYC VERIFICATION */}
-        <KycVerification />
+
       </div>
     </div>
   );

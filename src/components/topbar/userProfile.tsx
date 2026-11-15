@@ -40,7 +40,7 @@ export default function UserProfile() {
       });
 
       if (response.status === 401) {
-        if (active) router.replace("/login");
+        if (active) setFan(null);
         return;
       }
 
@@ -114,6 +114,16 @@ export default function UserProfile() {
     }
   }
 
+  if (!fan) {
+    return (
+      <div className="sf-guest-auth">
+        <Link href="/onboarding" className="sf-guest-register">
+          Join
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="sf-profile-menu">
       <button
@@ -174,7 +184,7 @@ export default function UserProfile() {
 
             <div className="sf-dropdown-points">
               <Crown size={17} />
-              <span>Sporty Points</span>
+              <span>Fan Points</span>
               <strong>
                 {(fan?.totalPoints ?? 0).toLocaleString()}
               </strong>
@@ -183,7 +193,7 @@ export default function UserProfile() {
             <div className="sf-dropdown-divider" />
 
             <Link
-              href="/app/profile"
+              href="/profile"
               className="sf-dropdown-item"
               onClick={() => setOpen(false)}
             >

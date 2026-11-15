@@ -154,7 +154,7 @@ const [selectedSportSlug, setSelectedSportSlug] = useState(
         </div>
 
         <Link
-          href="/app"
+          href="/"
           className="secondary-button"
           style={{
             display: "inline-flex",
@@ -308,7 +308,7 @@ const [selectedSportSlug, setSelectedSportSlug] = useState(
 
               return (
                <Link
-                href={`/app/live?sport=${encodeURIComponent(selectedSportSlug)}&fixtureId=${match.fixtureId}&date=${encodeURIComponent(selectedDate)}`}
+                href={`/live?sport=${encodeURIComponent(selectedSportSlug)}&fixtureId=${match.fixtureId}&date=${encodeURIComponent(selectedDate)}`}
                  className="upcoming-card"
                  key={match.id}
                  style={{

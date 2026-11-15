@@ -96,7 +96,7 @@ export default function KycReminder() {
           )}
         </div>
 
-        <Link href="/app/kingdom" className="kyc-reminder-link">
+        <Link href="/kingdom" className="kyc-reminder-link">
           {isPending ? "View status" : isRejected ? "Resubmit KYC" : "Verify account"}
         </Link>
       </section>
@@ -125,7 +125,7 @@ export default function KycReminder() {
 
             <div className="kyc-prompt-actions">
               <Link
-                href="/app/kingdom"
+                href="/kingdom"
                 className="kyc-prompt-primary"
               >
                 {isRejected ? "Review and resubmit" : "Verify my account"}

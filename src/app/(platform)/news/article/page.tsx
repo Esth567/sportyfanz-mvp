@@ -39,10 +39,11 @@ type NewsComment = {
   body: string;
   createdAt: string;
   author: string;
-  userId: number;
+  userId: number | null;
 };
 
 type Engagement = {
+  isAuthenticated: boolean;
   views: number;
   likes: number;
   likedByMe: boolean;
@@ -82,6 +83,7 @@ function ArticleContent() {
   const [loading, setLoading] = useState(true);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [engagement, setEngagement] = useState<Engagement>({
+  isAuthenticated: false,
   views: 0,
   likes: 0,
   likedByMe: false,
@@ -90,6 +92,7 @@ function ArticleContent() {
 });
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const [guestName, setGuestName] = useState("");
   const [commentLoading, setCommentLoading] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
   const [engagementError, setEngagementError] = useState("");
@@ -328,6 +331,16 @@ async function submitComment(event: React.FormEvent<HTMLFormElement>) {
 
   if (!story || !commentText.trim() || commentLoading) return;
 
+  if (
+    !engagement.isAuthenticated &&
+    (guestName.trim().length < 2 || guestName.trim().length > 40)
+  ) {
+    setEngagementError(
+      "Enter a display name between 2 and 40 characters."
+    );
+    return;
+  }
+
   setCommentLoading(true);
   setEngagementError("");
 
@@ -339,6 +352,9 @@ async function submitComment(event: React.FormEvent<HTMLFormElement>) {
         url: story.link,
         action: "comment",
         text: commentText.trim(),
+        ...(!engagement.isAuthenticated
+          ? { guestName: guestName.trim() }
+          : {}),
       }),
     });
 
@@ -384,7 +400,7 @@ async function submitComment(event: React.FormEvent<HTMLFormElement>) {
   if (!story) {
     return (
       <main className="news-page">
-        <Link href="/app/news" className="news-read-button">
+        <Link href="/news" className="news-read-button">
           <ArrowLeft size={16} />
           Back to Sports News
         </Link>
@@ -407,7 +423,7 @@ async function submitComment(event: React.FormEvent<HTMLFormElement>) {
 
   return (
     <main className="news-page">
-      <Link href="/app/news" className="news-read-button">
+      <Link href="/news" className="news-read-button">
         <ArrowLeft size={16} />
         Back
       </Link>
@@ -477,8 +493,9 @@ async function submitComment(event: React.FormEvent<HTMLFormElement>) {
            background: "#ffffff",
            fontSize: 18,
            lineHeight: 1.9,
-           maxWidth: 760,
-           margin: "0 auto",
+           width: "100%",
+           maxWidth: "100%",
+           margin: "0",
            textAlign: "left",
          }}
         >
@@ -631,6 +648,42 @@ async function submitComment(event: React.FormEvent<HTMLFormElement>) {
     )}
 
     <form onSubmit={submitComment}>
+      {!engagement.isAuthenticated && (
+        <div style={{ marginBottom: 14 }}>
+          <label
+            htmlFor="news-guest-name"
+            style={{
+              display: "block",
+              marginBottom: 6,
+              fontSize: 14,
+              fontWeight: 600,
+              color: "#333",
+            }}
+          >
+            Your display name
+          </label>
+          <input
+            id="news-guest-name"
+            type="text"
+            value={guestName}
+            onChange={(event) => setGuestName(event.target.value)}
+            placeholder="Enter your name"
+            minLength={2}
+            maxLength={40}
+            autoComplete="nickname"
+            required
+            style={{
+              width: "100%",
+              padding: 12,
+              border: "1px solid #d1d5db",
+              borderRadius: 8,
+              font: "inherit",
+              color: "#111",
+              background: "#fff",
+            }}
+          />
+        </div>
+      )}
       <textarea
         value={commentText}
         onChange={(event) => setCommentText(event.target.value)}
@@ -651,7 +704,13 @@ async function submitComment(event: React.FormEvent<HTMLFormElement>) {
 
       <button
         type="submit"
-        disabled={commentLoading || !commentText.trim()}
+        disabled={
+          commentLoading ||
+          !commentText.trim() ||
+          (!engagement.isAuthenticated &&
+            (guestName.trim().length < 2 ||
+              guestName.trim().length > 40))
+        }
         style={{
           display: "inline-flex",
           alignItems: "center",

@@ -1,6 +1,7 @@
 "use client";
 
 import { apiFetch } from "@/lib/api";
+import Link from "next/link";
 
 import {
   Gift,
@@ -40,6 +41,7 @@ type Redemption = {
 };
 
 type RewardsResponse = {
+  authenticated: boolean;
   balance: number;
   totalPoints: number;
   fanLevel: string;
@@ -53,21 +55,21 @@ const rewardPromotions = [
     title: "Make every match count",
     description: "Take part in trivia, polls and predictions to earn points.",
     action: "Explore participation",
-    href: "/app/participate",
+    href: "/participate",
   },
   {
     eyebrow: "CONNECT WITH FANS",
     title: "Your Fan Room is waiting",
     description: "Join conversations and share your passion for sport.",
     action: "Visit Fan Rooms",
-    href: "/app/fanroom",
+    href: "/fanroom",
   },
   {
     eyebrow: "YOUR FAN JOURNEY",
     title: "Build your Fan Kingdom",
     description: "Keep progressing and see how far your fan journey takes you.",
     action: "View your Kingdom",
-    href: "/app/kingdom",
+    href: "/kingdom",
   },
 ];
 
@@ -119,6 +121,7 @@ export default function RewardPage() {
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [showGuestPrompt, setShowGuestPrompt] = useState(false);
   const [activePromoIndex, setActivePromoIndex] = useState(0);
   const activePromo = rewardPromotions[activePromoIndex];
 
@@ -167,6 +170,13 @@ export default function RewardPage() {
   }, []);
 
   async function handleRedeem(rewardId: number) {
+    if (!data?.authenticated) {
+      setShowGuestPrompt(true);
+      setMessage("");
+      setError("");
+      return;
+    }
+
     try {
       setRedeemingId(rewardId);
       setMessage("");
@@ -259,7 +269,10 @@ export default function RewardPage() {
         </div>
 
         <div className="rewards-ad-carousel" aria-label="SportyFanz promotions">
-          <div className="rewards-ad-copy">
+          <div
+            key={activePromoIndex}
+            className="rewards-ad-copy rewards-ad-slide"
+          >
             <span>{activePromo.eyebrow}</span>
             <strong>{activePromo.title}</strong>
             <p>{activePromo.description}</p>
@@ -295,6 +308,30 @@ export default function RewardPage() {
           }}
         >
           {error}
+        </div>
+      )}
+
+      {showGuestPrompt && (
+        <div className="rewards-guest-prompt" role="alert">
+          <div>
+            <strong>Unlock your SportyFanz rewards!</strong>
+            <p>
+              Register or log in to earn Sporty Points through
+              trivia and predictions, then redeem exciting rewards.
+            </p>
+          </div>
+
+          <div className="rewards-guest-actions">
+            <Link href="/login">Login</Link>
+            <Link href="/register">Register</Link>
+            <button
+              type="button"
+              onClick={() => setShowGuestPrompt(false)}
+              aria-label="Dismiss invitation"
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
 
@@ -422,7 +459,7 @@ export default function RewardPage() {
                     }
                     disabled={
                       isRedeeming ||
-                      !canAfford
+                      (data?.authenticated === true && !canAfford)
                     }
                   >
                     {isRedeeming ? (
@@ -433,6 +470,8 @@ export default function RewardPage() {
                         />
                         Redeeming...
                       </>
+                    ) : !data?.authenticated ? (
+                      "Redeem"
                     ) : !canAfford ? (
                       "Not Enough Points"
                     ) : (

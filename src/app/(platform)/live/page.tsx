@@ -1,6 +1,7 @@
 "use client";
 
 import { apiFetch } from "@/lib/api";
+import { getGuestFan } from "@/lib/guest-fan";
 
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, RefreshCw, Send, Users } from "lucide-react";
@@ -71,7 +72,7 @@ type MatchFanRoomMessage = {
   id: number;
   message: string;
   createdAt: string;
-  userId: number;
+  userId: number | null;
   username: string;
   avatarUrl: string | null;
   isEdited: boolean;
@@ -83,8 +84,6 @@ type MatchFanRoomData = {
   slug: string;
   description: string | null;
   memberCount: number;
-  isJoined: boolean;
-  hasMembershipRecord: boolean;
   messages: MatchFanRoomMessage[];
 };
 
@@ -153,6 +152,8 @@ function getPlayerName(player: MatchRecord): string {
 
 export default function MatchesPage() {
   const [fixtures, setFixtures] = useState<FixturesResponse | null>(null);
+  const [showAllLive, setShowAllLive] = useState(false);
+  const [showAllUpcoming, setShowAllUpcoming] = useState(false);
   const [selectedSport, setSelectedSport] = useState("football");
   const [selectedMatch, setSelectedMatch] = useState<Fixture | null>(null);
   const [details, setDetails] = useState<MatchDetails | null>(null);
@@ -533,7 +534,7 @@ export default function MatchesPage() {
               {liveMatches.length === 0 ? (
                 <p className="fixture-empty">No professional matches are live right now.</p>
               ) : (
-                liveMatches.map((match) => (
+                (showAllLive ? liveMatches : liveMatches.slice(0, 5)).map((match) => (
                   <FixtureCard
                     key={match.id}
                     match={match}
@@ -542,7 +543,32 @@ export default function MatchesPage() {
                   />
                 ))
               )}
+              {liveMatches.length > 5 && (
+                <button
+                  type="button"
+                  className="fixture-list-toggle"
+                  onClick={() => setShowAllLive((current) => !current)}
+                  aria-expanded={showAllLive}
+                >
+                  {showAllLive ? "View Less" : "View All"}
+                  <span aria-hidden="true">
+                    {showAllLive ? "⌃" : "⌄"}
+                  </span>
+                </button>
+              )}
             </section>
+
+            {/* ANTICIPATE ADVERTISEMENT */}
+            <aside
+              className="live-anticipate-ad"
+              aria-label="Anticipate advertisement"
+            >
+              <img
+                src="/anticipateCard.jpg"
+                alt="Anticipate promotional advertisement"
+                loading="lazy"
+              />
+            </aside>
 
             <section className="white-panel fixture-list-panel">
               <div className="panel-title">
@@ -552,7 +578,7 @@ export default function MatchesPage() {
               {upcomingMatches.length === 0 ? (
                 <p className="fixture-empty">No upcoming professional fixtures are available yet.</p>
               ) : (
-                upcomingMatches.map((match) => (
+                (showAllUpcoming ? upcomingMatches : upcomingMatches.slice(0, 5)).map((match) => (
                   <FixtureCard
                     key={match.id}
                     match={match}
@@ -560,6 +586,19 @@ export default function MatchesPage() {
                     onSelect={() => selectMatch(match)}
                   />
                 ))
+              )}
+              {upcomingMatches.length > 5 && (
+                <button
+                  type="button"
+                  className="fixture-list-toggle"
+                  onClick={() => setShowAllUpcoming((current) => !current)}
+                  aria-expanded={showAllUpcoming}
+                >
+                  {showAllUpcoming ? "View Less" : "View All"}
+                  <span aria-hidden="true">
+                    {showAllUpcoming ? "⌃" : "⌄"}
+                  </span>
+                </button>
               )}
             </section>
           </main>
@@ -572,7 +611,7 @@ export default function MatchesPage() {
               <div>
                 <strong>Join the Fan Room</strong>
                 <p>Discuss football with other fans.</p>
-                <a href="/app/fanroom">Join conversation →</a>
+                <a href="/fanroom">Join conversation →</a>
               </div>
             </div>
           </aside>
@@ -1056,16 +1095,12 @@ function MatchFanRoom({
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
-  const [membershipBusy, setMembershipBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [unavailableStatus, setUnavailableStatus] = useState("");
-  const autoJoinAttempted = useRef(false);
 
   useEffect(() => {
   let cancelled = false;
   let loadingRequest = false;
-
-  autoJoinAttempted.current = false;
 
   async function loadRoom() {
     if (loadingRequest) return;
@@ -1095,61 +1130,6 @@ function MatchFanRoom({
       setRoom(data.room ?? null);
       setError("");
 
-      // Automatically join only fans who have never joined this room.
-      // A previous deliberate leave is respected.
-      if (
-        data.room &&
-        !data.room.isJoined &&
-        !data.room.hasMembershipRecord &&
-        !autoJoinAttempted.current
-      ) {
-        autoJoinAttempted.current = true;
-
-        const joinResponse = await apiFetch(
-          "/api/fanrooms/membership",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              roomId: data.room.id,
-              action: "join",
-            }),
-          }
-        );
-
-        const joinData = await joinResponse.json();
-
-        if (!joinResponse.ok || !joinData.success) {
-          throw new Error(
-            joinData.error ?? "Unable to join the match Fan Room."
-          );
-        }
-
-        if (cancelled) return;
-
-        setNotice("You've joined the match Fan Room.");
-
-        // Load the messages immediately after joining.
-        const refreshResponse = await apiFetch(
-          `/api/fanrooms/match/${fixtureId}?sport=${encodeURIComponent(sport)}`,
-          { cache: "no-store" }
-        );
-
-        const refreshData = await refreshResponse.json();
-
-        if (
-          refreshResponse.ok &&
-          refreshData.success &&
-          !cancelled
-        ) {
-          setRoom(refreshData.room ?? null);
-          setUnavailableStatus(
-            refreshData.unavailable
-              ? refreshData.roomStatus ?? "CLOSED"
-              : ""
-          );
-        }
-      }
     } catch (err) {
       if (!cancelled) {
         setError(
@@ -1185,74 +1165,10 @@ function MatchFanRoom({
    };
   }, [fixtureId, sport]);
 
-  async function toggleMembership() {
-    if (!room || membershipBusy) return;
-
-    const action = room.isJoined ? "leave" : "join";
-
-    setMembershipBusy(true);
-    setError("");
-    setNotice("");
-
-    try {
-      const response = await apiFetch("/api/fanrooms/membership", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          roomId: room.id,
-          action,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error ?? "Unable to update membership.");
-      }
-
-      setRoom((current) =>
-        current
-          ? {
-              ...current,
-              isJoined: data.isJoined,
-              memberCount: Math.max(
-                0,
-                current.memberCount + (data.isJoined ? 1 : -1)
-              ),
-              messages: data.isJoined ? current.messages : [],
-            }
-          : current
-      );
-
-      setNotice(data.message ?? "");
-
-      if (data.isJoined) {
-        const refreshResponse = await apiFetch(
-          `/api/fanrooms/match/${fixtureId}?sport=${encodeURIComponent(sport)}`,
-          { cache: "no-store" }
-        );
-
-        const refreshData = await refreshResponse.json();
-
-        if (refreshResponse.ok && refreshData.success) {
-          setRoom(refreshData.room ?? null);
-        }
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Unable to update membership."
-      );
-    } finally {
-      setMembershipBusy(false);
-    }
-  }
-
   async function sendMessage(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!room || !room.isJoined || !message.trim() || sending) return;
+    if (!room || !message.trim() || sending) return;
 
     const text = message.trim();
 
@@ -1267,6 +1183,7 @@ function MatchFanRoom({
         body: JSON.stringify({
           roomId: room.id,
           message: text,
+          ...getGuestFan(),
         }),
       });
 
@@ -1347,7 +1264,7 @@ function MatchFanRoom({
          </>
         )}
 
-        <a href="/app/fanroom">Explore other Fan Rooms →</a>
+        <a href="/fanroom">Explore other Fan Rooms →</a>
        </div>
       )}
 
@@ -1359,7 +1276,7 @@ function MatchFanRoom({
             A match-specific Fan Room will appear here when an admin
             links one to this fixture.
           </p>
-          <a href="/app/fanroom">Explore other Fan Rooms →</a>
+          <a href="/fanroom">Explore other Fan Rooms →</a>
         </div>
       )}
 
@@ -1371,31 +1288,13 @@ function MatchFanRoom({
               {room.description && <p>{room.description}</p>}
             </div>
 
-            <button
-              type="button"
-              className={
-                room.isJoined
-                  ? "match-fan-room-leave"
-                  : "match-fan-room-join"
-              }
-              onClick={toggleMembership}
-              disabled={membershipBusy}
-            >
-              {membershipBusy
-                ? "Please wait..."
-                : room.isJoined
-                  ? "Leave Room"
-                  : "Join Fan Room"}
-            </button>
           </div>
 
           {notice && (
             <p className="match-fan-room-notice">{notice}</p>
           )}
 
-          {room.isJoined ? (
-            <>
-              <div className="match-fan-room-messages" aria-live="polite">
+          <div className="match-fan-room-messages" aria-live="polite">
                 {room.messages.length === 0 ? (
                   <div className="match-fan-room-no-messages">
                     <MessageCircle size={22} />
@@ -1459,16 +1358,6 @@ function MatchFanRoom({
                   {sending ? "Sending..." : "Send"}
                 </button>
               </form>
-            </>
-          ) : (
-            <div className="match-fan-room-join-prompt">
-              <MessageCircle size={22} />
-              <p>
-                Join this Fan Room to read messages and take part in
-                the match discussion.
-              </p>
-            </div>
-          )}
         </>
       )}
     </section>

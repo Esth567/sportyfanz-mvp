@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import SportyFanzShell from "../../components/AppShell";
+import SportyFanzShell from "@/components/AppShell";
 
 export default function AppLayout({
   children,

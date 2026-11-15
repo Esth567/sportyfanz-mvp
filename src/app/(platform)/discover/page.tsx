@@ -191,6 +191,13 @@ export default function DiscoverPage() {
 
       const result = await response.json();
 
+      if (response.status === 401) {
+        setNotice(
+          "Sign in or create an account to follow sports, teams and players."
+        );
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(result.error || "Unable to update your follow.");
       }

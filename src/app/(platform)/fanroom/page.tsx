@@ -1,6 +1,7 @@
 "use client";
 
 import { apiFetch } from "@/lib/api";
+import { getGuestFan } from "@/lib/guest-fan";
 
 
 import { useCallback, useEffect, useState } from "react";
@@ -16,7 +17,7 @@ type FanMessage = {
   id: number;
   message: string;
   createdAt: string;
-  userId: number;
+  userId: number | null;
   username: string;
   avatarUrl: string | null;
   isEdited: boolean;
@@ -78,10 +79,8 @@ export default function FanHubPage() {
   const [roomTab, setRoomTab] = useState("Chat");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [joining, setJoining] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [fanRoomsJoined, setFanRoomsJoined] = useState(0);
   const [pollsData, setPollsData] = useState<PollsResponse | null>(null);
   const [pollsLoading, setPollsLoading] = useState(false);
   const [votingPollId, setVotingPollId] = useState<number | null>(null);
@@ -110,7 +109,6 @@ export default function FanHubPage() {
       const loadedRooms: FanRoom[] = data.rooms ?? [];
 
       setRooms(loadedRooms);
-      setFanRoomsJoined(data.profile?.fanRoomsJoined ?? 0);
 
       setSelectedRoomId((currentId) => {
         if (currentId !== null && loadedRooms.some((room) => room.id === currentId)) {
@@ -212,7 +210,7 @@ const handlePollVote = async (pollId: number, optionId: number) => {
     setPollMessage(
       `${result.message || "Your vote has been recorded."} You earned ${formatPoints(
         result.pointsEarned ?? 0
-      )} Sporty Points.`
+      )} Fan Points.`
     );
 
     await loadPolls();
@@ -233,11 +231,6 @@ const handlePollVote = async (pollId: number, optionId: number) => {
 
     if (!selectedRoom || !text || sending) return;
 
-    if (!selectedRoom.isJoined) {
-      setError("Join this Fan Room before sending messages.");
-      return;
-    }
-
     setSending(true);
     setError("");
     setNotice("");
@@ -249,6 +242,7 @@ const handlePollVote = async (pollId: number, optionId: number) => {
         body: JSON.stringify({
           roomId: selectedRoom.id,
           message: text,
+          ...getGuestFan(),
         }),
       });
 
@@ -273,62 +267,6 @@ const handlePollVote = async (pollId: number, optionId: number) => {
       setError(err instanceof Error ? err.message : "Failed to send your message.");
     } finally {
       setSending(false);
-    }
-  };
-
-  const toggleMembership = async () => {
-    if (!selectedRoom || joining) return;
-
-    setJoining(true);
-    setError("");
-    setNotice("");
-
-    const action = selectedRoom.isJoined ? "leave" : "join";
-
-    try {
-      const response = await apiFetch("/api/fanrooms/membership", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          roomId: selectedRoom.id,
-          action,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || `Failed to ${action} Fan Room.`);
-      }
-
-      setRooms((currentRooms) =>
-        currentRooms.map((room) =>
-          room.id === selectedRoom.id
-            ? {
-                ...room,
-                isJoined: action === "join",
-                memberCount: Math.max(
-                  0,
-                  room.memberCount + (action === "join" ? 1 : -1)
-                ),
-              }
-            : room
-        )
-      );
-
-      setFanRoomsJoined((count) =>
-        Math.max(0, count + (action === "join" ? 1 : -1))
-      );
-
-      setNotice(
-        action === "join"
-          ? `You joined ${selectedRoom.name}.`
-          : `You left ${selectedRoom.name}.`
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : `Failed to ${action} Fan Room.`);
-    } finally {
-      setJoining(false);
     }
   };
 
@@ -416,15 +354,6 @@ const handlePollVote = async (pollId: number, optionId: number) => {
                   <Bell size={17} />
                 </button>
 
-                <button
-                  type="button"
-                  title={selectedRoom?.isJoined ? "Leave room" : "Join room"}
-                  aria-label={selectedRoom?.isJoined ? "Leave room" : "Join room"}
-                  onClick={() => void toggleMembership()}
-                  disabled={joining}
-                >
-                  <Users size={17} />
-                </button>
 
                 <button
                   type="button"
@@ -496,12 +425,6 @@ const handlePollVote = async (pollId: number, optionId: number) => {
                   )}
                 </div>
 
-                {!selectedRoom?.isJoined && (
-                  <p style={{ padding: "0 16px" }}>
-                    Join this room to participate in the conversation.
-                  </p>
-                )}
-
                 <form
                   className="chat-input"
                   onSubmit={(event) => {
@@ -512,20 +435,16 @@ const handlePollVote = async (pollId: number, optionId: number) => {
                   <input
                     value={message}
                     onChange={(event) => setMessage(event.target.value)}
-                    placeholder={
-                      selectedRoom?.isJoined
-                        ? "Type a message..."
-                        : "Join this room to chat..."
-                    }
+                    placeholder="Type a message..."
                     maxLength={1000}
-                    disabled={!selectedRoom?.isJoined || sending}
+                    disabled={!selectedRoom || sending}
                   />
 
                   <button
                     type="submit"
                     aria-label="Send message"
                     disabled={
-                      !selectedRoom?.isJoined ||
+                      !selectedRoom ||
                       !message.trim() ||
                       sending
                     }
@@ -714,11 +633,6 @@ const handlePollVote = async (pollId: number, optionId: number) => {
                 <h3>Available Fan Rooms</h3>
               </div>
                
-              <p style={{ padding: "0 16px" }}>
-                You have joined {fanRoomsJoined} room
-                {fanRoomsJoined === 1 ? "" : "s"}.
-              </p>
-
               {rooms.map((room) => (
                 <button
                   type="button"
@@ -750,27 +664,11 @@ const handlePollVote = async (pollId: number, optionId: number) => {
                     <strong style={{ display: "block" }}>{room.name}</strong>
                     <span>
                       {room.memberCount} fans
-                      {room.isJoined ? " · Joined" : ""}
                     </span>
                   </div>
                 </button>
               ))}
 
-              {selectedRoom && (
-                <div style={{ padding: 16 }}>
-                  <button
-                    type="button"
-                    onClick={() => void toggleMembership()}
-                    disabled={joining}
-                  >
-                    {joining
-                      ? "Please wait..."
-                      : selectedRoom.isJoined
-                        ? "Leave Room"
-                        : "Join Room"}
-                  </button>
-                </div>
-              )}
             </div>
              <div id="leaderboard" className="white-panel top-fans-panel">
                <div className="panel-title">

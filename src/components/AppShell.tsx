@@ -28,7 +28,7 @@ import { Logo } from "./Logo";
 import SearchBar from "./topbar/search-bar";
 import Notifications from "./topbar/notification";
 import UserProfile from "./topbar/userProfile";
-import KycReminder from "./KycReminder";
+
 
 type Props = {
   children: ReactNode;
@@ -37,154 +37,83 @@ type Props = {
 const navItems = [
   {
     label: "Home",
-    href: "/app",
+    href: "/",
     icon: Home,
   },
   {
     label: "Live & Matches",
-    href: "/app/live",
+    href: "/live",
     icon: Radio,
   },
   {
     label: "Participate",
-    href: "/app/participate",
+    href: "/participate",
     icon: Target,
   },
   {
     label: "Discover",
-    href: "/app/discover",
+    href: "/discover",
     icon: Search,
   },
   {
     label: "My Kingdom",
-    href: "/app/kingdom",
+    href: "/kingdom",
     icon: Crown,
   },
   {
     label: "Fan Rooms",
-    href: "/app/fanroom",
+    href: "/fanroom",
     icon: MessageCircle,
   },
   {
     label: "Rewards",
-    href: "/app/rewards",
+    href: "/rewards",
     icon: Gift,
   },
 ];
-
-type KycNoticeStatus =
-  | "LOADING"
-  | "NOT_SUBMITTED"
-  | "PENDING"
-  | "REJECTED"
-  | "APPROVED";
 
 export default function SportyFanzShell({
   children,
 }: Props) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
 
-  const [kycStatus, setKycStatus] =
-  useState<KycNoticeStatus>("LOADING");
-
-const [kycRejectionReason, setKycRejectionReason] =
-  useState("");
-
-const [showKycWelcome, setShowKycWelcome] =
-  useState(false);
-
-useEffect(() => {
-  let cancelled = false;
-
-  async function loadKycStatus() {
-    try {
-      const response = await apiFetch("/api/kyc", {
-        cache: "no-store",
-      });
-
-      if (!response.ok) return;
-
-      const data = await response.json();
-
-      if (cancelled) return;
-
-      const latest =
-        data.latestSubmission ??
-        data.submissions?.[0] ??
-        null;
-
-      if (data.hasApprovedSubmission === true) {
-        setKycStatus("APPROVED");
-        return;
-      }
-
-      if (data.hasPendingSubmission === true) {
-        setKycStatus("PENDING");
-        return;
-      }
-
-      if (latest?.status === "REJECTED") {
-        setKycStatus("REJECTED");
-        setKycRejectionReason(latest.rejectionReason || "");
-      } else {
-        setKycStatus("NOT_SUBMITTED");
-      }
-
-      const dismissed =
-        sessionStorage.getItem("sportyfanz-kyc-dismissed");
-
-      if (!dismissed) {
-        setShowKycWelcome(true);
-      }
-    } catch (error) {
-      console.error("Unable to load KYC status:", error);
-    }
-  }
-
-  void loadKycStatus();
-
-  return () => {
-    cancelled = true;
-  };
-}, []);
-
-function dismissKycWelcome() {
-  sessionStorage.setItem("sportyfanz-kyc-dismissed", "true");
-  setShowKycWelcome(false);
-}
-
   useEffect(() => {
     let cancelled = false;
 
     async function verifyFanAccount() {
-      try {
-        const response = await apiFetch("/api/auth/me", {
-          cache: "no-store",
-        });
+    try {
+      const response = await apiFetch("/api/auth/me", {
+        cache: "no-store",
+      });
 
-        if (!cancelled && response.status === 401) {
-          window.location.replace("/login");
-        }
-      } catch {
-        // Keep the page available if a temporary network error occurs.
+      if (cancelled) return;
+
+      setIsAuthenticated(response.ok);
+    } catch {
+      if (!cancelled) {
+        setIsAuthenticated(false);
       }
     }
+  }
 
-    void verifyFanAccount();
+  void verifyFanAccount();
 
-    return () => {
-      cancelled = true;
-    };
-  }, [pathname]);
+  return () => {
+    cancelled = true;
+  };
+ }, [pathname]);
 
     useEffect(() => {
     const INACTIVITY_LIMIT = 10 * 60 * 1000;
     let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isAuthenticated) return;
 
     const logoutForInactivity = async () => {
       try {
@@ -228,8 +157,8 @@ function dismissKycWelcome() {
         window.removeEventListener(event, resetTimer);
       });
     };
-  }, []);
-  
+  }, [isAuthenticated]);
+
   return (
     <main className="sf-app">
       {/* MOBILE SIDEBAR BACKDROP */}
@@ -262,7 +191,7 @@ function dismissKycWelcome() {
             <Menu size={23} />
           </button>
 
-          <Link href="/app" className="sf-mobile-brand" aria-label="SportyFanz home">
+          <Link href="/" className="sf-mobile-brand" aria-label="SportyFanz home">
             <Logo small />
           </Link>
 
@@ -275,7 +204,7 @@ function dismissKycWelcome() {
         </header>
 
         {/* PAGE CONTENT — RENDERED ONCE */}
-        <KycReminder />
+
 
         <div className="sf-content">
           {children}
@@ -283,7 +212,7 @@ function dismissKycWelcome() {
 
          {/* FOOTER */}
 
-        
+
       <footer className="sf-site-footer">
         <div className="sf-footer-top">
          <div className="sf-footer-brand">
@@ -305,10 +234,12 @@ function dismissKycWelcome() {
     </p>
 
     <nav className="sf-footer-links" aria-label="Footer navigation">
-      <Link href="/app">Home</Link>
-      <Link href="/app/kingdom">My Kingdom</Link>
-      <Link href="/app/fanroom">Fan Rooms</Link>
-      <Link href="/app/profile">My Profile</Link>
+      <Link href="/">Home</Link>
+      <Link href="/about">About Us</Link>
+      <Link href="/privacy">Privacy Policy</Link>
+      <Link href="/kingdom">My Kingdom</Link>
+      <Link href="/fanroom">Fan Rooms</Link>
+      <Link href="/profile">My Profile</Link>
     </nav>
   </div>
 

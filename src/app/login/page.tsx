@@ -5,7 +5,7 @@ import { apiFetch } from "@/lib/api";
 
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
   AtSign,
   Crown,
@@ -21,6 +21,14 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [verificationEmail, setVerificationEmail] = useState("");
+  const [emailVerified, setEmailVerified] = useState(false);
+
+  useEffect(() => {
+    setEmailVerified(
+      new URLSearchParams(window.location.search).get("verified") === "1"
+    );
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,6 +37,7 @@ export default function LoginPage() {
 
     setLoading(true);
     setError("");
+    setVerificationEmail("");
 
     const formData = new FormData(event.currentTarget);
 
@@ -48,6 +57,15 @@ export default function LoginPage() {
 
       if (!response.ok) {
         setError(data.error || data.message || "Unable to log in. Please check your details.");
+
+        if (
+          response.status === 403 &&
+          data.requiresEmailVerification === true &&
+          typeof data.email === "string"
+        ) {
+          setVerificationEmail(data.email);
+        }
+
         return;
       }
 
@@ -55,8 +73,8 @@ export default function LoginPage() {
        new URLSearchParams(window.location.search).get("welcome") === "1";
 
        window.location.href = isNewFanJourney
-        ? "/app?welcome=1"
-        : "/app";
+        ? "/?welcome=1"
+        : "/";
       } catch {
       setError("We couldn't connect to SportyFanz. Please try again.");
     } finally {
@@ -105,7 +123,7 @@ export default function LoginPage() {
               <div className="featureIcon">
                 <Sparkles size={16} />
               </div>
-              <span>Continue earning Sporty Points</span>
+              <span>Continue earning Fan Points</span>
             </div>
           </div>
         </section>
@@ -193,9 +211,26 @@ export default function LoginPage() {
                 </Link>
               </div>
 
+              {emailVerified && !error && (
+                  <p role="status" style={{ color: "#137333" }}>
+                    Email verified successfully! You can now log in.
+                  </p>
+                )}
+
               {error && (
                 <p role="alert" aria-live="polite" style={{ color: "#d93025" }}>
                   {error}
+                </p>
+              )}
+
+              {verificationEmail && (
+                <p>
+                  <Link
+                    href={`/verify-email?email=${encodeURIComponent(verificationEmail)}`}
+                    className="link"
+                  >
+                    Verify your email
+                  </Link>
                 </p>
               )}
 

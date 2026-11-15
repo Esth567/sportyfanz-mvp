@@ -116,7 +116,7 @@ function timeAgo(date: string | null) {
 }
 
 function articleHref(story: NewsStory) {
-  return `/app/news/article?url=${encodeURIComponent(story.link)}`;
+  return `/news/article?url=${encodeURIComponent(story.link)}`;
 }
 
 export default function NewsPage() {
