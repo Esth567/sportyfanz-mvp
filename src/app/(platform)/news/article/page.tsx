@@ -518,16 +518,7 @@ async function submitComment(event: React.FormEvent<HTMLFormElement>) {
                {paragraph}
              </p>
              ))}
-            {summaryLoading && (
-              <p
-                style={{
-                  color: "#666666",
-                  fontSize: 14,
-                }}
-              >
-                Preparing a more detailed story summary…
-              </p>
-            )}
+
           </div>
 
            <div

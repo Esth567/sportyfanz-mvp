@@ -712,6 +712,94 @@ useEffect(() => {
        </div>
        </div>
 
+        {/* MOBILE SPORTS SELECTOR */}
+        <div className="sf-sports-mobile">
+        {/* FAN'S SELECTED SPORTS */}
+        <div
+          style={{
+            background: "#fff",
+            border: "1px solid #e8e8e8",
+            borderRadius: 16,
+            padding: 20,
+            marginBottom: 16,
+          }}
+        >
+          <h2 style={{ margin: "0 0 6px", fontSize: 18 }}>
+             Your Sports
+          </h2>
+
+         <p style={{ margin: "0 0 16px", color: "#64748b", fontSize: 13 }}>
+           Choose a sport to explore its matches.
+         </p>
+
+         {sportsLoading ? (
+           <p>Loading available sports...</p>
+          ) : sportsError ? (
+           <p>{sportsError}</p>
+          ) : fanSports.length === 0 ? (
+           <p>
+             No sports are available right now. Please check back soon.
+           </p>
+          ) : (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 10,
+          }}
+        >
+        {fanSports
+          .filter(
+            (sport) =>
+              !["badminton", "formula-1", "athletics"].includes(
+                sport.slug
+              )
+          )
+          .map((sport) => {
+        const active = selectedSportSlug === sport.slug;
+
+        const icons: Record<string, string> = {
+          football: "⚽",
+          basketball: "🏀",
+          tennis: "🎾",
+          cricket: "🏏",
+          rugby: "🏉",
+          volleyball: "🏐",
+          baseball: "⚾",
+          badminton: "🏸",
+          "formula-1": "🏎️",
+          athletics: "🏃",
+        };
+
+        return (
+          <button
+            key={sport.id}
+            type="button"
+            onClick={() => setSelectedSportSlug(sport.slug)}
+            aria-pressed={active}
+            className="secondary-button"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: active ? "#16a34a" : "#fff",
+              color: active ? "#fff" : "#243447",
+              border: `1px solid ${active ? "#16a34a" : "#ddd"}`,
+              borderRadius: 10,
+              padding: "10px 16px",
+            }}
+          >
+            <span>{icons[sport.slug] ?? "🏆"}</span>
+            {sport.name}
+          </button>
+           );
+          })}
+         </div>
+        )}
+       </div>
+
+        </div>
+
         {/* UPCOMING MATCHES */}
         <div className="section-block upcoming-block"
            style={{
@@ -1119,6 +1207,7 @@ useEffect(() => {
 
           </div>
 
+<div className="sf-sports-desktop">
         {/* FAN'S SELECTED SPORTS */}
         <div
           style={{
@@ -1202,6 +1291,8 @@ useEffect(() => {
          </div>
         )}
        </div>
+
+</div>
 
         {/* FAN ROOM PROMO AND ORIGINAL SPORTYFANZ ADVERT */}
         <div className="sf-home-promo-stack">

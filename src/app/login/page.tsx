@@ -223,6 +223,13 @@ export default function LoginPage() {
                 </p>
               )}
 
+              <p style={{ marginTop: "10px", fontSize: "13px" }}>
+                Didn't receive your verification email?{" "}
+                <Link href="/verify-email" className="link">
+                  Verify your email here
+                </Link>
+              </p>
+
               {verificationEmail && (
                 <p>
                   <Link

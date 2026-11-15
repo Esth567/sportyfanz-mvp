@@ -19,7 +19,7 @@ function VerifyEmailContent() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState(
     searchParams.get("delivery") === "failed"
-      ? "Your account was created, but we could not send the verification email. Please select Resend verification code below."
+      ? "Please Resend verification code below."
       : ""
   );
 

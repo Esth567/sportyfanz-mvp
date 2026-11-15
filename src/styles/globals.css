@@ -4747,7 +4747,7 @@ button {
   padding: 11px 18px;
   border-radius: 8px;
   background: #7ccf72;
-  color: #7ccf72;
+  color: #062f49;
   font-size: 11px;
   font-weight: 900;
   text-decoration: none;
@@ -10839,4 +10839,317 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 
 .auth-policy-agreement a:hover {
   color: #14552a;
+}
+
+
+/* SPORTYFANZ COMPACT LIVE AND UPCOMING MATCHES */
+
+.fixture-header-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 0;
+  background: transparent;
+  color: #16834a;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.fixture-header-toggle:hover {
+  text-decoration: underline;
+}
+
+.fixture-header-toggle:focus-visible {
+  outline: 2px solid #3c94d9;
+  outline-offset: 3px;
+}
+
+.fixture-select-card {
+  padding: 9px 12px;
+}
+
+.fixture-select-top {
+  margin-bottom: 7px;
+}
+
+.fixture-select-teams {
+  gap: 8px;
+}
+
+.fixture-team {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+}
+
+.fixture-team strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.fixture-team-away {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.fixture-team-logo {
+  width: 27px;
+  height: 27px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.fixture-select-card > small {
+  margin-top: 5px;
+}
+
+.fixture-view-link {
+  display: block;
+  width: fit-content;
+  margin: 4px 0 0 auto;
+  text-align: right;
+}
+
+.live-anticipate-ad {
+  width: 100%;
+  max-height: 130px;
+}
+
+.live-anticipate-ad img {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 768px) {
+  .fixture-team-logo {
+    width: 22px;
+    height: 22px;
+  }
+
+  .fixture-select-card {
+    padding: 10px 8px;
+  }
+
+  .live-anticipate-ad,
+  .live-anticipate-ad img {
+    max-height: 100px;
+    height: 100px;
+  }
+}
+
+
+/* SPORTYFANZ MATCH COMPETITION LOGOS */
+
+.fixture-competition {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+}
+
+.fixture-competition > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.fixture-league-logo {
+  display: block;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .fixture-league-logo {
+    width: 19px;
+    height: 19px;
+  }
+}
+
+
+/* SPORTYFANZ NEWS LATEST STORIES LIGHT THEME */
+
+.trending-stories {
+  background: #ffffff;
+  color: #18394d;
+  border-color: #e1e9ed;
+}
+
+.trending-heading {
+  border-bottom-color: #e1e9ed;
+}
+
+.trending-heading h2,
+.trending-story-content h3 {
+  color: #18394d;
+}
+
+.trending-story {
+  border-bottom-color: #edf1f3;
+}
+
+.trending-meta,
+.trending-row-number {
+  color: #657783;
+}
+
+.trending-story-link:hover h3 {
+  color: #16834a;
+}
+
+.news-read-button:hover {
+  background: #66bd60;
+  color: #062f49;
+}
+
+
+/* SPORTYFANZ FIXTURE HEADER BUTTON ALIGNMENT */
+
+.fixture-list-panel > .panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fixture-list-panel > .panel-title .fixture-list-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: auto;
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid #d9e7ed;
+  border-radius: 7px;
+  background: #f4f9fb;
+  color: #16834a;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.fixture-list-panel > .panel-title .fixture-list-toggle:hover {
+  background: #e8f6ed;
+  border-color: #7ccf72;
+}
+
+@media (max-width: 600px) {
+  .fixture-list-panel > .panel-title .fixture-list-toggle {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+}
+
+
+/* SPORTYFANZ RESPONSIVE SPORTS SELECTOR POSITION */
+
+.sf-sports-mobile {
+  display: none;
+}
+
+.sf-sports-desktop {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .home-grid .sf-sports-mobile {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .home-grid .sf-sports-desktop {
+    display: none;
+  }
+}
+
+
+/* SPORTYFANZ REWARDS JOIN INVITATION */
+
+.rewards-guest-prompt {
+  position: relative;
+  padding: 20px 54px 20px 20px;
+}
+
+.rewards-guest-prompt > div:first-child {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.rewards-guest-actions {
+  flex: 0 0 auto;
+}
+
+.rewards-guest-actions a:first-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 11px 18px;
+  background: #7ccf72;
+  color: #062f49;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.rewards-guest-actions a:first-child:hover {
+  background: #66bd60;
+}
+
+.rewards-guest-actions button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #062f49;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.rewards-guest-actions button:hover {
+  background: #dcefd9;
+}
+
+.rewards-guest-actions a:focus-visible,
+.rewards-guest-actions button:focus-visible {
+  outline: 2px solid #3c94d9;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .rewards-guest-prompt {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 48px 18px 16px;
+  }
+
+  .rewards-guest-prompt > div:first-child {
+    flex: 0 1 auto;
+    width: 100%;
+  }
+
+  .rewards-guest-actions {
+    width: 100%;
+  }
+
+  .rewards-guest-actions a:first-child {
+    width: 100%;
+  }
 }

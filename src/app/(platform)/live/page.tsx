@@ -25,6 +25,7 @@ type Fixture = {
   id: number;
   fixtureId?: number;
   leagueId?: number | null;
+  leagueLogo?: string | null;
   season?: number | null;
   homeTeamId?: number | null;
   awayTeamId?: number | null;
@@ -529,7 +530,19 @@ export default function MatchesPage() {
             <section className="white-panel fixture-list-panel">
               <div className="panel-title">
                 <h3>Live Matches</h3>
-                <span>{liveMatches.length} matches</span>
+                {liveMatches.length > 5 && (
+                  <button
+                    type="button"
+                    className="fixture-list-toggle"
+                    onClick={() => setShowAllLive((current) => !current)}
+                    aria-expanded={showAllLive}
+                  >
+                    {showAllLive ? "View Less" : "View All"}
+                    <span aria-hidden="true">
+                      {showAllLive ? "⌃" : "⌄"}
+                    </span>
+                  </button>
+                )}
               </div>
               {liveMatches.length === 0 ? (
                 <p className="fixture-empty">No professional matches are live right now.</p>
@@ -543,19 +556,7 @@ export default function MatchesPage() {
                   />
                 ))
               )}
-              {liveMatches.length > 5 && (
-                <button
-                  type="button"
-                  className="fixture-list-toggle"
-                  onClick={() => setShowAllLive((current) => !current)}
-                  aria-expanded={showAllLive}
-                >
-                  {showAllLive ? "View Less" : "View All"}
-                  <span aria-hidden="true">
-                    {showAllLive ? "⌃" : "⌄"}
-                  </span>
-                </button>
-              )}
+
             </section>
 
             {/* ANTICIPATE ADVERTISEMENT */}
@@ -573,7 +574,19 @@ export default function MatchesPage() {
             <section className="white-panel fixture-list-panel">
               <div className="panel-title">
                 <h3>Upcoming Matches</h3>
-                <span>{upcomingMatches.length} matches</span>
+                {upcomingMatches.length > 5 && (
+                  <button
+                    type="button"
+                    className="fixture-list-toggle"
+                    onClick={() => setShowAllUpcoming((current) => !current)}
+                    aria-expanded={showAllUpcoming}
+                  >
+                    {showAllUpcoming ? "View Less" : "View All"}
+                    <span aria-hidden="true">
+                      {showAllUpcoming ? "⌃" : "⌄"}
+                    </span>
+                  </button>
+                )}
               </div>
               {upcomingMatches.length === 0 ? (
                 <p className="fixture-empty">No upcoming professional fixtures are available yet.</p>
@@ -587,19 +600,7 @@ export default function MatchesPage() {
                   />
                 ))
               )}
-              {upcomingMatches.length > 5 && (
-                <button
-                  type="button"
-                  className="fixture-list-toggle"
-                  onClick={() => setShowAllUpcoming((current) => !current)}
-                  aria-expanded={showAllUpcoming}
-                >
-                  {showAllUpcoming ? "View Less" : "View All"}
-                  <span aria-hidden="true">
-                    {showAllUpcoming ? "⌃" : "⌄"}
-                  </span>
-                </button>
-              )}
+
             </section>
           </main>
 
@@ -641,19 +642,49 @@ function FixtureCard({
       onClick={onSelect}
     >
       <div className="fixture-select-top">
-        <span>{match.competition}</span>
+        <span className="fixture-competition">
+          {match.leagueLogo && (
+            <img
+              src={match.leagueLogo}
+              alt=""
+              className="fixture-league-logo"
+              loading="lazy"
+            />
+          )}
+          <span>{match.competition}</span>
+        </span>
         <span className={isLive ? "live-pill" : "match-time"}>
           {statusLabel(match.status)}
         </span>
       </div>
       <div className="fixture-select-teams">
-        <strong>{match.homeTeam}</strong>
+        <div className="fixture-team fixture-team-home">
+          {match.homeTeamLogo && (
+            <img
+              src={match.homeTeamLogo}
+              alt=""
+              className="fixture-team-logo"
+              loading="lazy"
+            />
+          )}
+          <strong>{match.homeTeam}</strong>
+        </div>
         <b>
           {isLive || match.status === "FINISHED"
             ? `${match.homeScore ?? 0} - ${match.awayScore ?? 0}`
             : "VS"}
         </b>
-        <strong>{match.awayTeam}</strong>
+        <div className="fixture-team fixture-team-away">
+          <strong>{match.awayTeam}</strong>
+          {match.awayTeamLogo && (
+            <img
+              src={match.awayTeamLogo}
+              alt=""
+              className="fixture-team-logo"
+              loading="lazy"
+            />
+          )}
+        </div>
       </div>
       <small>
         {formatKickoff(match.scheduledAt)}

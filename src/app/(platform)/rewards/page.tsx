@@ -316,20 +316,22 @@ export default function RewardPage() {
           <div>
             <strong>Unlock your SportyFanz rewards!</strong>
             <p>
-              Register or log in to earn Sporty Points through
+              Join SportyFanz to earn Fan Points through
               trivia and predictions, then redeem exciting rewards.
             </p>
           </div>
 
           <div className="rewards-guest-actions">
-            <Link href="/login">Login</Link>
-            <Link href="/register">Register</Link>
+            <Link href="/onboarding">
+              Join to Get Rewards
+            </Link>
             <button
               type="button"
               onClick={() => setShowGuestPrompt(false)}
               aria-label="Dismiss invitation"
+              title="Close"
             >
-              Close
+              <span aria-hidden="true">×</span>
             </button>
           </div>
         </div>
