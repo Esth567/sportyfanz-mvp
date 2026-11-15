@@ -1,8 +1,42 @@
 import nodemailer from "nodemailer";
 import { appendFile } from "node:fs/promises";
 
-const TEST_DATABASE_HOST =
-  "ep-shy-sea-b4w05y79-pooler.c-6.us-east-2.aws.neon.tech";
+function isTestDatabaseConnection(): boolean {
+  const databaseUrl = process.env.DATABASE_URL;
+  const testDatabaseUrl = process.env.TEST_DATABASE_URL;
+
+  if (!databaseUrl || !testDatabaseUrl) {
+    return false;
+  }
+
+  try {
+    const current = new URL(databaseUrl);
+    const test = new URL(testDatabaseUrl);
+
+    const productionUrl = process.env.PRODUCTION_DATABASE_URL;
+
+    if (productionUrl) {
+      const production = new URL(productionUrl);
+
+      if (
+        current.hostname === production.hostname &&
+        current.pathname === production.pathname
+      ) {
+        return false;
+      }
+    }
+
+    return (
+      current.hostname === test.hostname &&
+      current.pathname === test.pathname &&
+      current.username === test.username &&
+      current.password === test.password &&
+      current.port === test.port
+    );
+  } catch {
+    return false;
+  }
+}
 
 function isEmailTestMode(): boolean {
   if (process.env.SPORTYFANZ_EMAIL_TEST_MODE !== "1") {
@@ -14,7 +48,7 @@ function isEmailTestMode(): boolean {
   if (
     process.env.NODE_ENV === "production" ||
     !databaseUrl ||
-    new URL(databaseUrl).hostname !== TEST_DATABASE_HOST
+    !isTestDatabaseConnection()
   ) {
     throw new Error("Email test mode is not permitted.");
   }
@@ -64,7 +98,7 @@ export async function sendVerificationEmail(
 
     await appendFile(
       "/tmp/sportyfanz-test-verification-emails.jsonl",
-      JSON.stringify(message) + "\\n",
+      JSON.stringify(message) + "\n",
       { mode: 0o600 }
     );
 

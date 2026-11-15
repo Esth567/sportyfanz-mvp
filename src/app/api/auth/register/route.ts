@@ -99,6 +99,41 @@ export async function POST(request: Request) {
       );
     }
 
+    if (body.acceptedPolicies !== true) {
+      return NextResponse.json(
+        {
+          error: "You must agree to the Terms of Use before registering.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const today = new Date();
+    const birthYear = dob.getUTCFullYear();
+    const birthMonth = dob.getUTCMonth();
+    const birthDay = dob.getUTCDate();
+
+    let age = today.getUTCFullYear() - birthYear;
+
+    if (
+      today.getUTCMonth() < birthMonth ||
+      (
+        today.getUTCMonth() === birthMonth &&
+        today.getUTCDate() < birthDay
+      )
+    ) {
+      age--;
+    }
+
+    if (age < 13) {
+      return NextResponse.json(
+        {
+          error: "You must be at least 13 years old to register.",
+        },
+        { status: 400 }
+      );
+    }
+
     const existingEmail = await db.orm.public.User.first({
       email,
     });
@@ -179,18 +214,31 @@ if (!/^[a-z0-9_]{3,20}$/.test(username)) {
       return { user, code };
     });
 
-    await sendVerificationEmail(
-      result.user.email,
-      result.code
-    );
+    let verificationEmailSent = false;
+
+    try {
+      await sendVerificationEmail(
+        result.user.email,
+        result.code
+      );
+
+      verificationEmailSent = true;
+    } catch (emailError) {
+      console.error(
+        "Registration completed, but verification email delivery failed:",
+        emailError
+      );
+    }
 
     return NextResponse.json(
       {
         success: true,
         requiresEmailVerification: true,
+        verificationEmailSent,
         email: result.user.email,
-        message:
-          "Registration successful. Check your email for your verification code.",
+        message: verificationEmailSent
+          ? "Registration successful. Check your email for your verification code."
+          : "Your account was created, but we could not send your verification email. Please request a new code on the verification page.",
       },
       { status: 201 }
     );
