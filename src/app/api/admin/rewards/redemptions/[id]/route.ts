@@ -199,6 +199,33 @@ export async function PATCH(
            : null,
        });
 
+      const notificationDetails = {
+        APPROVED: {
+          title: "Reward redemption approved",
+          message: `Your reward redemption ${redemption.referenceCode} has been approved.`,
+        },
+        FULFILLED: {
+          title: "Reward fulfilled",
+          message: `Your reward redemption ${redemption.referenceCode} has been fulfilled.`,
+        },
+        REJECTED: {
+          title: "Reward redemption rejected",
+          message: `Your reward redemption ${redemption.referenceCode} was rejected. Your Fan Points have been refunded.${rejectionReason ? ` Reason: ${rejectionReason}` : ""}`,
+        },
+        CANCELLED: {
+          title: "Reward redemption cancelled",
+          message: `Your reward redemption ${redemption.referenceCode} was cancelled. Your Fan Points have been refunded.`,
+        },
+      }[nextStatus];
+
+      await tx.orm.public.Notification.create({
+        userId: redemption.userId,
+        type: "REWARD",
+        title: notificationDetails.title,
+        message: notificationDetails.message,
+        link: "/app/rewards",
+      });
+
       return updated;
     });
 

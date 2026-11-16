@@ -116,6 +116,14 @@ export async function POST(request: Request) {
         balanceAfter: newBalance,
       });
 
+      await tx.orm.public.Notification.create({
+        userId,
+        type: "REWARD",
+        title: "Reward redemption submitted",
+        message: `Your request for ${reward.name} has been submitted. Reference: ${referenceCode}.`,
+        link: "/app/rewards",
+      });
+
       return {
         redemptionId: redemption.id,
         referenceCode,
