@@ -715,15 +715,7 @@ useEffect(() => {
         {/* MOBILE SPORTS SELECTOR */}
         <div className="sf-sports-mobile">
         {/* FAN'S SELECTED SPORTS */}
-        <div
-          style={{
-            background: "#fff",
-            border: "1px solid #e8e8e8",
-            borderRadius: 16,
-            padding: 20,
-            marginBottom: 16,
-          }}
-        >
+        <div className="sf-your-sports-panel">
           <h2 style={{ margin: "0 0 6px", fontSize: 18 }}>
              Your Sports
           </h2>
@@ -1209,15 +1201,7 @@ useEffect(() => {
 
 <div className="sf-sports-desktop">
         {/* FAN'S SELECTED SPORTS */}
-        <div
-          style={{
-            background: "#fff",
-            border: "1px solid #e8e8e8",
-            borderRadius: 16,
-            padding: 20,
-            marginBottom: 16,
-          }}
-        >
+        <div className="sf-your-sports-panel">
           <h2 style={{ margin: "0 0 6px", fontSize: 18 }}>
              Your Sports
           </h2>

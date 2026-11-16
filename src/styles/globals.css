@@ -11153,3 +11153,514 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
   }
 }
+
+/* =========================================================
+   SPORTYFANZ NOTIFICATIONS
+========================================================= */
+
+.notification-wrapper {
+  position: relative;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 100;
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(520px, 75vh);
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--sf-white);
+  color: var(--sf-text);
+  border: 1px solid var(--sf-border);
+  border-radius: 14px;
+  box-shadow: 0 15px 45px rgba(4, 31, 50, 0.16);
+}
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.notification-header strong {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.notification-mark-all,
+.notification-read-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: transparent;
+  color: #287b36;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.notification-mark-all:disabled,
+.notification-read-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.notification-unread-count {
+  margin: 8px 0;
+  color: var(--sf-muted);
+  font-size: 11px;
+}
+
+.notification-list {
+  margin-top: 12px;
+}
+
+.notification-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 4px;
+  border-top: 1px solid var(--sf-border);
+}
+
+.notification-row.is-unread {
+  background: rgba(124, 207, 114, 0.07);
+}
+
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-content strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.notification-content p {
+  margin: 5px 0;
+  color: var(--sf-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.notification-content small {
+  display: block;
+  margin-top: 5px;
+  color: var(--sf-muted);
+  font-size: 10px;
+}
+
+.notification-content a {
+  display: inline-block;
+  margin-top: 7px;
+  color: #287b36;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.notification-empty {
+  padding: 22px 8px;
+  text-align: center;
+  color: var(--sf-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.notification-error {
+  padding: 12px 0;
+  color: var(--sf-danger);
+  font-size: 12px;
+}
+
+.notification-error button {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--sf-border);
+  border-radius: 6px;
+  background: var(--sf-white);
+  color: var(--sf-text);
+}
+
+@media (max-width: 600px) {
+  .notification-dropdown {
+    position: fixed;
+    top: var(--topbar-height);
+    right: 12px;
+    left: 12px;
+    width: auto;
+    max-height: min(70vh, 500px);
+  }
+}
+
+/* =========================================================
+   SPORTYFANZ LIGHT / DARK THEME
+========================================================= */
+
+:root {
+  color-scheme: light;
+  --sf-surface: #ffffff;
+  --sf-surface-soft: #f7fafb;
+  --sf-topbar-bg: rgba(255, 255, 255, 0.94);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --sf-bg: #101c2c;
+  --sf-white: #1c2b3e;
+  --sf-surface: #1c2b3e;
+  --sf-surface-soft: #24364a;
+
+  --sf-border: #35485d;
+  --sf-text: #edf4f8;
+  --sf-muted: #b1c0cc;
+  --sf-navy: #f1f6fa;
+  --sf-light-text: #b8c9d5;
+
+  --sf-green-light: #244735;
+  --sf-topbar-bg: rgba(22, 35, 52, 0.96);
+}
+
+:root[data-theme="dark"] body {
+  background: var(--sf-bg);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .sf-app {
+  background: var(--sf-bg);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .sf-topbar {
+  background: var(--sf-topbar-bg);
+  border-bottom-color: var(--sf-border);
+}
+
+:root[data-theme="dark"] .sf-search {
+  background: var(--sf-surface-soft);
+  border-color: var(--sf-border);
+  color: var(--sf-muted);
+}
+
+:root[data-theme="dark"] .sf-search input {
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .sf-icon-button {
+  background: var(--sf-surface);
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .page-header h1 {
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .secondary-button,
+:root[data-theme="dark"] .outline-button {
+  background: var(--sf-surface);
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .notification-dropdown {
+  background: var(--sf-surface);
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .notification-row {
+  border-top-color: var(--sf-border);
+}
+
+:root[data-theme="dark"] .notification-row.is-unread {
+  background: rgba(124, 207, 114, 0.09);
+}
+
+:root[data-theme="dark"] .notification-content a,
+:root[data-theme="dark"] .notification-mark-all,
+:root[data-theme="dark"] .notification-read-button {
+  color: var(--sf-green);
+}
+
+:root[data-theme="dark"] .notification-error button {
+  background: var(--sf-surface-soft);
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+.sf-theme-toggle {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* =========================================================
+   SPORTYFANZ DARK MODE — MAIN CARDS AND PANELS
+========================================================= */
+
+:root[data-theme="dark"] .fan-kingdom-card,
+:root[data-theme="dark"] .match-card,
+:root[data-theme="dark"] .white-panel,
+:root[data-theme="dark"] .upcoming-card,
+:root[data-theme="dark"] .live-news-panel,
+:root[data-theme="dark"] .live-news-card,
+:root[data-theme="dark"] .fan-chat-card,
+:root[data-theme="dark"] .sport-discover-card,
+:root[data-theme="dark"] .reward-card,
+:root[data-theme="dark"] .sf-profile-panel,
+:root[data-theme="dark"] .sf-profile-stat-card,
+:root[data-theme="dark"] .daily-checkin-card,
+:root[data-theme="dark"] .kyc-panel,
+:root[data-theme="dark"] .kyc-status-card,
+:root[data-theme="dark"] .match-detail-panel,
+:root[data-theme="dark"] .fixture-list-panel,
+:root[data-theme="dark"] .fixture-select-card {
+  background: var(--sf-surface);
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .section-title h2,
+:root[data-theme="dark"] .panel-title h3,
+:root[data-theme="dark"] .kingdom-card-header strong,
+:root[data-theme="dark"] .kingdom-card-stats strong,
+:root[data-theme="dark"] .match-card-teams strong,
+:root[data-theme="dark"] .upcoming-card strong,
+:root[data-theme="dark"] .live-news-card-content h3 {
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .fan-kingdom-card > button {
+  background: var(--sf-surface-soft);
+  border-color: var(--sf-green);
+  color: var(--sf-green);
+}
+
+:root[data-theme="dark"] .match-card-footer,
+:root[data-theme="dark"] .match-card-body {
+  border-color: var(--sf-border);
+}
+
+:root[data-theme="dark"] .notification-dot {
+  border-color: var(--sf-surface);
+}
+
+/* Preserve brand colors on the hero and primary actions. */
+:root[data-theme="dark"] .hero-card,
+:root[data-theme="dark"] .hero-content,
+:root[data-theme="dark"] .hero-content h1 {
+  color: #ffffff;
+}
+
+:root[data-theme="dark"] .primary-button,
+:root[data-theme="dark"] .green-button {
+  color: #062d43;
+}
+
+/* =========================================================
+   SPORTYFANZ DARK MODE — FORMS, TABLES AND CHAT
+========================================================= */
+
+/* Authentication forms */
+:root[data-theme="dark"] .auth-form-panel {
+  background: var(--sf-surface);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .auth-form-header h1,
+:root[data-theme="dark"] .auth-field label {
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .auth-form-header p,
+:root[data-theme="dark"] .auth-form-footer {
+  color: var(--sf-muted);
+}
+
+:root[data-theme="dark"] .auth-field input,
+:root[data-theme="dark"] .auth-whatsapp-row select,
+:root[data-theme="dark"] .input {
+  background: var(--sf-surface-soft);
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .label {
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .input:focus {
+  background: var(--sf-surface-soft);
+}
+
+/* Match player performance */
+:root[data-theme="dark"] .match-player-table-wrap {
+  border-color: var(--sf-border);
+}
+
+:root[data-theme="dark"] .match-player-table th {
+  background: var(--sf-surface-soft);
+  color: var(--sf-muted);
+}
+
+:root[data-theme="dark"] .match-player-table td {
+  background: var(--sf-surface);
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+/* League standings */
+:root[data-theme="dark"] .league-table-wrap {
+  border-color: var(--sf-border);
+}
+
+:root[data-theme="dark"] .league-standings-table {
+  background: var(--sf-surface);
+}
+
+:root[data-theme="dark"] .league-standings-table td {
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .league-standings-table .league-row-home {
+  background: #244735;
+}
+
+:root[data-theme="dark"] .league-standings-table .league-row-away {
+  background: #493c25;
+}
+
+:root[data-theme="dark"] .league-table-club,
+:root[data-theme="dark"] .league-table-club strong {
+  color: var(--sf-text);
+}
+
+/* Fan Room message composer */
+:root[data-theme="dark"] .match-fan-room-composer {
+  border-color: var(--sf-border);
+  background: var(--sf-surface);
+}
+
+:root[data-theme="dark"] .match-fan-room-composer input,
+:root[data-theme="dark"] .chat-input input {
+  background: var(--sf-surface-soft);
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .match-fan-room-no-messages strong {
+  color: var(--sf-text);
+}
+
+/* Preserve contrast on green action buttons */
+:root[data-theme="dark"] .auth-submit,
+:root[data-theme="dark"] .match-fan-room-composer button {
+  background: var(--sf-green);
+  color: #062d43;
+}
+
+
+/* SPORTYFANZ YOUR SPORTS THEME SUPPORT */
+.sf-your-sports-panel {
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  color: #243447;
+}
+
+:root[data-theme="dark"] .sf-your-sports-panel {
+  background: var(--sf-surface);
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .sf-your-sports-panel h2,
+:root[data-theme="dark"] .sf-your-sports-panel p {
+  color: var(--sf-text);
+}
+
+/* =========================================================
+   DARK MODE — DISCOVER SEARCH AND FILTER TABS
+========================================================= */
+
+:root[data-theme="dark"] .discover-search {
+  background: var(--sf-surface);
+  border-color: var(--sf-border);
+  color: var(--sf-muted);
+}
+
+:root[data-theme="dark"] .discover-search input {
+  background: transparent;
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .discover-search input::placeholder {
+  color: var(--sf-muted);
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .discover-tabs button {
+  background: var(--sf-surface);
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .discover-tabs button.active {
+  background: rgba(124, 207, 114, 0.16);
+  border-color: var(--sf-green);
+  color: var(--sf-green);
+}
+
+
+
+/* SPORTYFANZ DARK MODE — REWARDS TABS */
+
+:root[data-theme="dark"] .rewards-tabs button {
+  background: var(--sf-surface);
+  border-color: var(--sf-border);
+  color: var(--sf-text);
+}
+
+:root[data-theme="dark"] .rewards-tabs button.active {
+  background: rgba(124, 207, 114, 0.16);
+  border-color: var(--sf-green);
+  color: var(--sf-green);
+}
+
+
+/* SPORTYFANZ REWARDS BANNER CONTRAST FIX */
+
+:root[data-theme="dark"] .rewards-balance .rewards-ad-carousel {
+  background: rgba(3, 27, 43, 0.48);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+:root[data-theme="dark"] .rewards-balance .rewards-ad-copy > span {
+  color: #a7e8a0 !important;
+}
+
+:root[data-theme="dark"] .rewards-balance .rewards-ad-copy > strong {
+  color: #ffffff !important;
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .rewards-balance .rewards-ad-copy > p {
+  color: #e1edf3 !important;
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .rewards-balance .rewards-ad-copy > a {
+  color: #a7e8a0 !important;
+  opacity: 1;
+}

@@ -27,6 +27,7 @@ import Sidebar from "./navigation/Sidebar";
 import { Logo } from "./Logo";
 import SearchBar from "./topbar/search-bar";
 import Notifications from "./topbar/notification";
+import ThemeToggle from "./topbar/theme-toggle";
 import UserProfile from "./topbar/userProfile";
 
 
@@ -198,6 +199,7 @@ export default function SportyFanzShell({
           <SearchBar />
 
           <div className="sf-top-actions">
+            <ThemeToggle />
             <Notifications />
             <UserProfile />
           </div>

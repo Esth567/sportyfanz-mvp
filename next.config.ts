@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
         output: "export" as const,
       }),
   allowedDevOrigins: [
+    "127.0.0.1",
+    "localhost",
     "cautious-train-gw7vjpwgqwx3vw4r-3000.app.github.dev",
   ],
   trailingSlash: true,
