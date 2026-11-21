@@ -121,7 +121,7 @@ export default function Profile() {
         throw new Error("Logout failed.");
       }
 
-      router.replace("/login");
+      router.replace("/app");
       router.refresh();
     } catch (error) {
       console.error("Logout error:", error);

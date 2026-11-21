@@ -45,6 +45,7 @@ type FanPoll = {
   id: number;
   question: string;
   description: string | null;
+  imageUrl: string | null;
   pointsReward: number;
   startsAt: string | null;
   endsAt: string | null;
@@ -511,6 +512,23 @@ const handlePollVote = async (pollId: number, optionId: number) => {
               <h3 style={{ marginTop: 8 }}>{poll.question}</h3>
 
               {poll.description && <p>{poll.description}</p>}
+
+              {poll.imageUrl && (
+                <img
+                  src={poll.imageUrl}
+                  alt={`Image for poll: ${poll.question}`}
+                  loading="lazy"
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    maxHeight: 280,
+                    objectFit: "contain",
+                    borderRadius: 12,
+                    marginTop: 12,
+                    marginBottom: 16,
+                  }}
+                />
+              )}
 
               <div
                 style={{

@@ -23,6 +23,7 @@ type PredictionMatch = {
   id: number;
   competition: string | null;
   venue: string | null;
+  imageUrl: string | null;
   scheduledAt: string;
   status: string;
   sport: {
@@ -61,6 +62,7 @@ type FanPoll = {
   id: number;
   question: string;
   description: string | null;
+  imageUrl: string | null;
   pointsReward: number;
   startsAt: string | null;
   endsAt: string | null;
@@ -86,6 +88,7 @@ type TriviaOption = {
 type TriviaQuestion = {
   id: number;
   question: string;
+  imageUrl: string | null;
   options: TriviaOption[];
   pointsReward: number;
   attempted: boolean;
@@ -1373,8 +1376,8 @@ async function handleTriviaAnswer(questionId: number) {
                 <p>
                   Put your football knowledge to work.
                   Submit your score prediction before
-                  the match starts and earn Sporty
-                  Points.
+                  the prediction closing deadline and earn
+                  Fan Points.
                 </p>
               </div>
 
@@ -1450,6 +1453,23 @@ async function handleTriviaAnswer(questionId: number) {
                           vs{" "}
                           {match.awayTeam.name}
                         </h2>
+
+                        {match.imageUrl && (
+                          <img
+                            src={match.imageUrl}
+                            alt={`Image for ${match.homeTeam.name} vs ${match.awayTeam.name}`}
+                            loading="lazy"
+                            style={{
+                              display: "block",
+                              width: "100%",
+                              maxHeight: 320,
+                              objectFit: "contain",
+                              borderRadius: 12,
+                              marginTop: 14,
+                              marginBottom: 16,
+                            }}
+                          />
+                        )}
 
                         <p>
                           {match.venue
@@ -1760,6 +1780,23 @@ async function handleTriviaAnswer(questionId: number) {
               <p>{poll.description}</p>
             )}
 
+            {poll.imageUrl && (
+              <img
+                src={poll.imageUrl}
+                alt={`Image for poll: ${poll.question}`}
+                loading="lazy"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  maxHeight: 320,
+                  objectFit: "contain",
+                  borderRadius: 12,
+                  marginTop: 14,
+                  marginBottom: 16,
+                }}
+              />
+            )}
+
             <div
               style={{
                 display: "flex",
@@ -1930,7 +1967,7 @@ async function handleTriviaAnswer(questionId: number) {
 
       <p>
         Choose a quiz, test your sports knowledge and
-        earn Sporty Points.
+        earn Fan Points.
       </p>
 
       {triviaQuizzesLoading ? (
@@ -2285,6 +2322,23 @@ async function handleTriviaAnswer(questionId: number) {
           </span>
 
           <h2>{question.question}</h2>
+
+          {question.imageUrl && (
+            <img
+              src={question.imageUrl}
+              alt={`Image for trivia question: ${question.question}`}
+              loading="lazy"
+              style={{
+                display: "block",
+                width: "100%",
+                maxHeight: 300,
+                objectFit: "contain",
+                borderRadius: 12,
+                marginTop: 14,
+                marginBottom: 16,
+              }}
+            />
+          )}
 
           <p>
             Earn {formatPoints(question.pointsReward)}{" "}

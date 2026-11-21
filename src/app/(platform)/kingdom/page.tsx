@@ -206,7 +206,7 @@ export default function MyKingdomPage() {
             <p>
               Turn your passion for sports into exciting opportunities.
               Challenge yourself with trivia, predict match outcomes,
-              earn Sporty Points, climb the leaderboard, and redeem
+              earn Fan Points, climb the leaderboard, and redeem
               exclusive rewards.
             </p>
 
@@ -236,7 +236,7 @@ export default function MyKingdomPage() {
 
           <div>
             <Trophy size={26} />
-            <h3>Earn Sporty Points</h3>
+            <h3>Earn Fan Points</h3>
             <p>Get rewarded for eligible fan participation.</p>
           </div>
 
@@ -249,7 +249,7 @@ export default function MyKingdomPage() {
           <div>
             <Gift size={26} />
             <h3>Unlock Rewards</h3>
-            <p>Redeem your Sporty Points for available rewards.</p>
+            <p>Redeem your Fan Points for available rewards.</p>
           </div>
         </div>
       </div>

@@ -53,7 +53,7 @@ const policyGroups = [
   {
     title: "6. Points, progression and rewards",
     paragraphs: [
-      "SportyFanz distinguishes progression points, which support fan-level advancement, from redeemable Sporty Points used for eligible rewards.",
+      "SportyFanz distinguishes progression points, which support fan-level advancement, from redeemable Fan Points used for eligible rewards.",
       "Points are not cash, do not represent a bank deposit and are not automatically transferable or exchangeable for money.",
       "Earning opportunities, reward availability and redemption conditions are governed by the Fan Points & Rewards Policy and any clearly displayed activity-specific rules.",
     ],
@@ -234,9 +234,9 @@ const policyGroups = [
   {
     title: "Two types of points",
     paragraphs: [
-      "SportyFanz distinguishes Progression Points from redeemable Sporty Points, also called Fan Points.",
+      "SportyFanz distinguishes Progression Points from redeemable Fan Points, also called Fan Points.",
       "Progression Points support fan-level advancement. They are not redeemable rewards currency.",
-      "Redeemable Sporty Points may be used for eligible rewards according to the applicable reward conditions.",
+      "Redeemable Fan Points may be used for eligible rewards according to the applicable reward conditions.",
     ],
   },
   {
@@ -251,7 +251,7 @@ const policyGroups = [
     title: "Fan progression levels",
     paragraphs: [
       "SportyFanz fan progression includes New Fan, Rising Fan, Super Fan, Champion Fan and King Fan.",
-      "Progression Points are used for level advancement and are separate from redeemable Sporty Points.",
+      "Progression Points are used for level advancement and are separate from redeemable Fan Points.",
       "Level thresholds and qualifying activities must be confirmed against the implemented progression system before publication.",
     ],
   },

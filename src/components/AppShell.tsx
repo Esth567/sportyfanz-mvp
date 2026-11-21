@@ -122,7 +122,7 @@ export default function SportyFanzShell({
           method: "POST",
         });
       } finally {
-        window.location.replace("/login?reason=timeout");
+        window.location.replace("/app?reason=timeout");
       }
     };
 

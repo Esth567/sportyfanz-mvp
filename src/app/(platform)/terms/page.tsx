@@ -50,7 +50,7 @@ const sections = [
   {
     title: "6. Points, progression and rewards",
     paragraphs: [
-      "SportyFanz distinguishes progression points, which support fan-level advancement, from redeemable Sporty Points used for eligible rewards.",
+      "SportyFanz distinguishes progression points, which support fan-level advancement, from redeemable Fan Points used for eligible rewards.",
       "Points are not cash, do not represent a bank deposit and are not automatically transferable or exchangeable for money.",
       "Earning opportunities, reward availability and redemption conditions are governed by the Fan Points & Rewards Policy and any clearly displayed activity-specific rules.",
     ],
