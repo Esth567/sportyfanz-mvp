@@ -36,6 +36,17 @@ export default function StaffManagement() {
   const [success, setSuccess] = useState("");
   const [createdStaff, setCreatedStaff] =
     useState<StaffAccount | null>(null);
+  const [selectedStaff, setSelectedStaff] =
+    useState<StaffAccount | null>(null);
+  const [generatedAccess, setGeneratedAccess] = useState<{
+    staffId: number;
+    actionUrl: string;
+    expiresAt: string;
+    purpose: "INVITATION" | "PASSWORD_RESET";
+  } | null>(null);
+  const [generatingAccess, setGeneratingAccess] = useState(false);
+  const [generateAccessError, setGenerateAccessError] = useState("");
+  const [copyAccessMessage, setCopyAccessMessage] = useState("");
   
  const [staffList, setStaffList] = useState<StaffAccount[]>([]);
  const [loadingStaff, setLoadingStaff] = useState(true);
@@ -260,6 +271,96 @@ async function sendStaffAccessEmail(
   }
 }
 
+
+function closeStaffDetails() {
+  if (generatingAccess) return;
+  setSelectedStaff(null);
+  setGeneratedAccess(null);
+  setGenerateAccessError("");
+  setCopyAccessMessage("");
+}
+
+function openStaffDetails(staff: StaffAccount) {
+  setGeneratedAccess(null);
+  setGenerateAccessError("");
+  setCopyAccessMessage("");
+  setSelectedStaff(staff);
+}
+
+async function generateStaffAccessLink(staff: StaffAccount) {
+  if (generatingAccess || staff.status !== "ACTIVE") return;
+
+  const actionName = staff.mustChangePassword
+    ? "password setup invitation"
+    : "password reset";
+
+  const confirmed = window.confirm(
+    `Generate a new ${actionName} link for ${staff.name}? ` +
+    "Any previously issued unused invitation or reset link " +
+    "will stop working. The new link expires after one hour."
+  );
+
+  if (!confirmed) return;
+
+  setGeneratingAccess(true);
+  setGeneratedAccess(null);
+  setGenerateAccessError("");
+  setCopyAccessMessage("");
+
+  try {
+    const response = await apiFetch(
+      `/api/admin/staff/${staff.id}/generate-access-link`,
+      {
+        method: "POST",
+        cache: "no-store",
+      }
+    );
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Unable to generate the staff access link."
+      );
+    }
+
+    if (
+      typeof data.actionUrl !== "string" ||
+      typeof data.expiresAt !== "string" ||
+      !["INVITATION", "PASSWORD_RESET"].includes(data.purpose)
+    ) {
+      throw new Error("Invalid response from the staff access service.");
+    }
+
+    setGeneratedAccess({
+      staffId: staff.id,
+      actionUrl: data.actionUrl,
+      expiresAt: data.expiresAt,
+      purpose: data.purpose,
+    });
+  } catch (error) {
+    setGenerateAccessError(
+      error instanceof Error
+        ? error.message
+        : "Unable to generate the staff access link."
+    );
+  } finally {
+    setGeneratingAccess(false);
+  }
+}
+
+async function copyStaffAccessLink() {
+  if (!generatedAccess) return;
+
+  try {
+    await navigator.clipboard.writeText(generatedAccess.actionUrl);
+    setCopyAccessMessage("Link copied. Share it privately.");
+  } catch {
+    setCopyAccessMessage(
+      "Unable to copy automatically. Select and copy the link below."
+    );
+  }
+}
 
 async function updateStaffStatus(
   staffId: number,
@@ -540,6 +641,14 @@ async function updateStaffStatus(
               </td>
 
               <td>
+                <button
+                  type="button"
+                  onClick={() => openStaffDetails(staff)}
+                  style={{ marginRight: 8 }}
+                >
+                  View Details
+                </button>
+
                 {staff.status !== "DELETED" && (
                   <button
                     type="button"
@@ -593,7 +702,337 @@ async function updateStaffStatus(
          </section>
       </section>
 
+      {selectedStaff && (
+        <div
+          className="staff-details-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeStaffDetails();
+            }
+          }}
+        >
+          <section
+            className="staff-details-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="staff-details-title"
+          >
+            <div className="staff-details-header">
+              <div>
+                <h2 id="staff-details-title">
+                  Staff Account Details
+                </h2>
+                <p>SportyFanz Internal Administration</p>
+              </div>
+
+              <button
+                type="button"
+                onClick={closeStaffDetails}
+                disabled={generatingAccess}
+                aria-label="Close staff details"
+              >
+                Close
+              </button>
+            </div>
+
+            <dl className="staff-details-grid">
+              <div>
+                <dt>Staff member</dt>
+                <dd>{selectedStaff.name}</dd>
+              </div>
+
+              <div>
+                <dt>Work email</dt>
+                <dd>{selectedStaff.email}</dd>
+              </div>
+
+              <div>
+                <dt>Username</dt>
+                <dd>{selectedStaff.username}</dd>
+              </div>
+
+              <div>
+                <dt>Staff role</dt>
+                <dd>
+                  {selectedStaff.staffRole.replaceAll("_", " ")}
+                </dd>
+              </div>
+
+              <div>
+                <dt>Account status</dt>
+                <dd>{selectedStaff.status}</dd>
+              </div>
+
+              <div>
+                <dt>Password setup</dt>
+                <dd>
+                  {selectedStaff.mustChangePassword
+                    ? "Pending"
+                    : "Configured"}
+                </dd>
+              </div>
+
+              <div>
+                <dt>Account created</dt>
+                <dd>
+                  {new Date(selectedStaff.createdAt).toLocaleString()}
+                </dd>
+              </div>
+
+              <div>
+                <dt>Last login</dt>
+                <dd>
+                  {selectedStaff.lastLoginAt
+                    ? new Date(selectedStaff.lastLoginAt).toLocaleString()
+                    : "Never"}
+                </dd>
+              </div>
+            </dl>
+
+            <div className="staff-details-security">
+              <strong>Staff access invitation</strong>
+              <p>
+                Staff passwords cannot be viewed. You can generate a new
+                single-use password setup or reset link and share it
+                privately with the staff member. The link expires
+                after one hour.
+              </p>
+
+              {selectedStaff.status === "ACTIVE" ? (
+                <>
+                  <button
+                    type="button"
+                    className="staff-generate-link"
+                    disabled={generatingAccess}
+                    onClick={() =>
+                      void generateStaffAccessLink(selectedStaff)
+                    }
+                  >
+                    {generatingAccess
+                      ? "Generating..."
+                      : selectedStaff.mustChangePassword
+                        ? "Generate Invitation Link"
+                        : "Generate Password Reset Link"}
+                  </button>
+
+                  {generateAccessError && (
+                    <p role="alert" className="staff-access-error">
+                      {generateAccessError}
+                    </p>
+                  )}
+
+                  {generatedAccess &&
+                    generatedAccess.staffId === selectedStaff.id && (
+                    <div className="staff-generated-link">
+                      <strong>
+                        {generatedAccess.purpose === "INVITATION"
+                          ? "New invitation link"
+                          : "New password reset link"}
+                      </strong>
+
+                      <label htmlFor="staff-access-link">
+                        Secure access link
+                      </label>
+                      <textarea
+                        id="staff-access-link"
+                        value={generatedAccess.actionUrl}
+                        readOnly
+                        rows={3}
+                        onFocus={(event) => event.currentTarget.select()}
+                      />
+
+                      <p>
+                        Expires:{" "}
+                        {new Date(
+                          generatedAccess.expiresAt
+                        ).toLocaleString()}
+                      </p>
+
+                      <button
+                        type="button"
+                        onClick={() => void copyStaffAccessLink()}
+                      >
+                        Copy Link
+                      </button>
+
+                      {copyAccessMessage && (
+                        <p role="status">{copyAccessMessage}</p>
+                      )}
+
+                      <p>
+                        This link will not be saved in View Details.
+                        Closing this window clears it from the screen.
+                        Do not share it in public chats.
+                      </p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p>
+                  Access links can only be generated for active
+                  staff accounts.
+                </p>
+              )}
+            </div>
+          </section>
+        </div>
+      )}
+
       <style>{`
+        .staff-details-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 1000;
+          display: grid;
+          place-items: center;
+          padding: 20px;
+          background: rgba(0, 0, 0, 0.75);
+        }
+
+        .staff-details-dialog {
+          width: min(100%, 620px);
+          max-height: 90vh;
+          overflow-y: auto;
+          padding: 26px;
+          border: 1px solid #45404a;
+          border-radius: 16px;
+          background: #171a26;
+          color: #f7f8fc;
+          box-sizing: border-box;
+        }
+
+        .staff-details-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 16px;
+          margin-bottom: 24px;
+        }
+
+        .staff-details-header h2 {
+          margin: 0 0 7px;
+          font-size: 22px;
+        }
+
+        .staff-details-header p {
+          margin: 0;
+          color: #a3a9bd;
+          font-size: 12px;
+        }
+
+        .staff-details-header button {
+          padding: 9px 14px;
+          border: 1px solid #b88b2e;
+          border-radius: 8px;
+          background: transparent;
+          color: #f3c969;
+          cursor: pointer;
+        }
+
+        .staff-details-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 14px;
+          margin: 0;
+        }
+
+        .staff-details-grid > div {
+          min-width: 0;
+          padding: 14px;
+          border: 1px solid #343849;
+          border-radius: 9px;
+          background: #10121b;
+        }
+
+        .staff-details-grid dt {
+          margin-bottom: 8px;
+          color: #a3a9bd;
+          font-size: 12px;
+        }
+
+        .staff-details-grid dd {
+          margin: 0;
+          overflow-wrap: anywhere;
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .staff-details-security {
+          margin-top: 20px;
+          padding: 15px;
+          border: 1px solid #554627;
+          border-radius: 9px;
+          background: #211f1b;
+        }
+
+        .staff-details-security strong {
+          color: #f5c85e;
+          font-size: 13px;
+        }
+
+        .staff-details-security p {
+          margin: 8px 0 0;
+          color: #c3c5cf;
+          font-size: 12px;
+          line-height: 1.7;
+        }
+
+        .staff-generate-link,
+        .staff-generated-link button {
+          margin-top: 14px;
+          padding: 10px 14px;
+          border: 0;
+          border-radius: 8px;
+          background: #f6bd35;
+          color: #171a26;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .staff-generate-link:disabled {
+          opacity: 0.6;
+          cursor: wait;
+        }
+
+        .staff-generated-link {
+          margin-top: 16px;
+          padding: 14px;
+          border: 1px solid #45404a;
+          border-radius: 9px;
+          background: #10121b;
+        }
+
+        .staff-generated-link label {
+          display: block;
+          margin-top: 12px;
+          color: #c3c5cf;
+          font-size: 12px;
+        }
+
+        .staff-generated-link textarea {
+          display: block;
+          width: 100%;
+          margin-top: 7px;
+          padding: 10px;
+          box-sizing: border-box;
+          border: 1px solid #45404a;
+          border-radius: 7px;
+          background: #171a26;
+          color: #f7f8fc;
+          font-size: 12px;
+          overflow-wrap: anywhere;
+          resize: vertical;
+        }
+
+        .staff-access-error {
+          color: #ff9c9c !important;
+        }
+
+        @media (max-width: 480px) {
+          .staff-details-dialog { padding: 18px; }
+          .staff-details-grid { grid-template-columns: 1fr; }
+        }
+
         .staff-workspace {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
