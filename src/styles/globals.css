@@ -12293,3 +12293,161 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
     min-width: 34px;
   }
 }
+
+/* =========================================================
+   SPORTYFANZ MOBILE ONBOARDING REARRANGEMENT
+   Desktop onboarding remains unchanged.
+========================================================= */
+
+@media (max-width: 768px) {
+  .onboarding-page {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto 1fr;
+    align-content: start;
+    min-height: 100svh;
+    height: auto;
+    padding: 26px 18px 30px;
+    box-sizing: border-box;
+    overflow: visible;
+  }
+
+  .onboarding-left {
+    display: contents;
+  }
+
+  .onboarding-brand {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .onboarding-small {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 4px;
+  }
+
+  .onboarding-left h1 {
+    grid-column: 1;
+    grid-row: 3;
+    margin: 28px 0 22px;
+    font-size: clamp(25px, 7vw, 36px);
+    line-height: 1.08;
+  }
+
+  /* Hide introductory paragraph and benefit statements on mobile. */
+  .onboarding-left > p,
+  .onboarding-features {
+    display: none;
+  }
+
+  /* Sports video appears before the account buttons. */
+  .onboarding-right {
+    grid-column: 1;
+    grid-row: 4;
+    width: 100%;
+    min-width: 0;
+    height: 280px;
+    min-height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .onboarding-image-card {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+  }
+
+  /* Account actions appear directly below the video. */
+  .onboarding-buttons {
+    grid-column: 1;
+    grid-row: 5;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+    margin-top: 20px;
+  }
+
+  .onboarding-buttons > a {
+    display: inline-flex;
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    text-align: center;
+    box-sizing: border-box;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 400px) {
+  .onboarding-page {
+    padding: 24px 16px 28px;
+  }
+
+  .onboarding-left h1 {
+    font-size: 25px;
+  }
+
+  .onboarding-right {
+    height: 240px;
+    min-height: 240px;
+  }
+
+  .onboarding-buttons {
+    gap: 9px;
+  }
+}
+
+/* SPORTYFANZ MOBILE ONBOARDING — NORMAL BUTTON HEIGHT */
+@media (max-width: 768px) {
+  .onboarding-page {
+    grid-template-rows: auto auto auto auto auto;
+  }
+
+  .onboarding-buttons {
+    align-self: start;
+    align-items: center;
+    margin-top: 14px;
+  }
+
+  .onboarding-buttons > a {
+    height: auto;
+    min-height: 40px;
+    align-self: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}
+
+/* SPORTYFANZ MOBILE ONBOARDING — CENTER MAIN CONTENT */
+@media (max-width: 768px) {
+  .onboarding-page {
+    grid-template-rows: auto auto 1fr auto auto 1fr;
+    align-content: stretch;
+  }
+
+  .onboarding-left h1 {
+    grid-row: 3;
+    align-self: end;
+    margin-top: 0;
+    margin-bottom: 18px;
+  }
+
+  .onboarding-right {
+    grid-row: 4;
+  }
+
+  .onboarding-buttons {
+    grid-row: 5;
+    align-self: start;
+    margin-top: 14px;
+  }
+}

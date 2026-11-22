@@ -105,7 +105,7 @@ export default function UserProfile() {
         throw new Error("Unable to log out.");
       }
 
-      router.replace("/app");
+      window.location.replace("/");
       router.refresh();
     } catch (error) {
       console.error("Logout failed:", error);
